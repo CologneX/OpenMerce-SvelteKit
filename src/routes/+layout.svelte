@@ -5,7 +5,7 @@
 	import '@skeletonlabs/skeleton/styles/all.css';
 	// Most of your app wide CSS should be put in this file
 	import '../app.postcss';
-	import { AppBar, AppShell } from '@skeletonlabs/skeleton';
+	import { AppBar, AppShell, ProgressBar } from '@skeletonlabs/skeleton';
 	import Logo from '$lib/logo.svelte';
 </script>
 
@@ -13,12 +13,16 @@
 	<svelte:fragment slot="header">
 		<AppBar>
 			<svelte:fragment slot="lead">
-				<span><Logo /></span>
+				<a href="/"><Logo /></a>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
-				<span>WEB DEV</span>
+				<div class="btn-group">
+					<a href="/login">Login</a>
+					<a href="/register">Register</a>
+				</div>
 			</svelte:fragment>
 		</AppBar>
+		<ProgressBar />
 	</svelte:fragment>
 	<slot />
 </AppShell>
