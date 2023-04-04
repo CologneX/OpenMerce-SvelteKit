@@ -4,10 +4,8 @@ import { fail } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 
 const schema = z.object({
-  name: z.string().min(1),
   email: z.string().email().min(1),
   password: z.string().min(6),
-  confirmPassword: z.string().min(6),
 });
 
 export const load = (async (event) => {
@@ -29,6 +27,7 @@ export const actions = {
         // Again, always return { form } and things will just work.
         return fail(400, { form });
       }
+  
       // TODO: Do something with the validated data
   
       // Yep, return { form } here too

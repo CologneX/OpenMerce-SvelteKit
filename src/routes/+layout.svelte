@@ -6,19 +6,17 @@
 	// Most of your app wide CSS should be put in this file
 	import '../app.postcss';
 	import { AppBar, AppShell, ProgressBar, LightSwitch } from '@skeletonlabs/skeleton';
-	import Logo from '$lib/logo.svelte';
+	import { navigating } from '$app/stores';
+	import Logo from '$lib/Logo.svelte';
 	import { popup } from '@skeletonlabs/skeleton';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 	let popupSettings: PopupSettings = {
-		// Set the event as: click | hover | hover-click | focus | focus-click
 		event: 'click',
-		// Provide a matching 'data-popup' value.
 		target: 'settingPopup',
-		// Set the placement as: top | bottom | left | right | auto
-		placement: 'bottom'
+		placement: 'bottom-end'
 	};
 </script>
 
@@ -55,15 +53,17 @@
 						</svg>
 					</button>
 				</div>
-
-				<div class="card variant-primary p-3 w-auto" data-popup="settingPopup">
+				<div class="card variant-primary p-3 w-auto z-10" data-popup="settingPopup">
 					<div class="card-body">
+						<h4>Settings</h4>
 						<LightSwitch />
 					</div>
 				</div>
 			</svelte:fragment>
 		</AppBar>
-		<ProgressBar />
+		{#if $navigating}
+			<ProgressBar />
+		{/if}
 	</svelte:fragment>
 	<slot />
 </AppShell>
