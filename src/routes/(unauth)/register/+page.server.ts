@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { superValidate, setError } from 'sveltekit-superforms/server';
-import { fail } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 
 const schema = z.object({
@@ -19,20 +19,20 @@ export const load = (async (event) => {
 }) satisfies PageServerLoad;
 
 export const actions = {
-    default: async (event) => {
-      // Same syntax as in the load function
-      const form = await superValidate(event, schema);
-      console.log('POST', form);
-  
-      // Convenient validation check:
-      // if(!form.)
-      if (!form.valid) {
-        // Again, always return { form } and things will just work.
-        return fail(400, { form });
-      }
-      // TODO: Do something with the validated data
-      
-      // Yep, return { form } here too
-      return { form };
+  default: async (event) => {
+    // Same syntax as in the load function
+    const form = await superValidate(event, schema);
+    console.log('POST', form);
+
+    // Convenient validation check:
+    // if(!form.)
+    if (!form.valid) {
+      // Again, always return { form } and things will just work.
+      return fail(400, { form });
     }
-  } satisfies Actions;
+
+    // TODO: Do something with the validated data
+
+    throw redirect(302, '/login');
+  }
+} satisfies Actions;

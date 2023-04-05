@@ -13,7 +13,7 @@
 <div class="flex justify-center items-center h-full w-full">
 	<form method="POST" use:enhance>
 		<div class="block card p-4 w-screen max-w-xl">
-			<SuperDebug data={$form} />
+			<!-- <SuperDebug data={$form} /> -->
 			<header class="card-header">
 				<span class="flex justify-center"><Logo /></span>
 				<h2>Register</h2>
@@ -55,7 +55,8 @@
 						bind:value={$form.confirmPassword}
 						data-invalid={$errors.confirmPassword}
 					/>
-					{#if $errors.confirmPassword}<small class="text-red-500">{$errors.confirmPassword}</small>{/if}
+					{#if $errors.confirmPassword}<small class="text-red-500">{$errors.confirmPassword}</small
+						>{/if}
 				</label>
 			</section>
 			<footer class="p-4 space-y-2">

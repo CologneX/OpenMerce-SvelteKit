@@ -14,7 +14,7 @@
 <div class="flex justify-center items-center h-full w-full">
 	<form method="POST" use:enhance>
 		<div class="card p-4 w-screen max-w-xl">
-			<SuperDebug data={$form} />
+			<!-- <SuperDebug data={$form} /> -->
 			<header class="card-header">
 				<span class="flex justify-center"><Logo /></span>
 				<h2>Login</h2>
@@ -25,7 +25,6 @@
 					<input
 						class="input"
 						type="text"
-						placeholder="Input"
 						name="email"
 						bind:value={$form.email}
 					/>
@@ -34,8 +33,7 @@
 					<label for="password">Password</label>
 					<input
 						class="input"
-						type="text"
-						placeholder="Input"
+						type="password"
 						name="password"
 						bind:value={$form.password}
 					/>
