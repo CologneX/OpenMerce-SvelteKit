@@ -7,7 +7,7 @@
 	import '../app.postcss';
 	import { AppBar, AppShell, ProgressBar, LightSwitch } from '@skeletonlabs/skeleton';
 	import { navigating } from '$app/stores';
-	import Logo from '$lib/logo.svelte';
+	import Logo from '$lib/Logo.svelte';
 	import { popup } from '@skeletonlabs/skeleton';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
