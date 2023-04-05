@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { superValidate } from 'sveltekit-superforms/server';
+import { superValidate, setError } from 'sveltekit-superforms/server';
 import { fail } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 
@@ -25,12 +25,13 @@ export const actions = {
       console.log('POST', form);
   
       // Convenient validation check:
+      // if(!form.)
       if (!form.valid) {
         // Again, always return { form } and things will just work.
         return fail(400, { form });
       }
       // TODO: Do something with the validated data
-  
+      
       // Yep, return { form } here too
       return { form };
     }

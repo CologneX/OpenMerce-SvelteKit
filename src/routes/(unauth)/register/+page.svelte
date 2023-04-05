@@ -2,7 +2,7 @@
 	import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
 	import type { PageData } from './$types';
 	import { superForm } from 'sveltekit-superforms/client';
-	import Logo from '$lib/Logo.svelte';
+	import Logo from '$lib/logo.svelte';
 	export let data: PageData;
 
 	// Client API:
@@ -21,18 +21,41 @@
 			<section class="p-4">
 				<label class="label">
 					<label for="name">Name</label>
-					<input class="input" type="text" name="name" bind:value={$form.name} />
-					<label for="email">E-Mail</label>
-					<input class="input" type="text" name="email" bind:value={$form.email} />
-					<label for="password">Password</label>
-					<input class="input" type="text" name="password" bind:value={$form.password} />
-					<label for="confirmPassword">Confirm Password</label>
 					<input
 						class="input"
 						type="text"
+						name="name"
+						bind:value={$form.name}
+						data-invalid={$errors.name}
+					/>
+					{#if $errors.name}<small class="text-red-500">{$errors.name}</small>{/if}
+					<label for="email">E-Mail</label>
+					<input
+						class="input"
+						type="text"
+						name="email"
+						bind:value={$form.email}
+						data-invalid={$errors.email}
+					/>
+					{#if $errors.email}<small class="text-red-500">{$errors.email}</small>{/if}
+					<label for="password">Password</label>
+					<input
+						class="input"
+						type="password"
+						name="password"
+						bind:value={$form.password}
+						data-invalid={$errors.password}
+					/>
+					{#if $errors.password}<small class="text-red-500">{$errors.password}</small>{/if}
+					<label for="confirmPassword">Confirm Password</label>
+					<input
+						class="input"
+						type="password"
 						name="confirmPassword"
 						bind:value={$form.confirmPassword}
+						data-invalid={$errors.confirmPassword}
 					/>
+					{#if $errors.confirmPassword}<small class="text-red-500">{$errors.confirmPassword}</small>{/if}
 				</label>
 			</section>
 			<footer class="p-4 space-y-2">

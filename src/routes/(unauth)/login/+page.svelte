@@ -2,7 +2,7 @@
 	import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
 	import type { PageData } from './$types';
 	import { superForm } from 'sveltekit-superforms/client';
-	import Logo from '$lib/Logo.svelte';
+	import Logo from '$lib/logo.svelte';
 	export let data: PageData;
 
 	// Client API:
@@ -29,6 +29,8 @@
 						name="email"
 						bind:value={$form.email}
 					/>
+					{#if $errors.email}<small class="text-red-500">{$errors.email}</small>{/if}
+
 					<label for="password">Password</label>
 					<input
 						class="input"
@@ -37,6 +39,7 @@
 						name="password"
 						bind:value={$form.password}
 					/>
+					{#if $errors.password}<small class="text-red-500">{$errors.password}</small>{/if}
 				</label>
 			</section>
 			<footer class="p-4">
