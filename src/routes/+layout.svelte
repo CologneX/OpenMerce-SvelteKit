@@ -5,10 +5,9 @@
 	import '@skeletonlabs/skeleton/styles/all.css';
 	// Most of your app wide CSS should be put in this file
 	import '../app.postcss';
-	import { AppBar, AppShell, ProgressBar, LightSwitch } from '@skeletonlabs/skeleton';
+	import { AppBar, AppShell, ProgressBar, LightSwitch, popup, ListBox, ListBoxItem} from '@skeletonlabs/skeleton';
 	import { navigating } from '$app/stores';
 	import Logo from '$lib/Logo.svelte';
-	import { popup } from '@skeletonlabs/skeleton';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
@@ -17,6 +16,15 @@
 		event: 'click',
 		target: 'settingPopup',
 		placement: 'bottom-end'
+	};
+
+	let comboboxValue: string;
+	let popupCombobox: PopupSettings = {
+		event: 'focus-click',
+		target: 'combobox',
+		placement: 'bottom',
+		// Close the popup when the item is clicked
+		closeQuery: '.listbox-item'
 	};
 </script>
 
@@ -54,9 +62,26 @@
 					</button>
 				</div>
 				<div class="card variant-primary p-3 w-auto z-10" data-popup="settingPopup">
-					<div class="card-body">
+					<div class="card-body space-y-3">
 						<h4>Settings</h4>
 						<LightSwitch />
+						<button class="btn variant-filled w-48" use:popup={popupCombobox}>
+							{comboboxValue ?? 'Bahasa'}
+						</button>
+
+						<div class="card w-48 shadow-xl py-2" data-popup="combobox">
+							<!-- Listbox -->
+							<ListBox rounded="rounded-none">
+								<ListBoxItem bind:group={comboboxValue} name="medium" value="ID_id">
+									Bahasa Indonesia
+								</ListBoxItem>
+								<ListBoxItem bind:group={comboboxValue} name="medium" value="EN_id">
+									English
+								</ListBoxItem>
+							</ListBox>
+							<!-- Arrow -->
+							<div class="arrow bg-surface-100-800-token" />
+						</div>
 					</div>
 				</div>
 			</svelte:fragment>
