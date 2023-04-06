@@ -5,7 +5,7 @@
 	viewBox="0 0 375 374.999991"
 	preserveAspectRatio="xMidYMid meet"
 	version="1.0"
-	class="h-14 m-0 p-0"
+	class="h-14 w-14"
 	><defs
 		><clipPath id="c7450328bf"
 			><path d="M 9 64 L 206 64 L 206 315 L 9 315 Z M 9 64 " clip-rule="nonzero" /></clipPath

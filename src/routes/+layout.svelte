@@ -5,9 +5,17 @@
 	import '@skeletonlabs/skeleton/styles/all.css';
 	// Most of your app wide CSS should be put in this file
 	import '../app.postcss';
-	import { AppBar, AppShell, ProgressBar, LightSwitch, popup, ListBox, ListBoxItem} from '@skeletonlabs/skeleton';
+	import {
+		AppBar,
+		AppShell,
+		ProgressBar,
+		LightSwitch,
+		popup,
+		ListBox,
+		ListBoxItem
+	} from '@skeletonlabs/skeleton';
 	import { navigating } from '$app/stores';
-	import Logo from '$lib/Logo.svelte';
+	import Logo from '$lib/icons/Logo.svelte';
 	import type { PopupSettings } from '@skeletonlabs/skeleton';
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';

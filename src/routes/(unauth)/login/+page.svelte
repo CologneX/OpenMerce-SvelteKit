@@ -2,7 +2,8 @@
 	import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
 	import type { PageData } from './$types';
 	import { superForm } from 'sveltekit-superforms/client';
-	import Logo from '$lib/Logo.svelte';
+	import Logo from '$lib/icons/Logo.svelte';
+	import Google from '$lib/icons/Google.svelte';
 	export let data: PageData;
 
 	// Client API:

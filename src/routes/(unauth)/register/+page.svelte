@@ -2,7 +2,9 @@
 	import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
 	import type { PageData } from './$types';
 	import { superForm } from 'sveltekit-superforms/client';
-	import Logo from '$lib/Logo.svelte';
+	import Logo from '$lib/icons/Logo.svelte';
+	import Google from '$lib/icons/Google.svelte';
+	import Facebook from '$lib/icons/Facebook.svelte';
 	export let data: PageData;
 
 	// Client API:
@@ -65,8 +67,8 @@
 				{:else}
 					<button class="btn variant-ghost-primary w-full" type="submit">Register</button>
 				{/if}
-				<button class="btn variant-ghost w-full">Google</button>
-				<button class="btn variant-ghost w-full">Facebook</button>
+				<button class="btn variant-ghost w-full"><Google />Google</button>
+				<button class="btn variant-ghost w-full"><Facebook />Facebook</button>
 			</footer>
 		</div>
 	</form>
