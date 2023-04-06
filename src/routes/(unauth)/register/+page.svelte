@@ -61,14 +61,18 @@
 						>{/if}
 				</label>
 			</section>
-			<footer class="p-4 space-y-2">
-				{#if $delayed}
-					<button class="btn variant-ghost-primary w-full" disabled>Registering..</button>
-				{:else}
-					<button class="btn variant-ghost-primary w-full" type="submit">Register</button>
-				{/if}
-				<button class="btn variant-ghost w-full"><Google />Google</button>
-				<button class="btn variant-ghost w-full"><Facebook />Facebook</button>
+			<footer class="p-4 space-y-3">
+				<div class="divide-y-2 space-y-3 divide-current grid">
+					{#if $delayed}
+						<button class="btn variant-ghost-primary w-full" disabled>Registering..</button>
+					{:else}
+						<button class="btn variant-ghost-primary w-full" type="submit">Register</button>
+					{/if}
+					<div />
+				</div>
+				<div class="flex justify-center">Or</div>
+				<button class="btn variant-ghost w-full" type="button">Google <Google /></button>
+				<button class="btn variant-ghost w-full" type="button">Facebook <Facebook /></button>
 			</footer>
 		</div>
 	</form>
