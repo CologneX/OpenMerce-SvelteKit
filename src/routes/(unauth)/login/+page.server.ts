@@ -4,8 +4,10 @@ import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
 
 const schema = z.object({
-  email: z.string().email().min(1),
-  password: z.string().min(6),
+  email: z.string().email(),
+  password: z.string().min(1, {
+    message: 'Enter your password'
+  })
 });
 
 export const load = (async (event) => {
@@ -27,7 +29,6 @@ export const actions = {
       // Again, always return { form } and things will just work.
       return fail(400, { form });
     }
-
     // TODO: Do something with the validated data
     throw redirect(302, '/');
     // Yep, return { form } here too

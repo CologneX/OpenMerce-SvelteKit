@@ -39,7 +39,7 @@
 <title>TOMK Commerce | Main</title>
 <AppShell>
 	<svelte:fragment slot="header">
-		<AppBar>
+		<AppBar padding="px-4 py-1">
 			<svelte:fragment slot="lead">
 				<a href="/"><Logo /></a>
 			</svelte:fragment>
@@ -94,9 +94,11 @@
 				</div>
 			</svelte:fragment>
 		</AppBar>
-		{#if $navigating}
-			<ProgressBar />
-		{/if}
+		<span>
+			{#if $navigating}
+				<ProgressBar />
+			{/if}
+		</span>
 	</svelte:fragment>
 	<slot />
 </AppShell>

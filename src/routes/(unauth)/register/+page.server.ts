@@ -2,12 +2,17 @@ import { z } from 'zod';
 import { superValidate, setError } from 'sveltekit-superforms/server';
 import { fail, redirect } from '@sveltejs/kit';
 import type { PageServerLoad, Actions } from './$types';
-
 const schema = z.object({
-  name: z.string().min(1),
-  email: z.string().email().min(1),
-  password: z.string().min(6),
-  confirmPassword: z.string().min(6),
+  name: z.string().min(1, {
+    message: 'Enter your name'
+  }),
+  email: z.string().email(),
+  password: z.string().min(6, {
+    message: 'Your password must be at least 6 characters long'
+  }),
+  confirmPassword: z.string().min(6, {
+    message: 'Confirm your password'
+  })
 });
 
 export const load = (async (event) => {
@@ -25,14 +30,18 @@ export const actions = {
     console.log('POST', form);
 
     // Convenient validation check:
-    // if(!form.)
     if (!form.valid) {
       // Again, always return { form } and things will just work.
       return fail(400, { form });
     }
 
-    // TODO: Do something with the validated data
+    if (form.data.password !== form.data.confirmPassword) {
+      setError(form, 'confirmPassword', 'Passwords do not match');
+      return fail(400, { form });
+    }
 
-    throw redirect(302, '/login');
+    // TODO: Do something with the validated data
+    // throw redirect with the registered email with snapshots
+    throw redirect(302, '/login?email=' + form.data.email);
   }
 } satisfies Actions;

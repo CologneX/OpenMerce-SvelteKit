@@ -5,9 +5,16 @@
 	import Logo from '$lib/icons/Logo.svelte';
 	import Google from '$lib/icons/Google.svelte';
 	export let data: PageData;
-
 	// Client API:
 	const { form, errors, enhance, delayed } = superForm(data.form);
+
+	// get if url contains email "/login?email=" , if so, prefill email field
+	const urlParams = (new URLSearchParams(window.location.search)).get('email');
+	if (urlParams) {
+		$form.email = urlParams;
+		window.history.replaceState({}, document.title, '/login');
+	}
+
 </script>
 
 <title>TOMK Commerce | Login</title>
@@ -23,21 +30,11 @@
 			<section class="p-4">
 				<label class="label">
 					<label for="email">E-Mail</label>
-					<input
-						class="input"
-						type="text"
-						name="email"
-						bind:value={$form.email}
-					/>
+					<input class="input" type="text" name="email" bind:value={$form.email} />
 					{#if $errors.email}<small class="text-red-500">{$errors.email}</small>{/if}
 
 					<label for="password">Password</label>
-					<input
-						class="input"
-						type="password"
-						name="password"
-						bind:value={$form.password}
-					/>
+					<input class="input" type="password" name="password" bind:value={$form.password} />
 					{#if $errors.password}<small class="text-red-500">{$errors.password}</small>{/if}
 				</label>
 			</section>

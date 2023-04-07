@@ -5,18 +5,124 @@
 	import Logo from '$lib/icons/Logo.svelte';
 	import Google from '$lib/icons/Google.svelte';
 	import Facebook from '$lib/icons/Facebook.svelte';
+	import { Stepper, Step } from '@skeletonlabs/skeleton';
+	import { z } from 'zod';
 	export let data: PageData;
 
+	let lockEmail: boolean = true;
+	let lockName: boolean = true;
+	let lockPassword: boolean = true;
+
+	const schema = z.object({
+		name: z.string().min(1, {
+			message: 'Enter your name'
+		}),
+		email: z.string().email(),
+		password: z.string().min(1, {
+			message: 'Enter your password'
+		}),
+		confirmPassword: z.string().min(1, {
+			message: 'Confirm your password'
+		})
+	});
 	// Client API:
-	const { form, errors, enhance, delayed } = superForm(data.form);
+	const { form, errors, enhance, delayed, restore, capture } = superForm(data.form, {
+		scrollToError: 'smooth',
+		autoFocusOnError: true,
+		errorSelector: '[data-invalid]',
+		validators: schema,
+		defaultValidator: 'clear',
+		resetForm: true,
+		clearOnSubmit: 'none'
+	});
+	export const snapshot = { capture, restore };
+
+	form.subscribe((form) => {
+		if (form.email && /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(form.email)) {
+			lockEmail = false;
+		} else lockEmail = true;
+		if (form.name) {
+			lockName = false;
+		} else lockName = true;
+		if (
+			form.password &&
+			form.confirmPassword &&
+			form.password === form.confirmPassword &&
+			form.password.length > 5
+		) {
+			lockPassword = false;
+		} else lockPassword = true;
+	});
 </script>
 
 <title>TOMK Commerce | Register</title>
 <div class="flex justify-center items-center h-full w-full">
 	<form method="POST" use:enhance>
 		<div class="block card p-4 w-screen max-w-xl">
-			<!-- <SuperDebug data={$form} /> -->
-			<header class="card-header">
+			<div class="flex justify-center items-center mb-4">
+				<Logo />
+			</div>
+			<Stepper
+				buttonFinishLabel="Register"
+				buttonCompleteType="submit"
+				buttonComplete="variant-ghost-primary"
+			>
+				<Step locked={lockEmail}>
+					<svelte:fragment slot="header">E-mail</svelte:fragment>
+
+					<input
+						class="input"
+						type="text"
+						name="email"
+						placeholder="example@email.com"
+						bind:value={$form.email}
+						data-invalid={$errors.email}
+					/>
+					{#if $errors.email}<small class="text-red-500">E-mail must be </small>{/if}
+				</Step>
+				<Step locked={lockPassword}>
+					<svelte:fragment slot="header">Password</svelte:fragment>
+					<input
+						class="input"
+						type="password"
+						name="password"
+						placeholder="Password"
+						bind:value={$form.password}
+						data-invalid={$errors.password}
+					/>
+					<input
+						class="input"
+						type="password"
+						name="confirmPassword"
+						placeholder="Confirm Password"
+						bind:value={$form.confirmPassword}
+						data-invalid={$errors.confirmPassword}
+					/>
+					{#if $form.password !== $form.confirmPassword}<small class="text-red-500"
+							>Passwords do not match</small
+						>
+					{:else if $form.password.length < 6}<small class="text-red-500"
+							>Your password must be at least 6 characters long</small
+						>{/if}
+				</Step>
+				<Step locked={lockName}>
+					<svelte:fragment slot="header">Name</svelte:fragment>
+					<input
+						class="input"
+						type="text"
+						name="name"
+						placeholder="John Doe"
+						bind:value={$form.name}
+						data-invalid={$errors.name}
+					/>
+					{#if $errors.name}<small class="text-red-500">{$errors.name}</small>{/if}
+					{#if $errors.email}<small class="text-red-500">{$errors.email}</small>{/if}
+
+					{#if $errors.password}<small class="text-red-500">{$errors.password}</small>{/if}
+				</Step>
+			</Stepper>
+			<SuperDebug data={$form} />
+			<!-- <header class="card-header">
 				<span class="flex justify-center"><Logo /></span>
 				<h2>Register</h2>
 			</header>
@@ -70,10 +176,10 @@
 					{/if}
 					<div />
 				</div>
-				<div class="flex justify-center">Or</div>
+				<div class="flex justify-center">OR</div>
 				<button class="btn variant-ghost w-full" type="button">Google <Google /></button>
 				<button class="btn variant-ghost w-full" type="button">Facebook <Facebook /></button>
-			</footer>
+			</footer> -->
 		</div>
 	</form>
 </div>
