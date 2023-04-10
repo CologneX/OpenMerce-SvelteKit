@@ -6,35 +6,17 @@
 	import Google from '$lib/icons/Google.svelte';
 	import Facebook from '$lib/icons/Facebook.svelte';
 	import { Stepper, Step } from '@skeletonlabs/skeleton';
-	import { z } from 'zod';
-	export let data: PageData;
+	import { boolean } from 'zod';
 
+	export let data: PageData;
 	let lockEmail: boolean = true;
 	let lockName: boolean = true;
 	let lockPassword: boolean = true;
-
-	const schema = z.object({
-		name: z.string().min(1, {
-			message: 'Enter your name'
-		}),
-		email: z.string().email(),
-		password: z.string().min(1, {
-			message: 'Enter your password'
-		}),
-		confirmPassword: z.string().min(1, {
-			message: 'Confirm your password'
-		})
-	});
 	// Client API:
-	const { form, errors, enhance, delayed, restore, capture } = superForm(data.form, {
-		scrollToError: 'smooth',
-		autoFocusOnError: true,
-		errorSelector: '[data-invalid]',
-		validators: schema,
-		defaultValidator: 'clear',
-		resetForm: true,
-		clearOnSubmit: 'none'
+	const { form, errors, enhance, delayed, restore, capture, reset } = superForm(data.form, {
+		resetForm: false
 	});
+
 	export const snapshot = { capture, restore };
 
 	form.subscribe((form) => {
@@ -55,9 +37,9 @@
 	});
 </script>
 
-<title>TOMK Commerce | Register</title>
+<title>OpenMerce | Register</title>
 <div class="flex justify-center items-center h-full w-full">
-	<form method="POST" use:enhance>
+	<form use:enhance method="POST">
 		<div class="block card p-4 w-screen max-w-xl">
 			<div class="flex justify-center items-center mb-4">
 				<Logo />
@@ -79,6 +61,11 @@
 						data-invalid={$errors.email}
 					/>
 					{#if $errors.email}<small class="text-red-500">E-mail must be </small>{/if}
+
+					{#if $errors.name}<small class="text-red-500">{$errors.name}</small>{/if}
+					{#if $errors.email}<small class="text-red-500">{$errors.email}</small>{/if}
+
+					{#if $errors.password}<small class="text-red-500">{$errors.password}</small>{/if}
 				</Step>
 				<Step locked={lockPassword}>
 					<svelte:fragment slot="header">Password</svelte:fragment>
@@ -115,17 +102,21 @@
 						bind:value={$form.name}
 						data-invalid={$errors.name}
 					/>
-					{#if $errors.name}<small class="text-red-500">{$errors.name}</small>{/if}
-					{#if $errors.email}<small class="text-red-500">{$errors.email}</small>{/if}
-
-					{#if $errors.password}<small class="text-red-500">{$errors.password}</small>{/if}
+				</Step>
+				<Step>
+					<svelte:fragment slot="header">Confirm</svelte:fragment>
 				</Step>
 			</Stepper>
 			<SuperDebug data={$form} />
 			<!-- <header class="card-header">
 				<span class="flex justify-center"><Logo /></span>
 				<h2>Register</h2>
-			</header>
+			</header> -->
+			<!-- <footer class="p-4 space-y-3">
+				<div class="flex justify-center">OR</div>
+				<button class="btn variant-ghost w-full" type="button">Google <Google /></button>
+				<button class="btn variant-ghost w-full" type="button">Facebook <Facebook /></button>
+			</footer>
 			<section class="p-4">
 				<label class="label">
 					<label for="name">Name</label>
@@ -167,19 +158,13 @@
 						>{/if}
 				</label>
 			</section>
-			<footer class="p-4 space-y-3">
-				<div class="divide-y-2 space-y-3 divide-current grid">
-					{#if $delayed}
-						<button class="btn variant-ghost-primary w-full" disabled>Registering..</button>
-					{:else}
-						<button class="btn variant-ghost-primary w-full" type="submit">Register</button>
-					{/if}
-					<div />
-				</div>
-				<div class="flex justify-center">OR</div>
-				<button class="btn variant-ghost w-full" type="button">Google <Google /></button>
-				<button class="btn variant-ghost w-full" type="button">Facebook <Facebook /></button>
-			</footer> -->
+			<div class="divide-y-2 space-y-3 divide-current grid">
+				{#if $delayed}
+					<button class="btn variant-ghost-primary w-full" disabled>Registering..</button>
+				{:else}
+					<button class="btn variant-ghost-primary w-full" type="submit">Register</button>
+				{/if}
+			</div> -->
 		</div>
 	</form>
 </div>

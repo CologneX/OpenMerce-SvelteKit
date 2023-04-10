@@ -31,7 +31,6 @@ export const actions = {
 
     // Convenient validation check:
     if (!form.valid) {
-      // Again, always return { form } and things will just work.
       return fail(400, { form });
     }
 
@@ -40,8 +39,7 @@ export const actions = {
       return fail(400, { form });
     }
 
-    // TODO: Do something with the validated data
-    // throw redirect with the registered email with snapshots
-    throw redirect(302, '/login?email=' + form.data.email);
+    // Throwing redirect to login with email prefilled
+    throw redirect(302, '/login?email=' + form.data.email)
   }
 } satisfies Actions;
