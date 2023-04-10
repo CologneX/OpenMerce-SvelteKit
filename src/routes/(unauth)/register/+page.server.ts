@@ -35,11 +35,11 @@ export const actions = {
     }
 
     if (form.data.password !== form.data.confirmPassword) {
-      setError(form, 'confirmPassword', 'Passwords do not match');
-      return fail(400, { form });
+      return setError(form, 'confirmPassword', 'Passwords do not match');
     }
 
     // Throwing redirect to login with email prefilled
+    // return { form }
     throw redirect(302, '/login?email=' + form.data.email)
   }
 } satisfies Actions;

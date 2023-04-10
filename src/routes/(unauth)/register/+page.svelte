@@ -6,17 +6,18 @@
 	import Google from '$lib/icons/Google.svelte';
 	import Facebook from '$lib/icons/Facebook.svelte';
 	import { Stepper, Step } from '@skeletonlabs/skeleton';
-	import { boolean } from 'zod';
 
 	export let data: PageData;
 	let lockEmail: boolean = true;
 	let lockName: boolean = true;
 	let lockPassword: boolean = true;
+
 	// Client API:
-	const { form, errors, enhance, delayed, restore, capture, reset } = superForm(data.form, {
+	const { form, errors, enhance, delayed, restore, capture } = superForm(data.form, {
+		applyAction: true,
+		invalidateAll: true,
 		resetForm: false
 	});
-
 	export const snapshot = { capture, restore };
 
 	form.subscribe((form) => {
@@ -35,6 +36,9 @@
 			lockPassword = false;
 		} else lockPassword = true;
 	});
+	function storeInput(data: any) {
+		console.log(data);
+	}
 </script>
 
 <title>OpenMerce | Register</title>
@@ -47,6 +51,7 @@
 			<Stepper
 				buttonFinishLabel="Register"
 				buttonCompleteType="submit"
+				on:complete={() => storeInput($form)}
 				buttonComplete="variant-ghost-primary"
 			>
 				<Step locked={lockEmail}>
@@ -60,12 +65,6 @@
 						bind:value={$form.email}
 						data-invalid={$errors.email}
 					/>
-					{#if $errors.email}<small class="text-red-500">E-mail must be </small>{/if}
-
-					{#if $errors.name}<small class="text-red-500">{$errors.name}</small>{/if}
-					{#if $errors.email}<small class="text-red-500">{$errors.email}</small>{/if}
-
-					{#if $errors.password}<small class="text-red-500">{$errors.password}</small>{/if}
 				</Step>
 				<Step locked={lockPassword}>
 					<svelte:fragment slot="header">Password</svelte:fragment>
@@ -104,7 +103,14 @@
 					/>
 				</Step>
 				<Step>
-					<svelte:fragment slot="header">Confirm</svelte:fragment>
+					<svelte:fragment slot="header">Confirm Register?</svelte:fragment>
+					{#if $errors.email}<small class="text-red-500">E-mail must be </small>{/if}
+					<br />
+					{#if $errors.name}<small class="text-red-500">{$errors.name}</small>{/if}
+					<br />
+					{#if $errors.email}<small class="text-red-500">{$errors.email}</small>{/if}
+					<br />
+					{#if $errors.password}<small class="text-red-500">{$errors.password}</small>{/if}
 				</Step>
 			</Stepper>
 			<SuperDebug data={$form} />

@@ -17,7 +17,7 @@
 
 </script>
 
-<title>TOMK Commerce | Login</title>
+<title>OpenMerce | Login</title>
 
 <div class="flex justify-center items-center h-full w-full">
 	<form method="POST" use:enhance>

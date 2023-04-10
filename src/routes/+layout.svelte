@@ -36,7 +36,7 @@
 	};
 </script>
 
-<title>TOMK Commerce | Main</title>
+<title>OpenMerce | Main</title>
 <AppShell>
 	<svelte:fragment slot="header">
 		<AppBar padding="px-4 py-1">
