@@ -1,70 +1,92 @@
 <script lang="ts">
-	import SuperDebug from 'sveltekit-superforms/client/SuperDebug.svelte';
-	import type { PageData } from './$types';
-	import { superForm } from 'sveltekit-superforms/client';
 	import Logo from '$lib/icons/Logo.svelte';
 	import Google from '$lib/icons/Google.svelte';
 	import Facebook from '$lib/icons/Facebook.svelte';
 	import { Stepper, Step } from '@skeletonlabs/skeleton';
 
-	export let data: PageData;
-	let lockEmail: boolean = true;
-	let lockName: boolean = true;
-	let lockPassword: boolean = true;
-
-	// Client API:
-	const { form, errors, enhance, delayed, restore, capture } = superForm(data.form, {
-		applyAction: true,
-		invalidateAll: true,
-		resetForm: false
-	});
-	export const snapshot = { capture, restore };
-
-	form.subscribe((form) => {
-		if (form.email && /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(form.email)) {
-			lockEmail = false;
-		} else lockEmail = true;
-		if (form.name) {
-			lockName = false;
-		} else lockName = true;
-		if (
-			form.password &&
-			form.confirmPassword &&
-			form.password === form.confirmPassword &&
-			form.password.length > 5
-		) {
-			lockPassword = false;
-		} else lockPassword = true;
-	});
-	function storeInput(data: any) {
-		console.log(data);
+	interface PageData {
+		name: string;
+		email: string;
+		password: string;
+		confirmPassword: string;
 	}
+
+	const form: PageData = {
+		name: '',
+		email: '',
+		password: '',
+		confirmPassword: ''
+	};
+
+	export const snapshot = {
+		capture: () => form,
+		restore: (data: PageData) => {
+			form.name = data.name;
+			form.email = data.email;
+		}
+	};
+
+	$: lockEmail =
+		!form.email || !(form.email && /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(form.email))
+			? true
+			: false;
+	$: lockPassword =
+		form.password && form.password.length >= 8 && form.password === form.confirmPassword
+			? false
+			: true;
+	$: lockName = !form.name ? true : false;
+
+	$: errors = {
+		name: lockName ? 'Name must be at least 3 characters' : '',
+		email: lockEmail ? 'Please enter a valid email' : '',
+		password: lockPassword ? 'Password must be at least 8 characters' : '',
+		confirmPassword: lockPassword ? 'Passwords do not match' : ''
+	};
+
+	const formSubmit = (e: any) => {
+		e.preventDefault();
+		console.log(form);
+	};
 </script>
 
 <title>OpenMerce | Register</title>
 <div class="flex justify-center items-center h-full w-full">
-	<form use:enhance method="POST">
-		<div class="block card p-4 w-screen max-w-xl">
+	<form>
+		<div class="block card p-4 w-screen max-w-2xl">
 			<div class="flex justify-center items-center mb-4">
 				<Logo />
 			</div>
 			<Stepper
 				buttonFinishLabel="Register"
 				buttonCompleteType="submit"
-				on:complete={() => storeInput($form)}
 				buttonComplete="variant-ghost-primary"
+				on:complete={formSubmit}
 			>
 				<Step locked={lockEmail}>
 					<svelte:fragment slot="header">E-mail</svelte:fragment>
-
 					<input
 						class="input"
-						type="text"
+						type="email"
 						name="email"
 						placeholder="example@email.com"
-						bind:value={$form.email}
-						data-invalid={$errors.email}
+						bind:value={form.email}
 					/>
+					<small class="text-red-500">{errors.email}</small>
+					<div class="grid grid-rows-2">
+						<div class="flex justify-center items-center">
+							<div class="border-b border-current w-1/4" />
+							<div class="mx-4">Or With</div>
+							<div class="border-b border-current w-1/4" />
+						</div>
+						<div class="grid grid-cols-2 gap-3">
+							<button class="btn variant-ghost-primary">
+								Google <Google />
+							</button>
+							<button class="btn variant-ghost-primary">
+								Facebook <Facebook />
+							</button>
+						</div>
+					</div>
 				</Step>
 				<Step locked={lockPassword}>
 					<svelte:fragment slot="header">Password</svelte:fragment>
@@ -73,23 +95,17 @@
 						type="password"
 						name="password"
 						placeholder="Password"
-						bind:value={$form.password}
-						data-invalid={$errors.password}
+						bind:value={form.password}
 					/>
 					<input
 						class="input"
 						type="password"
 						name="confirmPassword"
 						placeholder="Confirm Password"
-						bind:value={$form.confirmPassword}
-						data-invalid={$errors.confirmPassword}
+						bind:value={form.confirmPassword}
 					/>
-					{#if $form.password !== $form.confirmPassword}<small class="text-red-500"
-							>Passwords do not match</small
-						>
-					{:else if $form.password.length < 6}<small class="text-red-500"
-							>Your password must be at least 6 characters long</small
-						>{/if}
+					<small class="text-red-500">{errors.password}</small><br />
+					<small class="text-red-500">{errors.confirmPassword}</small>
 				</Step>
 				<Step locked={lockName}>
 					<svelte:fragment slot="header">Name</svelte:fragment>
@@ -98,27 +114,29 @@
 						type="text"
 						name="name"
 						placeholder="John Doe"
-						bind:value={$form.name}
-						data-invalid={$errors.name}
+						bind:value={form.name}
 					/>
+					<small class="text-red-500">{errors.name}</small>
 				</Step>
 				<Step>
 					<svelte:fragment slot="header">Confirm Register?</svelte:fragment>
-					{#if $errors.email}<small class="text-red-500">E-mail must be </small>{/if}
+					<!-- {#if $errors.email}<small class="text-red-500">E-mail must be </small>{/if}
 					<br />
 					{#if $errors.name}<small class="text-red-500">{$errors.name}</small>{/if}
 					<br />
 					{#if $errors.email}<small class="text-red-500">{$errors.email}</small>{/if}
 					<br />
-					{#if $errors.password}<small class="text-red-500">{$errors.password}</small>{/if}
+					{#if $errors.password}<small class="text-red-500">{$errors.password}</small>{/if} -->
 				</Step>
 			</Stepper>
-			<SuperDebug data={$form} />
-			<!-- <header class="card-header">
+		</div>
+	</form>
+</div>
+<!-- <header class="card-header">
 				<span class="flex justify-center"><Logo /></span>
 				<h2>Register</h2>
 			</header> -->
-			<!-- <footer class="p-4 space-y-3">
+<!-- <footer class="p-4 space-y-3">
 				<div class="flex justify-center">OR</div>
 				<button class="btn variant-ghost w-full" type="button">Google <Google /></button>
 				<button class="btn variant-ghost w-full" type="button">Facebook <Facebook /></button>
@@ -171,6 +189,3 @@
 					<button class="btn variant-ghost-primary w-full" type="submit">Register</button>
 				{/if}
 			</div> -->
-		</div>
-	</form>
-</div>
