@@ -38,34 +38,45 @@
 	};
 </script>
 
-<title>OpenMerce | Login</title>
+<svelte:head>
+	<title>OpenMerce | Login</title>
+	<meta name="description" content="OpenMerce Login" />
+	<meta
+		name="keywords"
+		content="OpenMerce, E-Commerce, Open-Source ECommerce, Svelte, SvelteKit, OpenMerce Login, Login"
+	/>
+	<meta name="author" content="OpenMerce" />
+</svelte:head>
 
-<div class="flex justify-center items-center h-full w-full">
-	<form method="POST">
-		<div class="card p-4 w-screen max-w-xl">
-			<!-- <SuperDebug data={$form} /> -->
-			<header class="card-header">
-				<span class="flex justify-center"><Logo /></span>
-				<h2>Login</h2>
-			</header>
-			<section class="p-4">
-				<label class="label">
-					<label for="email">E-Mail</label>
-					<input class="input" type="text" name="email" bind:value={form.email} />
-					<!-- {#if $errors.email}<small class="text-red-500">{$errors.email}</small>{/if} -->
+<main class="flex justify-center items-center h-full w-full">
+	<div>
+		<form method="POST">
+			<div class="card p-4 w-screen max-w-xl">
+				<header class="card-header">
+					<span class="flex justify-center"><Logo /></span>
+					<h2>Login</h2>
+				</header>
+				<section class="p-4">
+					<label class="label">
+						<label for="email">E-Mail</label>
+						<input class="input" type="text" name="email" bind:value={form.email} />
+						<!-- {#if $errors.email}<small class="text-red-500">{$errors.email}</small>{/if} -->
+						<small class="text-error-500">{errors.email}</small>
 
-					<label for="password">Password</label>
-					<input class="input" type="password" name="password" bind:value={form.password} />
-					<!-- {#if $errors.password}<small class="text-red-500">{$errors.password}</small>{/if} -->
-				</label>
-			</section>
-			<footer class="p-4">
-				<!-- {#if $delayed}
+						<label for="password">Password</label>
+						<input class="input" type="password" name="password" bind:value={form.password} />
+						<!-- {#if $errors.password}<small class="text-red-500">{$errors.password}</small>{/if} -->
+						<small class="text-error-500">{errors.password}</small>
+					</label>
+				</section>
+				<footer class="p-4">
+					<!-- {#if $delayed}
 					<button class="btn variant-ghost-primary w-full" disabled>Logging in..</button>
 				{:else} -->
 					<button class="btn variant-ghost-primary w-full" type="submit">Login</button>
-				<!-- {/if} -->
-			</footer>
-		</div>
-	</form>
-</div>
+					<!-- {/if} -->
+				</footer>
+			</div>
+		</form>
+	</div>
+</main>

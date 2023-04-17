@@ -36,19 +36,18 @@
 	};
 </script>
 
-<title>OpenMerce | Main</title>
 <AppShell>
 	<svelte:fragment slot="header">
 		<AppBar padding="px-4 py-1">
 			<svelte:fragment slot="lead">
-				<a href="/"><Logo /></a>
+				<a href="/" aria-label="Logo that redirects to home page"><Logo /></a>
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
 				<div class="btn-group gap-2 [&>*+*]:border-none">
 					<a href="login" class="btn variant-ghost-primary">Login</a>
-					<a href="register" class="btn">Register</a>
-					<button class="btn" use:popup={popupSettings}
-						><svg
+					<a href="register" class="btn variant-filled-primary">Register</a>
+					<button class="btn" use:popup={popupSettings} aria-labelledby="setting button">
+						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							fill="none"
 							viewBox="0 0 24 24"
@@ -69,6 +68,7 @@
 						</svg>
 					</button>
 				</div>
+
 				<div class="card variant-primary p-3 w-auto z-10" data-popup="settingPopup">
 					<div class="card-body space-y-3">
 						<h4>Settings</h4>
