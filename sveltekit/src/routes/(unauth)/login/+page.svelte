@@ -51,12 +51,12 @@
 <main class="flex justify-center items-center h-full w-full">
 	<div>
 		<form method="POST">
-			<div class="card p-4 w-screen max-w-xl">
+			<div class="card p-4 w-screen max-w-2xl space-y-10">
 				<header class="card-header">
 					<span class="flex justify-center"><Logo /></span>
-					<h2>Login</h2>
+					<!-- <h2>Login</h2> -->
 				</header>
-				<section class="p-4">
+				<section>
 					<label class="label">
 						<label for="email">E-Mail</label>
 						<input class="input" type="text" name="email" bind:value={form.email} />
@@ -69,7 +69,7 @@
 						<small class="text-error-500">{errors.password}</small>
 					</label>
 				</section>
-				<footer class="p-4">
+				<footer>
 					<!-- {#if $delayed}
 					<button class="btn variant-ghost-primary w-full" disabled>Logging in..</button>
 				{:else} -->

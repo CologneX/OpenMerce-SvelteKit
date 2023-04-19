@@ -1,3 +1,6 @@
+<script lang="ts">
+
+</script>
 <svelte:head>
 	<title>OpenMerce | Main</title>
 	<meta name="description" content="OpenMerce - Open Source E-Commerce" />
