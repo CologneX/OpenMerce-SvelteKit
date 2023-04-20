@@ -13,13 +13,17 @@
 		popup,
 		ListBox,
 		ListBoxItem,
-		localStorageStore
+		localStorageStore,
+		Toast,
+		Drawer,
+		drawerStore
 	} from '@skeletonlabs/skeleton';
 	import { navigating } from '$app/stores';
 	import Logo from '$lib/icons/Logo.svelte';
-	import type { PopupSettings } from '@skeletonlabs/skeleton';
+	import type { PopupSettings, DrawerSettings } from '@skeletonlabs/skeleton';
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
+	import SearchCard from '$lib/SearchCard.svelte';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	let popupSettings: PopupSettings = {
@@ -38,16 +42,66 @@
 		// Close the popup when the item is clicked
 		closeQuery: '.listbox-item'
 	};
+
+	// for search bar
+	/// for search bar behavior
+	let searchFocus: boolean = false;
+	const onSearchFocus = () => (searchFocus = true);
+	const onSearchBlur = () => (searchFocus = false);
+
+	///for search bar
+	// -- end search bar
+	const drawerMobile: DrawerSettings = {
+		bgDrawer: 'w-full card',
+		padding: 'p-10'
+	};
+	// for settings (mobile) drawer
 </script>
 
 <AppShell>
+	<Toast position="br" />
+	{#if searchFocus}
+		<SearchCard />
+	{/if}
+	<Drawer>
+		<div class="flex flex-col p-4 gap-4">
+			<div class="h-auto">
+				<button on:click={() => drawerStore.close()} class="btn btn-sm bg-error-500">
+					<span>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="1.5"
+							stroke="currentColor"
+							class="w-6 h-6"
+						>
+							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+						</svg>
+					</span>
+				</button>
+			</div>
+			<div class="grid justify-items-center gap-2">
+				<Logo />
+				<a href="login" class="btn h-fit variant-ringed-primary w-full">Login</a>
+				<a href="register" class="btn h-fit variant-glass-primary w-full">Register</a>
+				<div class="grid grid-cols-2 gap-2 justify-items-center w-full">
+					<div>
+						<p>Theme</p>
+						<LightSwitch />
+					</div>
+					<div>COL 2</div>
+				</div>
+			</div>
+		</div>
+	</Drawer>
 	<svelte:fragment slot="header">
 		<span>
 			{#if $navigating}
 				<ProgressBar height="h-1" />
 			{/if}
 		</span>
-		<AppBar padding="pl-4 py-1" slotDefault="flex justify-center" slotTrail="place-content-end" >
+		<AppBar padding="pl-4 py-1" slotDefault="flex justify-center">
 			<svelte:fragment slot="lead">
 				<a href="/" aria-label="Logo that redirects to home page"><Logo /></a>
 			</svelte:fragment>
@@ -68,7 +122,13 @@
 						/>
 					</svg>
 				</div>
-				<input type="search" placeholder="Search..." class="h-full w-full" />
+				<input
+					type="search"
+					placeholder="Search..."
+					class="h-full w-full"
+					on:focus={onSearchFocus}
+					on:blur={onSearchBlur}
+				/>
 			</div>
 			<!-- <div class="relative min-w-1/2 w-3/4" >
 					<input type="text" class="input h-9 pr-10 pl-2" placeholder="Search Items" />
@@ -90,7 +150,7 @@
 					</div>
 				</div> -->
 			<svelte:fragment slot="trail">
-				<div class="grid grid-cols-3 gap-2 items-center">
+				<div class="md:grid grid-cols-3 gap-2 items-center hidden">
 					<a href="login" class="btn btn-sm h-fit variant-ringed-primary">Login</a>
 					<a href="register" class="btn btn-sm h-fit variant-glass-primary">Register</a>
 					<button
@@ -116,6 +176,26 @@
 									stroke-linecap="round"
 									stroke-linejoin="round"
 									d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+								/>
+							</svg>
+						</span>
+					</button>
+				</div>
+				<div class="md:hidden sm:block">
+					<button class="btn-icon" type="button" on:click={() => drawerStore.open(drawerMobile)}>
+						<span
+							><svg
+								xmlns="http://www.w3.org/2000/svg"
+								fill="none"
+								viewBox="0 0 24 24"
+								stroke-width="1.5"
+								stroke="currentColor"
+								class="w-6 h-6"
+							>
+								<path
+									stroke-linecap="round"
+									stroke-linejoin="round"
+									d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
 								/>
 							</svg>
 						</span>
