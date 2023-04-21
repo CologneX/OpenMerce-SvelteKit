@@ -53,7 +53,7 @@
 	// -- end search bar
 	const drawerMobile: DrawerSettings = {
 		bgDrawer: 'w-full card',
-		padding: 'p-10'
+		position: 'right'
 	};
 	// for settings (mobile) drawer
 </script>
@@ -65,7 +65,7 @@
 	{/if}
 	<Drawer>
 		<div class="flex flex-col p-4 gap-4">
-			<div class="h-auto">
+			<div class="h-auto w-full flex justify-end">
 				<button on:click={() => drawerStore.close()} class="btn btn-sm bg-error-500">
 					<span>
 						<svg
