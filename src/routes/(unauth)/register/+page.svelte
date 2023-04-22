@@ -3,49 +3,81 @@
 	import Google from '$lib/icons/Google.svelte';
 	import Facebook from '$lib/icons/Facebook.svelte';
 	import { Stepper, Step } from '@skeletonlabs/skeleton';
+	import { fade } from 'svelte/transition';
+	import { createEventDispatcher } from 'svelte';
+	import { writable } from 'svelte/store';
+	import type { Snapshot } from './$types';
 
-	interface PageData {
-		name: string;
+	const dispatch = createEventDispatcher();
+
+	interface FormValues {
 		email: string;
 		password: string;
 		confirmPassword: string;
+		name: string;
 	}
-	const form: PageData = {
-		name: '',
-		email: '',
-		password: '',
-		confirmPassword: ''
-	};
 
-	export const snapshot = {
-		capture: () => form,
-		restore: (data: PageData) => {
-			form.name = data.name;
-			form.email = data.email;
+	export const snapshot: Snapshot<FormValues> = {
+		capture: () => values,
+		restore: (data: FormValues) => {
+			values.email = data.email;
+			values.name = data.name;
 		}
 	};
 
-	$: lockEmail =
-		!form.email || !(form.email && /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(form.email))
-			? true
-			: false;
-	$: lockPassword =
-		form.password && form.password.length >= 8 && form.password === form.confirmPassword
-			? false
-			: true;
-	$: lockName = !form.name ? true : false;
+	interface FormErrors {
+		email?: string;
+		password?: string;
+		confirmPassword?: string;
+		name?: string;
+	}
 
-	$: errors = {
-		name: lockName ? 'Name must be at least 3 characters' : '',
-		email: lockEmail ? 'Please enter a valid email' : '',
-		password: lockPassword ? 'Password must be at least 8 characters' : '',
-		confirmPassword: lockPassword ? 'Passwords do not match' : ''
+	const values: FormValues = {
+		email: '',
+		password: '',
+		confirmPassword: '',
+		name: ''
 	};
 
-	const formSubmit = (e: any) => {
-		e.preventDefault();
-		console.log(form);
-	};
+	const errors: FormErrors = {};
+
+	const isValid = writable(false);
+
+	function handleSubmit() {
+		if ($isValid) {
+			//prevent form submission
+			dispatch('submit', values);
+			console.log(values);
+		} else {
+			// display error message
+		}
+	}
+
+	function validateEmail() {
+		if (values.email === '') {
+			errors.email = 'Email is required';
+		} else if (!/\S+@\S+\.\S+/.test(values.email)) {
+			errors.email = 'Invalid email';
+		} else {
+			delete errors.email;
+		}
+	}
+
+	function validatePassword() {
+		if (values.password.length < 8) {
+			errors.password = 'Password must be at least 8 characters';
+		} else {
+			delete errors.password;
+		}
+	}
+
+	function validateConfirmPassword() {
+		if (values.confirmPassword !== values.password) {
+			errors.confirmPassword = 'Passwords do not match';
+		} else {
+			delete errors.confirmPassword;
+		}
+	}
 </script>
 
 <svelte:head>
@@ -63,25 +95,28 @@
 			<div class="block card p-4 w-screen max-w-2xl space-y-10">
 				<header class="card-header">
 					<span class="flex justify-center"><Logo /></span>
-					<!-- <h2>Register</h2> -->
+	
 				</header>
 				<section>
 					<Stepper
 						buttonFinishLabel="Register"
 						buttonCompleteType="submit"
 						buttonComplete="variant-ghost-primary"
-						on:complete={formSubmit}
+						on:complete={handleSubmit}
 					>
-						<Step locked={lockEmail}>
+						<Step locked={values.email == '' || errors.email ? true : false}>
 							<svelte:fragment slot="header">E-mail</svelte:fragment>
 							<input
-								class="input"
+								class="input variant-form-material"
 								type="email"
 								name="email"
 								placeholder="example@email.com"
-								bind:value={form.email}
+								bind:value={values.email}
+								on:input={validateEmail}
 							/>
-							<small class="text-error-500">{errors.email}</small>
+							{#if errors.email}<small class="text-error-500" transition:fade={{ duration: 500 }}
+									>{errors.email}</small
+								>{/if}
 							<div class="grid grid-rows-1">
 								<!-- <div class="flex justify-center items-center">
 									<div class="border-b border-current w-1/4" />
@@ -100,45 +135,43 @@
 								</div>
 							</div>
 						</Step>
-						<Step locked={lockPassword}>
+						<Step locked={!errors.password && !errors.confirmPassword}>
 							<svelte:fragment slot="header">Password</svelte:fragment>
 							<input
-								class="input"
+								class="input variant-form-material"
 								type="password"
 								name="password"
 								placeholder="Password"
-								bind:value={form.password}
+								bind:value={values.password}
+								on:input={validatePassword}
 							/>
 							<input
-								class="input"
+								class="input variant-form-material"
 								type="password"
 								name="confirmPassword"
 								placeholder="Confirm Password"
-								bind:value={form.confirmPassword}
+								bind:value={values.confirmPassword}
+								on:input={validateConfirmPassword}
 							/>
-							<small class="text-error-500">{errors.password}</small><br />
-							<small class="text-error-500">{errors.confirmPassword}</small>
+							{#if errors.password}<small class="text-error-500">{errors.password}</small>{/if}<br
+							/>
+							{#if errors.confirmPassword}<small class="text-error-500"
+									>{errors.confirmPassword}</small
+								>{/if}
 						</Step>
-						<Step locked={lockName}>
+						<Step locked={!values.name}>
 							<svelte:fragment slot="header">Name</svelte:fragment>
 							<input
-								class="input"
+								class="input variant-form-material"
 								type="text"
 								name="name"
 								placeholder="John Doe"
-								bind:value={form.name}
+								bind:value={values.name}
 							/>
-							<small class="text-error-500">{errors.name}</small>
+							{#if errors.name}<small class="text-error-500">{errors.name}</small>{/if}
 						</Step>
 						<Step>
 							<svelte:fragment slot="header">Confirm Register?</svelte:fragment>
-							<!-- {#if $errors.email}<small class="text-red-500">E-mail must be </small>{/if}
-					<br />
-					{#if $errors.name}<small class="text-red-500">{$errors.name}</small>{/if}
-					<br />
-					{#if $errors.email}<small class="text-red-500">{$errors.email}</small>{/if}
-					<br />
-					{#if $errors.password}<small class="text-red-500">{$errors.password}</small>{/if} -->
 						</Step>
 					</Stepper>
 				</section>

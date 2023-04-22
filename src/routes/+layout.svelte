@@ -51,11 +51,13 @@
 
 	///for search bar
 	// -- end search bar
+
+	// for settings (mobile) drawer
 	const drawerMobile: DrawerSettings = {
 		bgDrawer: 'w-full card',
 		position: 'right'
 	};
-	// for settings (mobile) drawer
+	//-- end settings (mobile) drawer
 </script>
 
 <AppShell>

@@ -59,12 +59,12 @@
 				<section>
 					<label class="label">
 						<label for="email">E-Mail</label>
-						<input class="input" type="text" name="email" bind:value={form.email} />
+						<input class="input variant-form-material" type="text" name="email" bind:value={form.email} />
 						<!-- {#if $errors.email}<small class="text-red-500">{$errors.email}</small>{/if} -->
 						<small class="text-error-500">{errors.email}</small>
 
 						<label for="password">Password</label>
-						<input class="input" type="password" name="password" bind:value={form.password} />
+						<input class="input variant-form-material" type="password" name="password" bind:value={form.password} />
 						<!-- {#if $errors.password}<small class="text-red-500">{$errors.password}</small>{/if} -->
 						<small class="text-error-500">{errors.password}</small>
 					</label>
