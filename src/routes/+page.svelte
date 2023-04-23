@@ -1,5 +1,5 @@
 <script lang="ts">
-	import triggerToast from "$lib/Toast.svelte";
+	import triggerToast from '$lib/Toast.svelte';
 	import { Toast, toastStore } from '@skeletonlabs/skeleton';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
 
@@ -9,7 +9,32 @@
 		// Add your custom classes here:
 		classes: 'border-4 border-purple-500'
 	};
+
+	interface items {
+		id: string;
+		name: string;
+		price: number;
+		quantity: number;
+		rating: number;
+	}
+	export const itemsList: items[] = [
+		{
+			id: '1',
+			name: 'Bread',
+			price: 2.5,
+			quantity: 1,
+			rating: 4
+		},
+		{
+			id: '2',
+			name: 'Milk',
+			price: 3.5,
+			quantity: 1,
+			rating: 5
+		}
+	];
 </script>
+
 <svelte:head>
 	<title>OpenMerce | Main</title>
 	<meta name="description" content="OpenMerce - Open Source E-Commerce" />
@@ -21,20 +46,9 @@
 </svelte:head>
 <!-- <Toast position='br' /> -->
 <div class="container h-full mx-auto flex justify-center items-center">
-	<div class="space-y-5">
-		<h1>OpenMerce</h1>
-		<p>Start by exploring:</p>
-		<ul>
-			<li>
-				<code>/src/routes/+layout.svelte</code> - barebones layout, the CSS import order is critical!
-			</li>
-			<button on:click={()=>toastStore.trigger(t)}>BABI</button>
-	
-			<li>
-				<code>/src/app.postcss</code> - minimal css to make the page full screen, may not be relevant
-				for your project
-			</li>
-			<li><code>/src/routes/+page.svelte</code> - this page, you can replace the contents</li>
-		</ul>
+	<div class="grid grid-cols-2">
+		{#each itemsList as item}
+			<a class="card p-4 w-24" href="products/{item.id}">{item.name}</a>
+		{/each}
 	</div>
 </div>

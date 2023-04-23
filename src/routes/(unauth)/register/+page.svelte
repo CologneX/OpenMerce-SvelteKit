@@ -8,8 +8,6 @@
 	import { writable } from 'svelte/store';
 	import type { Snapshot } from './$types';
 
-	const dispatch = createEventDispatcher();
-
 	interface FormValues {
 		email: string;
 		password: string;
@@ -45,8 +43,6 @@
 
 	function handleSubmit() {
 		if ($isValid) {
-			//prevent form submission
-			dispatch('submit', values);
 			console.log(values);
 		} else {
 			// display error message
@@ -91,11 +87,10 @@
 </svelte:head>
 <main class="flex justify-center items-center h-full w-full">
 	<div>
-		<form method="POST">
+		<form method="POST" >
 			<div class="block card p-4 w-screen max-w-2xl space-y-10">
 				<header class="card-header">
 					<span class="flex justify-center"><Logo /></span>
-	
 				</header>
 				<section>
 					<Stepper
