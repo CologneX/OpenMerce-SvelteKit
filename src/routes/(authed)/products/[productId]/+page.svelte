@@ -1,21 +1,4 @@
 <script lang="ts">
-	// interface Product {
-	// 	id: string;
-	// 	name: string;
-	// 	description: string;
-	// 	price: number;
-	// 	stock: number;
-	// 	images: string[];
-	// }
-	// const productData: Product = {
-	// 	id: '1',
-	// 	name: 'Baju Lebaran',
-	// 	description: 'Baju',
-	// 	price: 10000,
-	// 	stock: 100,
-	// 	images: ['https://picsum.photos/200/300']
-	// };
-
 	export let data;
 	const { productData } = data;
 	const formattedPrice = new Intl.NumberFormat('id-ID', {
@@ -26,7 +9,9 @@
 </script>
 
 <svelte:head>
+	<title>{productData?.name}</title>
 	<meta name="description" content="{productData?.name}" />
+
 	<meta
 		name="keywords"
 		content="OpenMerce, E-Commerce, Open-Source ECommerce, Svelte, SvelteKit, OpenMerce Register, Register"

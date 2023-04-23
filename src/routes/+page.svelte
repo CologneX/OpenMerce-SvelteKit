@@ -17,13 +17,13 @@
 		quantity: number;
 		rating: number;
 	}
-	export const itemsList: items[] = [
+	const itemsList: items[] = [
 		{
 			id: '1',
-			name: 'Bread',
-			price: 2.5,
-			quantity: 1,
-			rating: 4
+			name: 'Mario Gay',
+			price: 69,
+			quantity: 420,
+			rating: 0
 		},
 		{
 			id: '2',
