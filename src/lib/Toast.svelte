@@ -1,15 +1,17 @@
 <script lang="ts">
-	import { Toast, toastStore } from '@skeletonlabs/skeleton';
+	import { toastStore } from '@skeletonlabs/skeleton';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
 
-	const t: ToastSettings = {
-		message: 'This message has custom styles.',
-		background: 'bg-primary',
+	export let messageText: string;
+	export let type: string;
+	
+	export let t: ToastSettings = {
+		message: messageText,
+		background: 'card',
 		// Add your custom classes here:
-		classes: 'border-4 border-purple-500'
+		classes: type
 	};
 
-	// Trigger the toast
 	export const triggerToast = () => {
 		toastStore.trigger(t);
 	};

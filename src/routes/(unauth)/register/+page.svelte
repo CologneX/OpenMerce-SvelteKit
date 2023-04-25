@@ -4,7 +4,6 @@
 	import Facebook from '$lib/icons/Facebook.svelte';
 	import { Stepper, Step } from '@skeletonlabs/skeleton';
 	import { fade } from 'svelte/transition';
-	import { createEventDispatcher } from 'svelte';
 	import { writable } from 'svelte/store';
 	import type { Snapshot } from './$types';
 
@@ -13,6 +12,7 @@
 		password: string;
 		confirmPassword: string;
 		name: string;
+		pin: string;
 	}
 
 	export const snapshot: Snapshot<FormValues> = {
@@ -28,13 +28,15 @@
 		password?: string;
 		confirmPassword?: string;
 		name?: string;
+		pin?: string;
 	}
 
 	const values: FormValues = {
 		email: '',
 		password: '',
 		confirmPassword: '',
-		name: ''
+		name: '',
+		pin: ''
 	};
 
 	const errors: FormErrors = {};
@@ -87,7 +89,7 @@
 </svelte:head>
 <main class="flex justify-center items-center h-full w-full">
 	<div>
-		<form method="POST" >
+		<form method="POST">
 			<div class="block card p-4 w-screen max-w-2xl space-y-10">
 				<header class="card-header">
 					<span class="flex justify-center"><Logo /></span>
@@ -112,12 +114,8 @@
 							{#if errors.email}<small class="text-error-500" transition:fade={{ duration: 500 }}
 									>{errors.email}</small
 								>{/if}
+							<hr class="!border-t-2 !border-current" />
 							<div class="grid grid-rows-1">
-								<!-- <div class="flex justify-center items-center">
-									<div class="border-b border-current w-1/4" />
-									<div class="mx-4">Or With</div>
-									<div class="border-b border-current w-1/4" />
-								</div> -->
 								<div class="grid sm:grid-cols-1 md:grid-cols-2 gap-2">
 									<button class="btn variant-ghost-primary">
 										<span><Google /></span>
@@ -129,6 +127,19 @@
 									</button>
 								</div>
 							</div>
+						</Step>
+						<Step>
+							<svelte:fragment slot="header">PIN</svelte:fragment>
+							<span>Enter the verification PIN that we have sent to your E-Mail</span>
+							<input
+								class="input variant-form-material text-center text-xl"
+								type="text"
+								name="pin"
+								maxlength="6"
+								placeholder="123456"
+								bind:value={values.pin}
+							/>
+							{#if errors.pin}<small class="text-error-500">{errors.pin}</small>{/if}
 						</Step>
 						<Step locked={!errors.password && !errors.confirmPassword}>
 							<svelte:fragment slot="header">Password</svelte:fragment>

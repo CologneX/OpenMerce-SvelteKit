@@ -85,8 +85,16 @@
 			</div>
 			<div class="grid justify-items-center gap-2">
 				<Logo />
-				<a href="login" class="btn h-fit variant-ringed-primary w-full">Login</a>
-				<a href="register" class="btn h-fit variant-glass-primary w-full">Register</a>
+				<a
+					href="login"
+					class="btn h-fit variant-ringed-primary w-full"
+					on:click={() => drawerStore.close()}>Login</a
+				>
+				<a
+					href="register"
+					class="btn h-fit variant-glass-primary w-full"
+					on:click={() => drawerStore.close()}>Register</a
+				>
 				<div class="grid grid-cols-2 gap-2 justify-items-center w-full">
 					<div>
 						<p>Theme</p>

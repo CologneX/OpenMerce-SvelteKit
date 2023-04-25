@@ -1,11 +1,6 @@
 <script lang="ts">
 	export let data;
 	const { productData } = data;
-	const formattedPrice = new Intl.NumberFormat('id-ID', {
-		style: 'currency',
-		currency: 'IDR',
-		minimumFractionDigits: 0
-	}).format(productData.price);
 </script>
 
 <svelte:head>
@@ -26,23 +21,27 @@
 		<div class=" grid grid-rows-2">
 			<div class="">
 				<h4 class="font-bold">
-					{productData.name}
+					{productData?.name}
 				</h4>
 				<h3
 					class="font-bold bg-gradient-to-br from-primary-500 box-decoration-clone bg-clip-text text-transparent to-secondary-500"
 				>
-					{formattedPrice}
+					{productData?.price.toLocaleString('en-US', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0})}
 				</h3>
 			</div>
 			<div>
 				<div class="p-10">
 					<h3 class="font-bold">
-						<!-- {productData.stock} -->
+						<span>Stock:</span>
+						{productData?.quantity}
 					</h3>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<div class="card">{productData.description}</div>
+	<div class="card">
+		<!-- {productData?.description} -->
+		this is description
+	</div>
 </main>
