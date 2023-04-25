@@ -97,10 +97,8 @@ const itemsList: items[] = [
         rating: 3.5
     }
 ];
-let isLoggedIn: boolean = false;
 export const load = () => {
     return {
-        productsList: itemsList,
-        isLoggedIn: isLoggedIn
+        productsList: itemsList
     };
 }

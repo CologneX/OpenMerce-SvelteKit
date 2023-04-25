@@ -87,7 +87,7 @@
 	/>
 	<meta name="author" content="OpenMerce" />
 </svelte:head>
-<main class="flex justify-center items-center h-full w-full">
+<div class="flex justify-center items-center h-full w-full">
 	<div>
 		<form method="POST">
 			<div class="block card p-4 w-screen max-w-2xl space-y-10">
@@ -184,7 +184,7 @@
 			</div>
 		</form>
 	</div>
-</main>
+</div>
 <!-- <header class="card-header">
 				<span class="flex justify-center"><Logo /></span>
 				<h2>Register</h2>

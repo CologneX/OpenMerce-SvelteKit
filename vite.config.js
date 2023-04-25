@@ -23,9 +23,7 @@ export default ({ mode }) => {
 		server: {
 			proxy: {
 				'/api': {
-					target: process.env.VITE_API_URL,
-					changeOrigin: true,
-					credentials: true
+					target: process.env.VITE_API_URL
 				}
 			}
 		}

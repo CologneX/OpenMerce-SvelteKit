@@ -14,8 +14,9 @@
 	}
 	// -- toast settings and trigger function
 	export let data;
-	const { productsList, isLoggedIn } = data;
+	const { productsList } = data;
 
+	// -- pagination settings
 	const source = productsList;
 	let page = {
 		offset: 0,
@@ -28,6 +29,7 @@
 		page.offset * page.limit, // start
 		page.offset * page.limit + page.limit // end
 	);
+	// -- end of pagination settings
 </script>
 
 <svelte:head>
@@ -40,13 +42,13 @@
 	<meta name="author" content="OpenMerce" />
 </svelte:head>
 <!-- <Toast position='br' /> -->
-<main class="justify-start md:mx-32 space-y-3 mt-4">
+<div class="justify-start md:mx-32 space-y-3 mt-4">
 	<div class="container">
 		<h3>Bayi Mario | Pagination</h3>
 		<div class="flex gap-3">
 			{#each paginatedSource as item}
 				<a class="card p-4 w-40 grid" href="products/{item.id}">
-					<div class="placeholder animate-pulse w-32 h-32 place-self-center" />
+					<div class="placeholder w-32 h-32 place-self-center" />
 					<h5>{item.name}</h5>
 					<h6>
 						{item.price.toLocaleString('en-US', {
@@ -75,7 +77,7 @@
 		<div class="flex gap-3 overflow-x-auto">
 			{#each productsList as item}
 				<a class="card p-4 w-40 grid" href="products/{item.id}">
-					<div class="placeholder animate-pulse w-32 h-32 place-self-center" />
+					<div class="placeholder w-32 h-32 place-self-center" />
 					<h5>{item.name}</h5>
 					<h6>
 						{item.price.toLocaleString('en-US', {
@@ -93,4 +95,4 @@
 			{/each}
 		</div>
 	</div>
-</main>
+</div>

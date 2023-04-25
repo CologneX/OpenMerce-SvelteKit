@@ -13,7 +13,7 @@
 	/>
 	<meta name="author" content="OpenMerce" />
 </svelte:head>
-<main class="h-full w-full  grid grid-rows-2 p-10">
+<div class="h-full w-full grid grid-rows-2">
 	<div class="grid md:grid-cols-2 sm:grid-cols-1">
 		<div class=" grid justify-items-center">
 			<div class="placeholder animate-pulse w-96 h-96" />
@@ -44,4 +44,4 @@
 		<!-- {productData?.description} -->
 		this is description
 	</div>
-</main>
+</div>

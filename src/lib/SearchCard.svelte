@@ -2,7 +2,7 @@
 	import { fly } from 'svelte/transition';
 </script>
 
-<div class="flex justify-center" transition:fly={{ y: 200, duration: 300 }}>
+<div class="flex justify-center backdrop-blur-md z-50" transition:fly={{ y: 200, duration: 300 }}>
 	<div class="card absolute shadow-lg h-fit w-full max-w-4xl">
 		<div class="card-body">
 			<div class="p-4 space-y-4">
