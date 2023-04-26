@@ -29,6 +29,10 @@
 	import Settings from '$lib/icons/Settings.svelte';
 	import Hamburger from '$lib/icons/Hamburger.svelte';
 	import Exit from '$lib/icons/Exit.svelte';
+	import ShoppingCart from '$lib/icons/ShoppingCart.svelte';
+	import Bell from '$lib/icons/Bell.svelte';
+	import Back from '$lib/icons/Back.svelte';
+	import Home from '$lib/icons/Home.svelte';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	let popupSettings: PopupSettings = {
@@ -54,8 +58,8 @@
 	const onSearchFocus = () => (searchFocus = true);
 	const onSearchBlur = () => (searchFocus = false);
 
-	///for search bar
-	// -- end search bar
+	/// for search bar
+	// end search bar
 
 	// for settings (mobile) drawer
 	const drawerMobile: DrawerSettings = {
@@ -64,11 +68,17 @@
 		blur: 'backdrop-blur-xl',
 		duration: 500
 	};
-	//-- end settings (mobile) drawer
+	// end settings (mobile) drawer
+
+	// for preloader
+	import Preloader from '$lib/Preloader.svelte';
+	let isLoading: boolean = true;
+	// end for preloader
+
 	// for isLoggedin
 	import { writable } from 'svelte/store';
 	import { onMount } from 'svelte';
-	import { bind } from 'svelte/internal';
+	import { goto } from '$app/navigation';
 	export const isLoggedIn = writable(false);
 	let first_name: string | null;
 	let last_name: string | null;
@@ -78,10 +88,29 @@
 		if (first_name && last_name) {
 			isLoggedIn.set(true);
 		}
+		isLoading = false;
 	});
 	// end for isLoggedin
 
+	// for handling shopping cart click
+	function handleShoppingCartClick() {
+		if (!$isLoggedIn) {
+			goto('/login');
+		}
+	}
+	// end for handling shopping cart click
+
+	//for handling bell click
+	function handleBellClick() {
+		if (!$isLoggedIn) {
+			goto('/login');
+		}
+	}
+	// end for handling bell click
+
+	// for screenwidth
 	let screenWidth: number;
+	// end for screenwidth
 
 	// for logout
 	const handleLogout = () => {
@@ -96,6 +125,9 @@
 </script>
 
 <svelte:window bind:innerWidth={screenWidth} />
+{#if isLoading}
+	<Preloader />
+{/if}
 <AppShell>
 	<Toast position="br" />
 	{#if searchFocus}
@@ -162,55 +194,72 @@
 				<a href="/" aria-label="Logo that redirects to home page" class="md:block hidden"
 					><Logo /></a
 				>
+				{#if screenWidth < 768 && history.back}
+					<button class="btn-icon btn-icon-sm" on:click={() => history.back()}>
+						<span>
+							<Back />
+						</span>
+					</button>
+				{/if}
 			</svelte:fragment>
-			<div class="input-group input-group-divider h-8 max-w-4xl flex">
-				<div class="input-group-shim">
+			<div class="input-group h-8 max-w-4xl flex">
+				<div class=" ">
 					<Search />
 				</div>
 				<input
 					type="search"
 					placeholder="Search in OpenMerce"
-					class="h-full w-full max-w-4xl"
+					class="h-full w-full max-w-4xl text-sm md:text-base"
 					on:focus={onSearchFocus}
 					on:blur={onSearchBlur}
 				/>
 			</div>
 			<svelte:fragment slot="trail">
-				<div class="btn-group md:flex hidden">
-					{#if !$isLoggedIn}
-						<a href="login" class="btn btn-sm h-fit variant-ringed-primary">Login</a>
-						<a href="register" class="btn btn-sm h-fit variant-glass-primary">Register</a>
-						<button>Mantap</button>
-						<button
-							type="button"
-							class="btn-icon btn-icon-sm"
-							use:popup={popupSettings}
-							aria-labelledby="setting button"
-						>
+				<div class="btn-group md:flex hidden [&>*+*]:transparent">
+					<button type="button" class="btn-icon btn-icon-sm bg-transparent" on:click={handleShoppingCartClick}>
+						<span>
+							<ShoppingCart />
+						</span>
+					</button>
+					<button type="button" class="btn-icon btn-icon-sm bg-transparent" on:click={handleBellClick}>
+						<span>
+							<Bell />
+						</span>
+					</button>
+					<button
+						type="button"
+						class="btn-icon btn-icon-sm bg-transparent"
+						use:popup={popupSettings}
+						aria-labelledby="setting button"
+					>
+						{#if !$isLoggedIn}
 							<span>
 								<Settings />
 							</span>
-						</button>
-					{:else}
-						<button
-							type="button"
-							class="btn"
-							use:popup={popupSettings}
-							aria-labelledby="setting button"
-						>
+						{:else}
 							<span>
-								<Avatar
-									initials="{first_name?.charAt(0)}{last_name?.charAt(0)}"
-									background="bg-primary-500"
-									width="w-6"
-								/>
+								<Avatar initials="{first_name?.charAt(0)}{last_name?.charAt(0)}" width="w-6" />
 							</span>
 							<span>{first_name} {last_name}</span>
-						</button>
-					{/if}
+						{/if}
+					</button>
 				</div>
-				<div class="md:hidden sm:block">
-					<button class="btn-icon" type="button" on:click={() => drawerStore.open(drawerMobile)}>
+				<div class="md:hidden sm:block btn-group">
+					<button type="button" class="btn-icon btn-icon-sm" on:click={handleShoppingCartClick}>
+						<span>
+							<ShoppingCart />
+						</span>
+					</button>
+					<button type="button" class="btn-icon btn-icon-sm" on:click={handleBellClick}>
+						<span>
+							<Bell />
+						</span>
+					</button>
+					<button
+						class="btn-icon btn-icon-sm"
+						type="button"
+						on:click={() => drawerStore.open(drawerMobile)}
+					>
 						<span>
 							<Hamburger />
 						</span>
@@ -223,7 +272,10 @@
 						<button class="btn variant-filled w-full" use:popup={popupCombobox}>
 							{comboboxValue ?? 'Language'}
 						</button>
-
+						{#if !$isLoggedIn}
+							<a href="login" class="btn btn-sm h-fit variant-ringed-primary">Login</a>
+							<a href="register" class="btn btn-sm h-fit variant-glass-primary">Register</a>
+						{/if}
 						<div class="card w-48 shadow-xl py-2" data-popup="combobox">
 							<!-- Listbox -->
 							<ListBox rounded="rounded-none">

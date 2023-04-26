@@ -1,9 +1,4 @@
-<svg
-	xmlns="http://www.w3.org/2000/svg"
-	fill="currentColor"
-	viewBox="0 0 24 24"
-	class="w-6 h-6"
->
+<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-6 h-6">
 	<path
 		stroke-linecap="round"
 		stroke-linejoin="round"

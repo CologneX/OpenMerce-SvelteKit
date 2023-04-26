@@ -87,103 +87,100 @@
 	/>
 	<meta name="author" content="OpenMerce" />
 </svelte:head>
-<div class="flex justify-center items-center h-full w-full">
-	<div>
-		<form method="POST">
-			<div class="block card p-4 w-screen max-w-2xl space-y-10">
-				<header class="card-header">
-					<span class="flex justify-center"><Logo /></span>
-				</header>
-				<section>
-					<Stepper
-						buttonFinishLabel="Register"
-						buttonCompleteType="submit"
-						buttonComplete="variant-ghost-primary"
-						on:complete={handleSubmit}
-					>
-						<Step locked={values.email == '' || errors.email ? true : false}>
-							<svelte:fragment slot="header">E-mail</svelte:fragment>
-							<input
-								class="input variant-form-material"
-								type="email"
-								name="email"
-								placeholder="example@email.com"
-								bind:value={values.email}
-								on:input={validateEmail}
-							/>
-							{#if errors.email}<small class="text-error-500" transition:fade={{ duration: 500 }}
-									>{errors.email}</small
-								>{/if}
-							<hr class="!border-t-2 !border-current" />
-							<div class="grid grid-rows-1">
-								<div class="grid sm:grid-cols-1 md:grid-cols-2 gap-2">
-									<button class="btn variant-ghost-primary">
-										<span><Google /></span>
-										<span>Google</span>
-									</button>
-									<button class="btn variant-ghost-primary">
-										<span><Facebook /></span>
-										<span>Facebook</span>
-									</button>
-								</div>
+<div class="flex items-center justify-center h-full w-full">
+	<form class="w-full h-full md:h-fit max-w-3xl">
+		<div class="card p-4 gap-y-12 h-full w-full grid">
+			<header class="card-header">
+				<span class="flex justify-center"><Logo /></span>
+			</header>
+			<section>
+				<Stepper
+					buttonFinishLabel="Register"
+					buttonCompleteType="submit"
+					buttonComplete="variant-ghost-primary"
+					on:complete={handleSubmit}
+				>
+					<Step locked={values.email == '' || errors.email ? true : false}>
+						<svelte:fragment slot="header">E-mail</svelte:fragment>
+						<input
+							class="input variant-form-material"
+							type="email"
+							name="email"
+							placeholder="example@email.com"
+							bind:value={values.email}
+							on:input={validateEmail}
+						/>
+						{#if errors.email}<small class="text-error-500" transition:fade={{ duration: 500 }}
+								>{errors.email}</small
+							>{/if}
+						<hr class="!border-t-2 !border-current" />
+						<div class="grid grid-rows-1">
+							<div class="grid sm:grid-cols-1 md:grid-cols-2 gap-2">
+								<button class="btn variant-ghost-primary">
+									<span><Google /></span>
+									<span>Google</span>
+								</button>
+								<button class="btn variant-ghost-primary">
+									<span><Facebook /></span>
+									<span>Facebook</span>
+								</button>
 							</div>
-						</Step>
-						<Step>
-							<svelte:fragment slot="header">PIN</svelte:fragment>
-							<span>Enter the verification PIN that we have sent to your E-Mail</span>
-							<input
-								class="input variant-form-material text-center text-xl"
-								type="text"
-								name="pin"
-								maxlength="6"
-								placeholder="123456"
-								bind:value={values.pin}
-							/>
-							{#if errors.pin}<small class="text-error-500">{errors.pin}</small>{/if}
-						</Step>
-						<Step locked={!errors.password && !errors.confirmPassword}>
-							<svelte:fragment slot="header">Password</svelte:fragment>
-							<input
-								class="input variant-form-material"
-								type="password"
-								name="password"
-								placeholder="Password"
-								bind:value={values.password}
-								on:input={validatePassword}
-							/>
-							<input
-								class="input variant-form-material"
-								type="password"
-								name="confirmPassword"
-								placeholder="Confirm Password"
-								bind:value={values.confirmPassword}
-								on:input={validateConfirmPassword}
-							/>
-							{#if errors.password}<small class="text-error-500">{errors.password}</small>{/if}<br
-							/>
-							{#if errors.confirmPassword}<small class="text-error-500"
-									>{errors.confirmPassword}</small
-								>{/if}
-						</Step>
-						<Step locked={!values.name}>
-							<svelte:fragment slot="header">Name</svelte:fragment>
-							<input
-								class="input variant-form-material"
-								type="text"
-								name="name"
-								placeholder="John Doe"
-								bind:value={values.name}
-							/>
-							{#if errors.name}<small class="text-error-500">{errors.name}</small>{/if}
-						</Step>
-						<Step>
-							<svelte:fragment slot="header">Confirm Register?</svelte:fragment>
-						</Step>
-					</Stepper>
-				</section>
-			</div>
-		</form>
-	</div>
+						</div>
+					</Step>
+					<Step>
+						<svelte:fragment slot="header">PIN</svelte:fragment>
+						<span>Enter the verification PIN that we have sent to your E-Mail</span>
+						<input
+							class="input variant-form-material text-center text-xl"
+							type="text"
+							name="pin"
+							maxlength="6"
+							placeholder="123456"
+							bind:value={values.pin}
+						/>
+						{#if errors.pin}<small class="text-error-500">{errors.pin}</small>{/if}
+					</Step>
+					<Step locked={!errors.password && !errors.confirmPassword}>
+						<svelte:fragment slot="header">Password</svelte:fragment>
+						<input
+							class="input variant-form-material"
+							type="password"
+							name="password"
+							placeholder="Password"
+							bind:value={values.password}
+							on:input={validatePassword}
+						/>
+						<input
+							class="input variant-form-material"
+							type="password"
+							name="confirmPassword"
+							placeholder="Confirm Password"
+							bind:value={values.confirmPassword}
+							on:input={validateConfirmPassword}
+						/>
+						{#if errors.password}<small class="text-error-500">{errors.password}</small>{/if}<br />
+						{#if errors.confirmPassword}<small class="text-error-500"
+								>{errors.confirmPassword}</small
+							>{/if}
+					</Step>
+					<Step locked={!values.name}>
+						<svelte:fragment slot="header">Name</svelte:fragment>
+						<input
+							class="input variant-form-material"
+							type="text"
+							name="name"
+							placeholder="John Doe"
+							bind:value={values.name}
+						/>
+						{#if errors.name}<small class="text-error-500">{errors.name}</small>{/if}
+					</Step>
+					<Step>
+						<svelte:fragment slot="header">Confirm Register?</svelte:fragment>
+					</Step>
+				</Stepper>
+			</section>
+		</div>
+	</form>
 </div>
 <!-- <header class="card-header">
 				<span class="flex justify-center"><Logo /></span>
