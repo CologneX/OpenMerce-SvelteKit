@@ -18,16 +18,16 @@
 
 	// -- pagination settings
 	const source = productsList;
-	let page = {
+	let Page = {
 		offset: 0,
-		limit: 8,
+		limit: 6,
 		size: source.length,
-		amounts: [8, 10]
+		amounts: [6]
 	};
 
 	$: paginatedSource = source.slice(
-		page.offset * page.limit, // start
-		page.offset * page.limit + page.limit // end
+		Page.offset * Page.limit, // start
+		Page.offset * Page.limit + Page.limit // end
 	);
 	// -- end of pagination settings
 </script>
@@ -42,13 +42,13 @@
 	<meta name="author" content="OpenMerce" />
 </svelte:head>
 <!-- <Toast position='br' /> -->
-<div class="justify-start md:mx-32 space-y-3 mt-4">
-	<div class="container">
+<div class="space-y-3 mt-4">
+	<!-- <div class="container">
 		<h3>Bayi Mario | Pagination</h3>
 		<div class="flex gap-3">
 			{#each paginatedSource as item}
-				<a class="card p-4 w-40 grid" href="products/{item.id}">
-					<div class="placeholder w-32 h-32 place-self-center" />
+				<a class="card p-4 grid" href="products/{item.id}">
+					<div class="placeholder  place-self-center" />
 					<h5>{item.name}</h5>
 					<h6>
 						{item.price.toLocaleString('en-US', {
@@ -66,18 +66,18 @@
 			{/each}
 		</div>
 		<Paginator
-			bind:settings={page}
+			bind:settings={Page}
 			text="hidden"
 			select="hidden"
 			buttonClasses="btn variant-ghost-secondary"
 		/>
-	</div>
+	</div> -->
 	<div class="container">
 		<h3>Alat Mario | Scrollbar</h3>
 		<div class="flex gap-3 overflow-x-auto">
 			{#each productsList as item}
-				<a class="card p-4 w-40 grid" href="products/{item.id}">
-					<div class="placeholder w-32 h-32 place-self-center" />
+				<a class="card p-4  grid" href="products/{item.id}">
+					<div class="placeholder place-self-center" />
 					<h5>{item.name}</h5>
 					<h6>
 						{item.price.toLocaleString('en-US', {
@@ -93,6 +93,7 @@
 					</div>
 				</a>
 			{/each}
+			
 		</div>
 	</div>
 </div>
