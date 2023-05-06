@@ -22,7 +22,6 @@
 			values.name = data.name;
 		}
 	};
-
 	interface FormErrors {
 		email?: string;
 		password?: string;
@@ -30,7 +29,6 @@
 		name?: string;
 		pin?: string;
 	}
-
 	const values: FormValues = {
 		email: '',
 		password: '',
@@ -47,35 +45,39 @@
 		if ($isValid) {
 			console.log(values);
 		} else {
-			// display error message
+			
 		}
 	}
 
+	let lockPassword: boolean = true;
+	function validateConfirmPassword() {
+		if (values.confirmPassword !== values.password) {
+			errors.password = 'Passwords do not match';
+			lockPassword = true;
+		} else if (values.password.length < 8) {
+			errors.confirmPassword = '';
+			errors.password = 'Password must be at least 8 characters';
+			lockPassword = true;
+		} else {
+			delete errors.password;
+			lockPassword = false;
+		}
+	}
+
+	let lockEmail: boolean = true;
 	function validateEmail() {
 		if (values.email === '') {
 			errors.email = 'Email is required';
+			lockEmail = true;
 		} else if (!/\S+@\S+\.\S+/.test(values.email)) {
 			errors.email = 'Invalid email';
+			lockEmail = true;
 		} else {
 			delete errors.email;
+			lockEmail = false;
 		}
 	}
-
-	function validatePassword() {
-		if (values.password.length < 8) {
-			errors.password = 'Password must be at least 8 characters';
-		} else {
-			delete errors.password;
-		}
-	}
-
-	function validateConfirmPassword() {
-		if (values.confirmPassword !== values.password) {
-			errors.confirmPassword = 'Passwords do not match';
-		} else {
-			delete errors.confirmPassword;
-		}
-	}
+	let lockSubmit: boolean = false;
 </script>
 
 <svelte:head>
@@ -88,7 +90,7 @@
 	<meta name="author" content="OpenMerce" />
 </svelte:head>
 <div class="flex items-center justify-center h-full w-full">
-	<form class="w-full h-full md:h-fit max-w-3xl">
+	<form class="w-full h-full md:h-fit max-w-3xl" on:submit|preventDefault>
 		<div class="card p-4 gap-y-12 h-full w-full grid">
 			<header class="card-header">
 				<span class="flex justify-center"><Logo /></span>
@@ -100,7 +102,7 @@
 					buttonComplete="variant-ghost-primary"
 					on:complete={handleSubmit}
 				>
-					<Step locked={values.email == '' || errors.email ? true : false}>
+					<Step locked={lockEmail}>
 						<svelte:fragment slot="header">E-mail</svelte:fragment>
 						<input
 							class="input variant-form-material"
@@ -140,7 +142,7 @@
 						/>
 						{#if errors.pin}<small class="text-error-500">{errors.pin}</small>{/if}
 					</Step>
-					<Step locked={!errors.password && !errors.confirmPassword}>
+					<Step locked={lockPassword}>
 						<svelte:fragment slot="header">Password</svelte:fragment>
 						<input
 							class="input variant-form-material"
@@ -148,7 +150,7 @@
 							name="password"
 							placeholder="Password"
 							bind:value={values.password}
-							on:input={validatePassword}
+							on:input={validateConfirmPassword}
 						/>
 						<input
 							class="input variant-form-material"
@@ -158,10 +160,7 @@
 							bind:value={values.confirmPassword}
 							on:input={validateConfirmPassword}
 						/>
-						{#if errors.password}<small class="text-error-500">{errors.password}</small>{/if}<br />
-						{#if errors.confirmPassword}<small class="text-error-500"
-								>{errors.confirmPassword}</small
-							>{/if}
+						{#if errors.password}<small class="text-error-500">{errors.password}</small>{/if}
 					</Step>
 					<Step locked={!values.name}>
 						<svelte:fragment slot="header">Name</svelte:fragment>
@@ -174,8 +173,14 @@
 						/>
 						{#if errors.name}<small class="text-error-500">{errors.name}</small>{/if}
 					</Step>
-					<Step>
-						<svelte:fragment slot="header">Confirm Register?</svelte:fragment>
+					<Step locked={!lockSubmit}>
+						<svelte:fragment slot="header">Register Confirmation</svelte:fragment>
+						<p>Are you sure you want to register?</p>
+						<label class="flex items-center space-x-2">
+							<input class="checkbox" type="checkbox" bind:checked={lockSubmit}/>
+							<p>*I Agree with the Terms & Condition</p>
+						</label>
+						<a href="t&c">Terms & Condition</a>
 					</Step>
 				</Stepper>
 			</section>

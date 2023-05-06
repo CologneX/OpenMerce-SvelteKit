@@ -50,8 +50,7 @@
 	// };
 	let loggingIn: boolean = false;
 	let error: boolean = false;
-	const handleLoginSubmit = async (event: Event) => {
-		event.preventDefault();
+	const handleLoginSubmit = async () => {
 		loggingIn = true;
 		const response = await fetch('/api/v1/auth/login', {
 			method: 'POST',
@@ -97,7 +96,7 @@
 </svelte:head>
 
 <div class="flex items-center justify-center h-full w-full">
-	<form on:submit={handleLoginSubmit} class="w-full h-full md:h-fit max-w-3xl">
+	<form on:submit|preventDefault={handleLoginSubmit} class="w-full h-full md:h-fit max-w-3xl">
 		<div class="card p-4 gap-y-12 h-full w-full grid">
 			<header class="card-header">
 				<span class="flex justify-center"><Logo /></span>

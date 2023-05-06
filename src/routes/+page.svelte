@@ -76,7 +76,7 @@
 		<h3>Alat Mario | Scrollbar</h3>
 		<div class="flex gap-3 overflow-x-auto">
 			{#each productsList as item}
-				<a class="card p-4  grid" href="products/{item.id}">
+				<a class="card p-4 grid" href="product/{item.id}">
 					<div class="placeholder place-self-center" />
 					<h5>{item.name}</h5>
 					<h6>
@@ -93,7 +93,6 @@
 					</div>
 				</a>
 			{/each}
-			
 		</div>
 	</div>
 </div>

@@ -17,14 +17,10 @@
 	/>
 	<meta name="author" content="OpenMerce" />
 </svelte:head>
-<div class="h-full w-full grid grid-rows-2 border-2">
-	<div class="grid md:grid-cols-2 sm:grid-cols-1 w-full h-full border-2 border-red-500">
-		<div
-			class="grid justify-items-center border-2 border-blue-500 h-full md:max-h-96 aspect-square max-h-none"
-		>
-			<div
-				class="placeholder animate-pulse w-full h-full aspect-square border-2 border-yellow-500"
-			/>
+<div class="h-full w-full grid grid-rows-2">
+	<div class="grid md:grid-cols-2 sm:grid-cols-1 w-full h-full">
+		<div class="border-2 border-blue-500 h-full w-full">
+			<div class="animate-pulse border-2 w-full aspect-square card" />
 		</div>
 		<div class="grid grid-rows-2 w-full h-full">
 			<div class="p-4">
@@ -53,9 +49,9 @@
 						{productData?.quantity}
 					</small>
 				</div>
-				<div class="flex gap-2">
-					<button class="btn variant-filled-primary md:block hidden">Buy Now</button>
-					<button class="btn variant-soft-primary md:block hidden">Add to cart</button>
+				<div class="md:flex gap-2 hidden">
+					<button class="btn variant-filled-primary">Buy Now</button>
+					<button class="btn variant-soft-primary">Add to cart</button>
 				</div>
 			</div>
 			<div />

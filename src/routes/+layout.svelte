@@ -8,7 +8,6 @@
 	import {
 		AppBar,
 		AppShell,
-		ProgressBar,
 		LightSwitch,
 		popup,
 		ListBox,
@@ -32,7 +31,6 @@
 	import ShoppingCart from '$lib/icons/ShoppingCart.svelte';
 	import Bell from '$lib/icons/Bell.svelte';
 	import Back from '$lib/icons/Back.svelte';
-	import Home from '$lib/icons/Home.svelte';
 	import { page } from '$app/stores';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
@@ -187,7 +185,7 @@
 	<svelte:fragment slot="header">
 		<span>
 			{#if $navigating}
-				<ProgressBar height="h-1" />
+				<Preloader/>
 			{/if}
 		</span>
 		<AppBar padding="py-1 md:px-4" slotDefault="flex justify-center">
@@ -302,7 +300,7 @@
 		</AppBar>
 	</svelte:fragment>
 	<main class="h-full w-full grid place-items-center">
-		<div class="max-w-7xl border-2 h-full w-full">
+		<div class="max-w-7xl h-full w-full">
 			<slot />
 		</div>
 	</main>
