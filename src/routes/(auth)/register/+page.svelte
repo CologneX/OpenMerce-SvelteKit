@@ -2,10 +2,25 @@
 	import Logo from '$lib/icons/Logo.svelte';
 	import Google from '$lib/icons/Google.svelte';
 	import Facebook from '$lib/icons/Facebook.svelte';
-	import { Stepper, Step } from '@skeletonlabs/skeleton';
+	import { Stepper, Step, ProgressRadial } from '@skeletonlabs/skeleton';
 	import { fade } from 'svelte/transition';
 	import { writable } from 'svelte/store';
 	import type { Snapshot } from './$types';
+	import Toast from '$lib/Toast.svelte';
+	import Back from '$lib/icons/Back.svelte';
+
+	// for toast
+	function triggerToast(type: string, message: string) {
+		const toast = new Toast({
+			target: document.body,
+			props: {
+				messageText: message,
+				type: type
+			}
+		});
+		toast.triggerToast();
+	}
+	// -- end for toast
 
 	interface FormValues {
 		email: string;
@@ -45,7 +60,6 @@
 		if ($isValid) {
 			console.log(values);
 		} else {
-			
 		}
 	}
 
@@ -78,6 +92,56 @@
 		}
 	}
 	let lockSubmit: boolean = false;
+
+	async function sendEmail() {
+		const res = await fetch('/api/v1/auth/register-1', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ email: values.email })
+		});
+		if (res.ok) {
+			triggerToast('success', 'An verification E-Mail has been sent!');
+		} else {
+			triggerToast('error', res.statusText);
+		}
+	}
+	let emailSent: boolean = false;
+	let PINSent: boolean = false;
+	let passwordSent: boolean = false;
+	let nameSent: boolean = false;
+
+	
+	let processing: boolean = false;
+	function onNextHandler(e: {
+		detail: { step: number; state: { current: number; total: number } };
+	}): void {
+		console.log(e.detail.step);
+		if (e.detail.step === 0 && !emailSent) {
+			processing = true;
+			sendEmail();
+			emailSent = true;
+			processing = false;
+		}
+	}
+
+	let lockPIN: boolean = true;
+	const sendPIN = async () => {
+		const res = await fetch('/api/v1/auth/register-2', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ email: values.email, pin: values.pin })
+		});
+		if (res.ok) {
+			triggerToast('success', 'PIN verified!');
+			lockPIN = false;
+		} else {
+			triggerToast('error', res.statusText);
+		}
+	};
 </script>
 
 <svelte:head>
@@ -100,7 +164,9 @@
 					buttonFinishLabel="Register"
 					buttonCompleteType="submit"
 					buttonComplete="variant-ghost-primary"
+					buttonNextLabel={processing ? 'Processing' : 'Next →'}
 					on:complete={handleSubmit}
+					on:next={onNextHandler}
 				>
 					<Step locked={lockEmail}>
 						<svelte:fragment slot="header">E-mail</svelte:fragment>
@@ -177,7 +243,7 @@
 						<svelte:fragment slot="header">Register Confirmation</svelte:fragment>
 						<p>Are you sure you want to register?</p>
 						<label class="flex items-center space-x-2">
-							<input class="checkbox" type="checkbox" bind:checked={lockSubmit}/>
+							<input class="checkbox" type="checkbox" bind:checked={lockSubmit} />
 							<p>*I Agree with the Terms & Condition</p>
 						</label>
 						<a href="t&c">Terms & Condition</a>
@@ -187,60 +253,3 @@
 		</div>
 	</form>
 </div>
-<!-- <header class="card-header">
-				<span class="flex justify-center"><Logo /></span>
-				<h2>Register</h2>
-			</header> -->
-<!-- <footer class="p-4 space-y-3">
-				<div class="flex justify-center">OR</div>
-				<button class="btn variant-ghost w-full" type="button">Google <Google /></button>
-				<button class="btn variant-ghost w-full" type="button">Facebook <Facebook /></button>
-			</footer>
-			<section class="p-4">
-				<label class="label">
-					<label for="name">Name</label>
-					<input
-						class="input"
-						type="text"
-						name="name"
-						bind:value={$form.name}
-						data-invalid={$errors.name}
-					/>
-					{#if $errors.name}<small class="text-red-500">{$errors.name}</small>{/if}
-					<label for="email">E-Mail</label>
-					<input
-						class="input"
-						type="text"
-						name="email"
-						bind:value={$form.email}
-						data-invalid={$errors.email}
-					/>
-					{#if $errors.email}<small class="text-red-500">{$errors.email}</small>{/if}
-					<label for="password">Password</label>
-					<input
-						class="input"
-						type="password"
-						name="password"
-						bind:value={$form.password}
-						data-invalid={$errors.password}
-					/>
-					{#if $errors.password}<small class="text-red-500">{$errors.password}</small>{/if}
-					<label for="confirmPassword">Confirm Password</label>
-					<input
-						class="input"
-						type="password"
-						name="confirmPassword"
-						bind:value={$form.confirmPassword}
-						data-invalid={$errors.confirmPassword}
-					/>
-					{#if $errors.confirmPassword}<small class="text-red-500">{$errors.confirmPassword}</small
-						>{/if}
-				</label>
-			</section>
-			<div class="divide-y-2 space-y-3 divide-current grid">
-				{#if $delayed}
-					<button class="btn variant-ghost-primary w-full" disabled>Registering..</button>
-				{:else}
-					<button class="btn variant-ghost-primary w-full" type="submit">Register</button>
-				{/if}
-			</div> -->

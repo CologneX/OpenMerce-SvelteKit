@@ -55,30 +55,29 @@
 		const response = await fetch('/api/v1/auth/login', {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				
 			},
 			body: JSON.stringify({
 				email: form.email,
 				password: form.password
 			})
 		});
-
-		console.log(document.cookie);
-
+		
 		if (response.ok) {
 			const data = await response.json();
-			triggerToast('variant-ghost-success', 'Login successful');
+			triggerToast('success', 'Login successful');
 			localStorage.setItem('first_name', data.first_name);
 			localStorage.setItem('last_name', data.last_name);
 			goto('/');
 		} else if (response.status === 401) {
-			triggerToast('variant-ghost-error', 'Invalid credentials');
+			triggerToast('error', 'Invalid credentials');
 			error = true;
 		} else if (response.status === 500) {
-			triggerToast('variant-ghost-error', 'Server Error');
+			triggerToast('error', 'Server Error');
 			error = true;
 		} else {
-			triggerToast('variant-ghost-error', 'Something went wrong');
+			triggerToast('error', response.statusText);
 			error = true;
 		}
 		loggingIn = false;
@@ -113,9 +112,6 @@
 						disabled={loggingIn}
 						on:keypress={() => (error = false)}
 					/>
-					<!-- {#if $errors.email}<small class="text-red-500">{$errors.email}</small>{/if} -->
-					<!-- <small class="text-error-500">{errors.email}</small> -->
-
 					<label for="password">Password</label>
 					<input
 						class="input variant-form-material {error ? 'input-error' : ''}"
@@ -125,8 +121,6 @@
 						disabled={loggingIn}
 						on:keypress={() => (error = false)}
 					/>
-					<!-- {#if $errors.password}<small class="text-red-500">{$errors.password}</small>{/if} -->
-					<!-- <small class="text-error-500">{errors.password}</small> -->
 				</label>
 			</section>
 			<footer class="grid content-end">

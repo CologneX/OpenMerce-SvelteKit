@@ -121,13 +121,20 @@
 		isLoggedIn.set(false);
 	};
 	// end for logout
+
+	// for scrollY value
+	export let Y = writable(0);
+	function scrollHandler(event: any) {
+		Y = event.target.scrollTop;
+	}
+	// end for scrollY value
 </script>
 
 <svelte:window bind:innerWidth={screenWidth} />
 {#if isLoading}
 	<Preloader />
 {/if}
-<AppShell>
+<AppShell on:scroll={scrollHandler}>
 	<Toast position="br" />
 	{#if searchFocus}
 		<SearchCard />
@@ -185,7 +192,7 @@
 	<svelte:fragment slot="header">
 		<span>
 			{#if $navigating}
-				<Preloader/>
+				<Preloader />
 			{/if}
 		</span>
 		<AppBar padding="py-1 md:px-4" slotDefault="flex justify-center">
@@ -216,7 +223,7 @@
 
 			<svelte:fragment slot="trail">
 				{#if !searchFocus || screenWidth > 768}
-					<div class="btn-group md:flex hidden [&>*+*]:border-transparent">
+					<div class=" md:flex hidden [&>*+*]:border-transparent">
 						<button type="button" class="btn-icon btn-icon-sm" on:click={handleShoppingCartClick}>
 							<span>
 								<ShoppingCart />
@@ -238,10 +245,10 @@
 									<Settings />
 								</span>
 							{:else}
-								<span>
+								<div>
 									<Avatar initials="{first_name?.charAt(0)}{last_name?.charAt(0)}" width="w-6" />
-								</span>
-								<span>{first_name} {last_name}</span>
+								</div>
+								<div>{first_name} {last_name}</div>
 							{/if}
 						</button>
 					</div>
@@ -299,6 +306,7 @@
 			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>
+
 	<main class="h-full w-full grid place-items-center">
 		<div class="max-w-7xl h-full w-full">
 			<slot />

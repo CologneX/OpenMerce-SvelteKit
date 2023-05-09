@@ -7,9 +7,7 @@
 	
 	export let t: ToastSettings = {
 		message: messageText,
-		background: 'card',
-		// Add your custom classes here:
-		classes: type
+		background: `variant-ghost-${type}`
 	};
 
 	export const triggerToast = () => {
