@@ -33,6 +33,7 @@
 	import Back from '$lib/icons/Back.svelte';
 	import { page } from '$app/stores';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
+	let carousel: any; // for calling methods of the carousel instance
 
 	let popupSettings: PopupSettings = {
 		event: 'click',
@@ -78,14 +79,22 @@
 	import { writable } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+
 	export const isLoggedIn = writable(false);
-	let first_name: string | null;
+	export const isStaffLoggedIn = writable(false);
+
 	let last_name: string | null;
+	let username: string | null;
+	let first_name: string | null;
 	onMount(() => {
 		first_name = localStorage.getItem('first_name');
 		last_name = localStorage.getItem('last_name');
-		if (first_name && last_name) {
+		username = localStorage.getItem('username');
+		if (first_name) {
 			isLoggedIn.set(true);
+		}
+		if (username) {
+			isStaffLoggedIn.set(true);
 		}
 		isLoading = false;
 	});
@@ -113,12 +122,18 @@
 
 	// for logout
 	const handleLogout = () => {
-		localStorage.removeItem('first_name');
-		localStorage.removeItem('last_name');
+		if ($isLoggedIn) {
+			localStorage.removeItem('first_name');
+			localStorage.removeItem('last_name');
+			isLoggedIn.set(false);
+		} else if ($isStaffLoggedIn) {
+			localStorage.removeItem('username');
+			isStaffLoggedIn.set(false);
+		}
+
 		if (screenWidth < 768) {
 			drawerStore.close();
 		}
-		isLoggedIn.set(false);
 	};
 	// end for logout
 
@@ -131,9 +146,10 @@
 </script>
 
 <svelte:window bind:innerWidth={screenWidth} />
-{#if isLoading}
+{#if isLoading || $navigating}
 	<Preloader />
 {/if}
+
 <AppShell on:scroll={scrollHandler}>
 	<Toast position="br" />
 	{#if searchFocus}
@@ -155,12 +171,12 @@
 					<Logo />
 					{#if !$isLoggedIn}
 						<a
-							href="login"
+							href="/login"
 							class="btn h-fit variant-ringed-primary w-full"
 							on:click={() => drawerStore.close()}>Login</a
 						>
 						<a
-							href="register"
+							href="/register"
 							class="btn h-fit variant-glass-primary w-full"
 							on:click={() => drawerStore.close()}>Register</a
 						>
@@ -180,7 +196,7 @@
 							<LightSwitch />
 						</div>
 						<div>
-							{#if $isLoggedIn}
+							{#if $isLoggedIn || $isStaffLoggedIn}
 								<button class="btn variant-filled w-full" on:click={handleLogout}>Logout</button>
 							{/if}
 						</div>
@@ -190,12 +206,7 @@
 		</Drawer>
 	{/if}
 	<svelte:fragment slot="header">
-		<span>
-			{#if $navigating}
-				<Preloader />
-			{/if}
-		</span>
-		<AppBar padding="py-1 md:px-4" slotDefault="flex justify-center">
+		<AppBar padding="py-1 md:px-4" slotDefault="grid justify-items-center">
 			<svelte:fragment slot="lead">
 				<a href="/" aria-label="Logo that redirects to home page" class="md:block hidden"
 					><Logo /></a
@@ -223,7 +234,7 @@
 
 			<svelte:fragment slot="trail">
 				{#if !searchFocus || screenWidth > 768}
-					<div class=" md:flex hidden [&>*+*]:border-transparent">
+					<div class="btn-group md:flex hidden [&>*+*]:border-transparent">
 						<button type="button" class="btn-icon btn-icon-sm" on:click={handleShoppingCartClick}>
 							<span>
 								<ShoppingCart />
@@ -234,21 +245,30 @@
 								<Bell />
 							</span>
 						</button>
+						{#if !$isLoggedIn || !$isStaffLoggedIn}
+							<a href="/login" class="btn btn-sm variant-ringed-primary"><span>Login</span></a>
+							<a href="/register" class="btn btn-sm h-1/2 variant-glass-primary"><span>Register</span></a>
+						{/if}
 						<button
 							type="button"
 							class="btn-icon btn-icon-sm"
 							use:popup={popupSettings}
 							aria-labelledby="setting button"
 						>
-							{#if !$isLoggedIn}
-								<span>
-									<Settings />
-								</span>
-							{:else}
+							{#if $isLoggedIn}
 								<div>
 									<Avatar initials="{first_name?.charAt(0)}{last_name?.charAt(0)}" width="w-6" />
 								</div>
 								<div>{first_name} {last_name}</div>
+							{:else if $isStaffLoggedIn}
+								<div>
+									<Avatar initials={username?.charAt(0)} width="w-6" />
+								</div>
+								<div>{username}</div>
+							{:else}
+								<span>
+									<Settings />
+								</span>
 							{/if}
 						</button>
 					</div>
@@ -273,17 +293,14 @@
 							</span>
 						</button>
 					</div>
-					<div class="card variant-primary p-3 w-72 z-10" data-popup="settingPopup">
+					<div class="card variant-primary p-4 w-72 z-30" data-popup="settingPopup">
 						<div class="card-body space-y-3">
 							<h4>Settings</h4>
 							<LightSwitch />
 							<button class="btn variant-filled w-full" use:popup={popupCombobox}>
 								{comboboxValue ?? 'Language'}
 							</button>
-							{#if !$isLoggedIn}
-								<a href="login" class="btn btn-sm h-fit variant-ringed-primary">Login</a>
-								<a href="register" class="btn btn-sm h-fit variant-glass-primary">Register</a>
-							{/if}
+
 							<div class="card w-48 shadow-xl py-2" data-popup="combobox">
 								<!-- Listbox -->
 								<ListBox rounded="rounded-none">
@@ -297,7 +314,7 @@
 								<!-- Arrow -->
 								<div class="arrow bg-surface-100-800-token" />
 							</div>
-							{#if $isLoggedIn}
+							{#if $isLoggedIn || $isStaffLoggedIn}
 								<button class="btn variant-filled w-full" on:click={handleLogout}>Logout</button>
 							{/if}
 						</div>
@@ -307,7 +324,7 @@
 		</AppBar>
 	</svelte:fragment>
 
-	<main class="h-full w-full grid place-items-center">
+	<main class="h-full w-full grid place-items-center z-20">
 		<div class="max-w-7xl h-full w-full">
 			<slot />
 		</div>

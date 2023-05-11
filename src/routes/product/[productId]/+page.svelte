@@ -6,8 +6,14 @@
 	import { onMount } from 'svelte';
 	let Y = 0;
 	// for scroll to id in div
-	onMount(() => {});
+	// onMount(() => {});
 	// end for scroll to id in div
+
+	// for image carousel
+	import Carousel from 'svelte-carousel';
+	import { browser } from '$app/environment';
+	let carousel;
+	// end for image carousel
 </script>
 
 <svelte:head>
@@ -23,43 +29,42 @@
 <div class="h-full w-full grid grid-rows-2">
 	<div class="grid md:grid-cols-2 sm:grid-cols-1 w-full h-full">
 		<div class="h-full w-full">
-			<img
-				src="/products/{productData?.image}.jpg"
-				alt={productData?.image}
-				class=" w-full aspect-square sticky top-0 p-0 md:px-4 md:pt-4"
-			/>
+			<div class=" w-full aspect-square sticky top-0 p-0 md:pt-7">
+				<Carousel bind:this={carousel}>
+					<img
+						src="/products/{productData?.id}.webp"
+						alt={productData?.name}
+						class="aspect-square w-full h-full"
+					/></Carousel
+				>
+			</div>
 		</div>
 		<div class="grid w-full h-full">
-			<div class="hidden md:block sticky top-0">
+			<div class="hidden md:block sticky top-0 variant-glass">
 				<TabGroup flex="flex flex-col items-center w-1/3">
 					<Tab bind:group={tabSet} name="productDetail" value={0}>Product Detail</Tab>
 					<Tab bind:group={tabSet} name="description" value={1}>Description</Tab>
 					<Tab bind:group={tabSet} name="review" value={2}>Review</Tab>
 				</TabGroup>
 			</div>
-			<div class="p-4">
+			<div class="md:pt-4 md:pl-4 space-y-4">
 				<h4 id="productDetail">
 					{productData?.name}
 				</h4>
 				<h3
 					class="font-bold bg-gradient-to-br from-primary-500 box-decoration-clone bg-clip-text text-transparent to-secondary-500"
 				>
-					{productData?.price.toLocaleString('en-US', {
+					{productData?.price.toLocaleString('id-ID', {
 						style: 'currency',
 						currency: 'IDR',
 						minimumFractionDigits: 0
 					})}
 				</h3>
-				<div class="grid grid-rows-3">
-					<small class="">
-						<span>Stock </span>
-						{productData?.quantity}
-					</small>
-				</div>
+
 				<div class="md:flex gap-2 hidden">
 					<button class="btn variant-filled-primary">Buy Now</button>
 					<button class="btn variant-soft-primary">Add to cart</button>
-					<p>{Y}</p>
+					<!-- <p>{Y}</p> -->
 				</div>
 
 				<div class="card" id="productDescription">

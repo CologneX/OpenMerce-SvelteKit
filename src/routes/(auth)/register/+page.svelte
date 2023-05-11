@@ -8,6 +8,8 @@
 	import type { Snapshot } from './$types';
 	import Toast from '$lib/Toast.svelte';
 	import Back from '$lib/icons/Back.svelte';
+	import { DateInput } from 'date-picker-svelte';
+	let date = new Date();
 
 	// for toast
 	function triggerToast(type: string, message: string) {
@@ -26,7 +28,8 @@
 		email: string;
 		password: string;
 		confirmPassword: string;
-		name: string;
+		firstname: string;
+		lastname: string;
 		pin: string;
 	}
 
@@ -34,7 +37,8 @@
 		capture: () => values,
 		restore: (data: FormValues) => {
 			values.email = data.email;
-			values.name = data.name;
+			values.firstname = data.firstname;
+			values.lastname = data.lastname;
 		}
 	};
 	interface FormErrors {
@@ -48,7 +52,8 @@
 		email: '',
 		password: '',
 		confirmPassword: '',
-		name: '',
+		firstname: '',
+		lastname: '',
 		pin: ''
 	};
 
@@ -107,12 +112,25 @@
 			triggerToast('error', res.statusText);
 		}
 	}
+	async function sendPin() {
+		const res = await fetch('/api/v1/auth/register-1', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ email: values.email, code: values.pin })
+		});
+		if (res.ok) {
+			triggerToast('success', 'An verification E-Mail has been sent!');
+		} else {
+			triggerToast('error', res.statusText);
+		}
+	}
 	let emailSent: boolean = false;
 	let PINSent: boolean = false;
 	let passwordSent: boolean = false;
 	let nameSent: boolean = false;
 
-	
 	let processing: boolean = false;
 	function onNextHandler(e: {
 		detail: { step: number; state: { current: number; total: number } };
@@ -178,6 +196,7 @@
 							bind:value={values.email}
 							on:input={validateEmail}
 						/>
+
 						{#if errors.email}<small class="text-error-500" transition:fade={{ duration: 500 }}
 								>{errors.email}</small
 							>{/if}
@@ -228,15 +247,51 @@
 						/>
 						{#if errors.password}<small class="text-error-500">{errors.password}</small>{/if}
 					</Step>
-					<Step locked={!values.name}>
+					<Step locked={!values.firstname}>
 						<svelte:fragment slot="header">Name</svelte:fragment>
-						<input
-							class="input variant-form-material"
-							type="text"
-							name="name"
-							placeholder="John Doe"
-							bind:value={values.name}
-						/>
+
+						<div class="grid grid-cols-2 gap-4">
+							<label class="label">
+								<span>First Name</span>
+								<input
+									class="input variant-form-material"
+									type="text"
+									name="name"
+									placeholder="Yves"
+									bind:value={values.firstname}
+								/>
+							</label>
+
+							<label class="label">
+								<span>Last Name</span>
+								<input
+									class="input variant-form-material"
+									type="text"
+									name="name"
+									title="Last Name"
+									placeholder="Queen"
+									bind:value={values.lastname}
+								/>
+							</label>
+						</div>
+						<DateInput bind:value={date} class="input variant-form-material bg-current" />
+
+						<div class="flex space-x-2">
+							<span class="font-semibold">Gender</span>
+							<label class="flex items-center space-x-2">
+								<input class="radio" type="radio" checked name="radio-direct" value="male" />
+								<p>Male</p>
+							</label>
+							<label class="flex items-center space-x-2">
+								<input class="radio" type="radio" name="radio-direct" value="female" />
+								<p>Female</p>
+							</label>
+							<label class="flex items-center space-x-2">
+								<input class="radio" type="radio" name="radio-direct" value="walmart bag" />
+								<p>Walmart Bag</p>
+							</label>
+						</div>
+
 						{#if errors.name}<small class="text-error-500">{errors.name}</small>{/if}
 					</Step>
 					<Step locked={!lockSubmit}>

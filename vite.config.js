@@ -9,6 +9,10 @@ export default ({ mode }) => {
 				'/api': {
 					target: process.env.VITE_API_URL,
 					changeOrigin: true
+				},
+				'/usercontent':{
+					target: process.env.VITE_API_URL,
+					changeOrigin: true
 				}
 			}
 		}
