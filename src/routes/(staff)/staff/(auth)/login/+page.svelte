@@ -4,6 +4,7 @@
 	import Toast from '$lib/Toast.svelte';
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
 	import { goto } from '$app/navigation';
+	import { isLoggedInStore, isStaffLoggedInStore } from '$lib/stores';
 
 	// for toast
 	function triggerToast(type: string, message: string) {
@@ -63,12 +64,15 @@
 
 		if (response.ok) {
 			const data = await response.json();
-			triggerToast('success', 'Login successful');
 			localStorage.setItem('fin_user', data.fin_user);
 			localStorage.setItem('sys_admin', data.sys_admin);
 			localStorage.setItem('inv_user', data.inv_user);
 			localStorage.setItem('username', data.username);
-			goto('/staff');
+			triggerToast('success', `Welcome back, ${data.username}!`);
+			isStaffLoggedInStore.set(true);
+			goto('/staff', {
+				replaceState: true
+			});
 		} else if (response.status === 401) {
 			triggerToast('error', 'Invalid credentials');
 			error = true;

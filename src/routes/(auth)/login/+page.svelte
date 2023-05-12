@@ -50,26 +50,29 @@
 	// };
 	let loggingIn: boolean = false;
 	let error: boolean = false;
+	import { isLoggedInStore, isStaffLoggedInStore } from '$lib/stores';
 	const handleLoginSubmit = async () => {
 		loggingIn = true;
 		const response = await fetch('/api/v1/auth/login', {
 			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json',
-				
+				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
 				email: form.email,
 				password: form.password
 			})
 		});
-		
+
 		if (response.ok) {
 			const data = await response.json();
-			triggerToast('success', 'Login successful');
 			localStorage.setItem('first_name', data.first_name);
 			localStorage.setItem('last_name', data.last_name);
-			goto('/');
+			triggerToast('success', `Welcome back, ${data.first_name} ${data.last_name}!`);
+			isLoggedInStore.set(true);
+			goto('/', {
+				replaceState: true
+			});
 		} else if (response.status === 401) {
 			triggerToast('error', 'Invalid credentials');
 			error = true;

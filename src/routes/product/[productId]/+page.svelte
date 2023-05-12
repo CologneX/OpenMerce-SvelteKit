@@ -30,17 +30,19 @@
 	<div class="grid md:grid-cols-2 sm:grid-cols-1 w-full h-full">
 		<div class="h-full w-full">
 			<div class=" w-full aspect-square sticky top-0 p-0 md:pt-7">
-				<Carousel bind:this={carousel}>
-					<img
-						src="/products/{productData?.id}.webp"
-						alt={productData?.name}
-						class="aspect-square w-full h-full"
-					/></Carousel
-				>
+				{#if browser}
+					<Carousel bind:this={carousel}>
+						<img
+							src="/products/{productData?.id}.webp"
+							alt={productData?.name}
+							class="aspect-square w-full h-full"
+						/></Carousel
+					>
+				{/if}
 			</div>
 		</div>
 		<div class="grid w-full h-full">
-			<div class="hidden md:block sticky top-0 variant-glass">
+			<div class="hidden md:block sticky top-0 variant-glass card">
 				<TabGroup flex="flex flex-col items-center w-1/3">
 					<Tab bind:group={tabSet} name="productDetail" value={0}>Product Detail</Tab>
 					<Tab bind:group={tabSet} name="description" value={1}>Description</Tab>

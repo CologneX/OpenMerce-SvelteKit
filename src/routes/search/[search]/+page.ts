@@ -2,26 +2,27 @@ import type { PageLoad } from './$types';
 import type { RouteParams } from './$types';
 import { error } from '@sveltejs/kit';
 interface ProductParams extends RouteParams {
-    productID: string;
+    productName: string;
 }
 
 export const load: PageLoad = async ({ fetch, params }) => {
-    const productID = params as ProductParams;
+    const productName = params as ProductParams;
     const getProduct = async () => {
-        const response = await fetch(`/api/v1/product?id=${productID.productId}`, {
+        const response = await fetch(`/api/v1/product?search=${productName.search}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
         });
-        if (response.status == 400 || response.status == 404) {
-            throw error(400, {
-                message: 'Oops, product not found!',
+
+        if (response.status == 404) {
+            throw error(404, {
+                message: 'No product found',
             });
         }
         else if (!response.ok) {
-            throw error(response.status, {
-                message: `${response.statusText}`,
+            throw error(500, {
+                message: 'Unable to fetch products',
             });
         }
         const products = await response.json();

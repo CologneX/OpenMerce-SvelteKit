@@ -33,7 +33,6 @@
 	import Back from '$lib/icons/Back.svelte';
 	import { page } from '$app/stores';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
-	let carousel: any; // for calling methods of the carousel instance
 
 	let popupSettings: PopupSettings = {
 		event: 'click',
@@ -63,8 +62,8 @@
 
 	// for settings (mobile) drawer
 	const drawerMobile: DrawerSettings = {
-		bgDrawer: 'w-full card md:hidden sm:block',
-		position: 'right',
+		bgDrawer: 'w-full h-full card md:hidden sm:block',
+		position: 'bottom',
 		blur: 'backdrop-blur-xl',
 		duration: 500
 	};
@@ -79,30 +78,34 @@
 	import { writable } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-
-	export const isLoggedIn = writable(false);
-	export const isStaffLoggedIn = writable(false);
+	import { isLoggedInStore, isStaffLoggedInStore, screenWidthStore } from '$lib/stores';
 
 	let last_name: string | null;
 	let username: string | null;
 	let first_name: string | null;
+
 	onMount(() => {
-		first_name = localStorage.getItem('first_name');
-		last_name = localStorage.getItem('last_name');
-		username = localStorage.getItem('username');
-		if (first_name) {
-			isLoggedIn.set(true);
-		}
-		if (username) {
-			isStaffLoggedIn.set(true);
-		}
 		isLoading = false;
 	});
 	// end for isLoggedin
-
+	let isLoggedIn: boolean;
+	isLoggedInStore.subscribe((value) => {
+		isLoggedIn = value;
+		if (value) {
+			first_name = localStorage.getItem('first_name');
+			last_name = localStorage.getItem('last_name');
+		}
+	});
+	let isStaffLoggedIn: boolean;
+	isStaffLoggedInStore.subscribe((value) => {
+		isStaffLoggedIn = value;
+		if (value) {
+			username = localStorage.getItem('username');
+		}
+	});
 	// for handling shopping cart click
 	function handleShoppingCartClick() {
-		if (!$isLoggedIn) {
+		if (!isLoggedIn || !isStaffLoggedIn) {
 			goto('/login');
 		}
 	}
@@ -110,25 +113,32 @@
 
 	//for handling bell click
 	function handleBellClick() {
-		if (!$isLoggedIn) {
+		if (!isLoggedIn || !isStaffLoggedIn) {
 			goto('/login');
 		}
 	}
 	// end for handling bell click
 
 	// for screenwidth
-	let screenWidth: number;
+	let screenWidth: number = 0;
+	$: screenWidthStore.set(screenWidth);
+
 	// end for screenwidth
 
 	// for logout
 	const handleLogout = () => {
-		if ($isLoggedIn) {
+		if (isLoggedIn) {
 			localStorage.removeItem('first_name');
 			localStorage.removeItem('last_name');
-			isLoggedIn.set(false);
-		} else if ($isStaffLoggedIn) {
+			isLoggedInStore.set(false);
+			goto('/login');
+		} else if (isStaffLoggedIn) {
 			localStorage.removeItem('username');
-			isStaffLoggedIn.set(false);
+			localStorage.removeItem('inv_user');
+			localStorage.removeItem('sys_admin');
+			localStorage.removeItem('fin_user');
+			isStaffLoggedInStore.set(false);
+			goto('/staff/login');
 		}
 
 		if (screenWidth < 768) {
@@ -143,6 +153,9 @@
 		Y = event.target.scrollTop;
 	}
 	// end for scrollY value
+
+	// handle search
+	let search: string;
 </script>
 
 <svelte:window bind:innerWidth={screenWidth} />
@@ -150,7 +163,7 @@
 	<Preloader />
 {/if}
 
-<AppShell on:scroll={scrollHandler}>
+<AppShell on:scroll={scrollHandler} slotHeader="min-h-18 max-h-18 h-18">
 	<Toast position="br" />
 	{#if searchFocus}
 		<SearchCard />
@@ -168,8 +181,7 @@
 				</div>
 				<hr class="!border !border-current" />
 				<div class="grid justify-items-center gap-2">
-					<Logo />
-					{#if !$isLoggedIn}
+					{#if !isLoggedIn}
 						<a
 							href="/login"
 							class="btn h-fit variant-ringed-primary w-full"
@@ -188,7 +200,7 @@
 								width="w-12"
 							/>
 						</span>
-						<span>{first_name} {last_name}</span>
+						<span>{first_name}</span>
 					{/if}
 					<div class="grid grid-cols-2 gap-2 justify-items-center w-full">
 						<div>
@@ -196,7 +208,7 @@
 							<LightSwitch />
 						</div>
 						<div>
-							{#if $isLoggedIn || $isStaffLoggedIn}
+							{#if isLoggedIn || isStaffLoggedIn}
 								<button class="btn variant-filled w-full" on:click={handleLogout}>Logout</button>
 							{/if}
 						</div>
@@ -223,13 +235,16 @@
 				<div class="input-group-shim bg-transparent">
 					<Search />
 				</div>
-				<input
-					type="search"
-					placeholder="Search Openmerce"
-					class="h-full w-full max-w-4xl text-sm md:text-base focus:w-max md:placeholder:text-base placeholder:text-sm"
-					on:focus={onSearchFocus}
-					on:blur={onSearchBlur}
-				/>
+				<form action="/search/{search}" class="w-full">
+					<input
+						type="search"
+						placeholder="Search Openmerce"
+						class="h-full w-full max-w-4xl text-sm md:text-base md:placeholder:text-base placeholder:text-sm border-4 border-red-400"
+						on:focus={onSearchFocus}
+						on:blur={onSearchBlur}
+						bind:value={search}
+					/>
+				</form>
 			</div>
 
 			<svelte:fragment slot="trail">
@@ -245,22 +260,24 @@
 								<Bell />
 							</span>
 						</button>
-						{#if !$isLoggedIn || !$isStaffLoggedIn}
+						{#if !isLoggedIn && !isStaffLoggedIn}
 							<a href="/login" class="btn btn-sm variant-ringed-primary"><span>Login</span></a>
-							<a href="/register" class="btn btn-sm h-1/2 variant-glass-primary"><span>Register</span></a>
+							<a href="/register" class="btn btn-sm h-1/2 variant-glass-primary"
+								><span>Register</span></a
+							>
 						{/if}
 						<button
 							type="button"
-							class="btn-icon btn-icon-sm"
+							class="btn btn-sm"
 							use:popup={popupSettings}
 							aria-labelledby="setting button"
 						>
-							{#if $isLoggedIn}
+							{#if isLoggedIn}
 								<div>
 									<Avatar initials="{first_name?.charAt(0)}{last_name?.charAt(0)}" width="w-6" />
 								</div>
-								<div>{first_name} {last_name}</div>
-							{:else if $isStaffLoggedIn}
+								<div>{first_name}</div>
+							{:else if isStaffLoggedIn}
 								<div>
 									<Avatar initials={username?.charAt(0)} width="w-6" />
 								</div>
@@ -314,7 +331,7 @@
 								<!-- Arrow -->
 								<div class="arrow bg-surface-100-800-token" />
 							</div>
-							{#if $isLoggedIn || $isStaffLoggedIn}
+							{#if isLoggedIn || isStaffLoggedIn}
 								<button class="btn variant-filled w-full" on:click={handleLogout}>Logout</button>
 							{/if}
 						</div>
@@ -323,7 +340,6 @@
 			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>
-
 	<main class="h-full w-full grid place-items-center z-20">
 		<div class="max-w-7xl h-full w-full">
 			<slot />
