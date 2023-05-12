@@ -1,16 +1,18 @@
-# Use the official Node.js image as the base image
-FROM node:lts-alpine3.17
+FROM node:lts AS build
 
-# Copy the app source code to the container
-WORKDIR /.svelte-kit
-COPY . .
-
-# Install dependencies and build the app
+WORKDIR /app
+COPY package*.json .
 RUN npm install
+COPY . .
 RUN npm run build
+RUN npm ci --omit=dev
 
-# Expose the port that the Node.js server will listen on
+FROM node:lts-alpine
+# We don't need ca-certificates, because we don't need to connect to anything
+WORKDIR /app
+COPY --from=build /app/build ./build
+COPY --from=build /app/package.json ./
+COPY --from=build /app/node_modules ./node_modules
+
 EXPOSE 3000
-
-# Start the Node.js server when the container starts
-CMD ["npm", "run", "start"]
+CMD ["node", "build"]
