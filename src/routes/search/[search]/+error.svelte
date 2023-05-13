@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-	<title>Search Result | OpenMerce - Main</title>
+	<title>Search Result | OpenMerce </title>
 </svelte:head>
 <div class="flex items-center justify-center w-full h-full">
 	<div class=" max-h-64 h-full w-full card flex justify-center items-center">
