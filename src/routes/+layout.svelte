@@ -24,7 +24,6 @@
 	import type { PopupSettings, DrawerSettings } from '@skeletonlabs/skeleton';
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
-	import SearchCard from '$lib/SearchCard.svelte';
 	import Settings from '$lib/icons/Settings.svelte';
 	import Hamburger from '$lib/icons/Hamburger.svelte';
 	import Exit from '$lib/icons/Exit.svelte';
@@ -50,15 +49,6 @@
 		// Close the popup when the item is clicked
 		closeQuery: '.listbox-item'
 	};
-
-	// for search bar
-	/// for search bar behavior
-	let searchFocus: boolean = false;
-	const onSearchFocus = () => (searchFocus = true);
-	const onSearchBlur = () => (searchFocus = false);
-
-	/// for search bar
-	// end search bar
 
 	// for settings (mobile) drawer
 	const drawerMobile: DrawerSettings = {
@@ -164,6 +154,13 @@
 		target: 'cartHover',
 		placement: 'bottom'
 	};
+	// for search bar
+	const searchBar: PopupSettings = {
+		event: 'focus-click',
+		target: 'searchBar',
+		placement: 'bottom-start',
+	};
+	// end for search bar
 </script>
 
 <svelte:window bind:innerWidth={screenWidth} />
@@ -171,11 +168,8 @@
 	<Preloader />
 {/if}
 
-<AppShell on:scroll={scrollHandler} slotHeader="min-h-18 max-h-18 h-18">
+<AppShell on:scroll={scrollHandler} slotHeader="z-20">
 	<Toast position="br" />
-	{#if searchFocus}
-		<SearchCard />
-	{/if}
 	{#if screenWidth < 768}
 		<Drawer>
 			<div class="flex flex-col p-4 gap-2">
@@ -226,141 +220,180 @@
 		</Drawer>
 	{/if}
 	<svelte:fragment slot="header">
-		<AppBar padding="py-1 md:px-4" slotDefault="grid justify-items-center">
+		<AppBar
+			padding="mx-1 md:mx-4"
+			gridColumns="md:grid-cols-5 grid-cols-3"
+			slotLead="w-32 hidden md:block"
+			slotDefault="place-self-center w-full col-span-2 md:col-span-3 max-w-4xl"
+			slotTrail="place-content-end col-span-1"
+		>
+			{#if screenWidth < 768 && $page.url.pathname !== '/'}
+				<button class="btn-icon btn-icon-sm" on:click={() => history.back()}>
+					<span>
+						<Back />
+					</span>
+				</button>
+			{/if}
+
 			<svelte:fragment slot="lead">
-				<a href="/" aria-label="Logo that redirects to home page" class="md:block hidden"
-					><Logo /></a
-				>
-				{#if screenWidth < 768 && $page.url.pathname !== '/'}
-					<button class="btn-icon btn-icon-sm" on:click={() => history.back()}>
-						<span>
-							<Back />
-						</span>
-					</button>
-				{/if}
+				<a href="/" aria-label="Logo that redirects to home page" class="md:block hidden w-full">
+					<Logo height={"6"} />
+				</a>
 			</svelte:fragment>
-			<div class="input-group input-group-divider h-8 max-w-4xl flex">
-				<div class="input-group-shim bg-transparent">
+
+			<!-- <div class="h-8 w-full input-group input-group-divider grid-cols-[auto_1fr_auto]">
+				<div class="input-group-shim bg-transparent h-8">
 					<Search />
 				</div>
-				<form action="/search/{search}" class="w-full">
+				<form action="/search/{search}" class="w-full h-8">
 					<input
 						type="search"
 						placeholder="Search Openmerce"
-						class="h-full w-full max-w-4xl text-sm md:text-base md:placeholder:text-base placeholder:text-sm border-4 border-red-400"
-						on:focus={onSearchFocus}
-						on:blur={onSearchBlur}
+						class="w-full h-full max-w-4xl text-sm md:text-base md:placeholder:text-base placeholder:text-sm"
 						bind:value={search}
+						use:popup={searchBar}
 					/>
 				</form>
+			</div> -->
+			<form action="/search/{search}" class="w-full h-8">
+				<input
+					type="search"
+					placeholder="Search Openmerce"
+					class="w-full h-full max-w-4xl text-sm md:text-base md:placeholder:text-base placeholder:text-sm input"
+					bind:value={search}
+					use:popup={searchBar}
+				/>
+			</form>
+			<div class="card w-full max-w-4xl h-fit" data-popup="searchBar">
+				<div class="card-body">
+					<div class="p-4 space-y-4">
+						<div class="placeholder animate-pulse" />
+						<div class="grid grid-cols-3 gap-8">
+							<div class="placeholder animate-pulse" />
+							<div class="placeholder animate-pulse" />
+							<div class="placeholder animate-pulse" />
+						</div>
+						<div class="grid grid-cols-4 gap-4">
+							<div class="placeholder animate-pulse" />
+							<div class="placeholder animate-pulse" />
+							<div class="placeholder animate-pulse" />
+							<div class="placeholder animate-pulse" />
+						</div>
+					</div>
+				</div>
 			</div>
 
 			<svelte:fragment slot="trail">
-				{#if !searchFocus || screenWidth > 768}
-					<div class="btn-group md:flex hidden [&>*+*]:border-transparent">
-						<button
-							type="button"
-							class="btn-icon btn-icon-sm"
-							on:click={handleShoppingCartClick}
-							use:popup={cartHover}
-						>
-							<span>
-								<ShoppingCart />
-							</span>
-						</button>
-
-						<div class="card p-4 variant-filled-secondary" data-popup="cartHover">
-							<p>Hover Content</p>
-							<div class="arrow variant-filled-secondary" />
-						</div>
-
-						<button type="button" class="btn-icon btn-icon-sm" on:click={handleBellClick}>
-							<span>
-								<Bell />
-							</span>
-						</button>
-						{#if !isLoggedIn && !isStaffLoggedIn}
-							<a href="/login" class="btn btn-sm variant-ringed-primary"><span>Login</span></a>
-							<a href="/register" class="btn btn-sm h-1/2 variant-glass-primary"
-								><span>Register</span></a
-							>
-						{/if}
-						<button
-							type="button"
-							class="btn btn-sm"
-							use:popup={popupSettings}
-							aria-labelledby="setting button"
-						>
-							{#if isLoggedIn}
-								<div>
-									<Avatar initials="{first_name?.charAt(0)}{last_name?.charAt(0)}" width="w-6" />
-								</div>
-								<div>{first_name}</div>
-							{:else if isStaffLoggedIn}
-								<div>
-									<Avatar initials={username?.charAt(0)} width="w-6" />
-								</div>
-								<div>{username}</div>
-							{:else}
-								<span>
-									<Settings />
-								</span>
-							{/if}
-						</button>
+				<div class="btn-group md:flex hidden [&>*+*]:border-transparent gap-1">
+					<button
+						type="button"
+						class="btn btn-sm"
+						on:click={handleShoppingCartClick}
+						use:popup={cartHover}
+					>
+						<span>
+							<ShoppingCart />
+						</span>
+					</button>
+					<span class="divider-vertical" />
+					<div
+						class="card p-2 bg-filled [&>*]:pointer-events-none w-full max-w-md"
+						data-popup="cartHover"
+					>
+						<header class="card-header grid grid-cols-2">
+							<p class="text-start">Your Cart</p>
+							<p class="font-semibold text-end">Cart</p>
+						</header>
+						<section class="p-2" />
 					</div>
-					<div class="md:hidden sm:block btn-group">
-						<button type="button" class="btn-icon btn-icon-sm" on:click={handleShoppingCartClick}>
-							<span>
-								<ShoppingCart />
-							</span>
-						</button>
-						<button type="button" class="btn-icon btn-icon-sm" on:click={handleBellClick}>
-							<span>
-								<Bell />
-							</span>
-						</button>
-						<button
-							class="btn-icon btn-icon-sm"
-							type="button"
-							on:click={() => drawerStore.open(drawerMobile)}
+					{#if isLoggedIn||isStaffLoggedIn}
+					<button type="button" class="btn-icon btn-icon-sm" on:click={handleBellClick}>
+						<span>
+							<Bell />
+						</span>
+					</button>
+					{/if}
+					{#if !isLoggedIn && !isStaffLoggedIn}
+						<a href="/login" class="btn btn-sm variant-ringed-primary"><span>Login</span></a>
+						<a href="/register" class="btn btn-sm h-1/2 variant-glass-primary"
+							><span>Register</span></a
 						>
-							<span>
-								<Hamburger />
-							</span>
-						</button>
-					</div>
-					<div class="card variant-primary p-4 w-72 z-30" data-popup="settingPopup">
-						<div class="card-body space-y-3">
-							<h4>Settings</h4>
-							<LightSwitch />
-							<button class="btn variant-filled w-full" use:popup={popupCombobox}>
-								{comboboxValue ?? 'Language'}
-							</button>
-
-							<div class="card w-48 shadow-xl py-2" data-popup="combobox">
-								<!-- Listbox -->
-								<ListBox rounded="rounded-none">
-									<ListBoxItem bind:group={comboboxValue} name="medium" value="Bahasa Indonesia">
-										Bahasa Indonesia
-									</ListBoxItem>
-									<ListBoxItem bind:group={comboboxValue} name="medium" value="English">
-										English
-									</ListBoxItem>
-								</ListBox>
-								<!-- Arrow -->
-								<div class="arrow bg-surface-100-800-token" />
+					{/if}
+					<button
+						type="button"
+						class="btn btn-sm"
+						use:popup={popupSettings}
+						aria-labelledby="setting button"
+					>
+						{#if isLoggedIn}
+							<div>
+								<Avatar initials="{first_name?.charAt(0)}{last_name?.charAt(0)}" width="w-6" />
 							</div>
-							{#if isLoggedIn || isStaffLoggedIn}
-								<button class="btn variant-filled w-full" on:click={handleLogout}>Logout</button>
-							{/if}
+							<div>{first_name}</div>
+						{:else if isStaffLoggedIn}
+							<div>
+								<Avatar initials={username?.charAt(0)} width="w-6" />
+							</div>
+							<div>{username}</div>
+						{:else}
+							<span>
+								<Settings />
+							</span>
+						{/if}
+					</button>
+				</div>
+				<div class="md:hidden sm:block btn-group">
+					<button type="button" class="btn-icon btn-icon-sm" on:click={handleShoppingCartClick}>
+						<span>
+							<ShoppingCart />
+						</span>
+					</button>
+					<button type="button" class="btn-icon btn-icon-sm" on:click={handleBellClick}>
+						<span>
+							<Bell />
+						</span>
+					</button>
+					<button
+						class="btn-icon btn-icon-sm"
+						type="button"
+						on:click={() => drawerStore.open(drawerMobile)}
+					>
+						<span>
+							<Hamburger />
+						</span>
+					</button>
+				</div>
+				<div class="card variant-primary p-4 w-72 z-30" data-popup="settingPopup">
+					<div class="card-body space-y-3">
+						<h4>Settings</h4>
+						<LightSwitch />
+						<button class="btn variant-filled w-full" use:popup={popupCombobox}>
+							{comboboxValue ?? 'Language'}
+						</button>
+
+						<div class="card w-48 shadow-xl py-2" data-popup="combobox">
+							<!-- Listbox -->
+							<ListBox rounded="rounded-none">
+								<ListBoxItem bind:group={comboboxValue} name="medium" value="Bahasa Indonesia">
+									Bahasa Indonesia
+								</ListBoxItem>
+								<ListBoxItem bind:group={comboboxValue} name="medium" value="English">
+									English
+								</ListBoxItem>
+							</ListBox>
+							<!-- Arrow -->
+							<div class="arrow bg-surface-100-800-token" />
 						</div>
+						{#if isLoggedIn || isStaffLoggedIn}
+							<button class="btn variant-filled w-full" on:click={handleLogout}>Logout</button>
+						{/if}
 					</div>
-				{/if}
+				</div>
 			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>
-	<main class="h-full w-full grid place-items-center z-20">
-		<div class="max-w-7xl h-full w-full">
+	<main class="h-full w-full grid place-items-center mx-0 mb:px-10 z-0">
+		<div class="h-full w-full max-w-6xl">
 			<slot />
 		</div>
 	</main>

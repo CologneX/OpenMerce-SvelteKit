@@ -1,6 +1,7 @@
 <script lang="ts">
 	export let data;
 	const { productData } = data;
+	import Logo from '$lib/icons/Logo.svelte';
 	import Star from '$lib/icons/Star.svelte';
 </script>
 
@@ -12,8 +13,13 @@
 	<div class="flex flex-wrap gap-4">
 		{#each productData as item}
 			<a class="card grid w-48 grid-rows-1 card-hover" href="product/{item.id}">
-				<img src="/products/{item.id}.webp" alt={item.name} class="aspect-square shadow-xl card" />
-
+				<picture class="aspect-square shadow-xl card flex justify-center items-center">
+					<source src="/usercontent/{item.images}" />
+					<div>
+						<Logo />
+						<p class="text-center">No Image Found</p>
+					</div>
+				</picture>
 				<div class="p-4">
 					<h5>{item.name}</h5>
 

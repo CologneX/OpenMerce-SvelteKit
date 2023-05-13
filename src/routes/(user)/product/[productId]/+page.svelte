@@ -12,6 +12,7 @@
 	// for image carousel
 	import Carousel from 'svelte-carousel';
 	import { browser } from '$app/environment';
+	import Logo from '$lib/icons/Logo.svelte';
 	let carousel;
 	// end for image carousel
 </script>
@@ -31,13 +32,17 @@
 		<div class="h-full w-full">
 			<div class=" w-full aspect-square sticky top-0 p-0 md:pt-7">
 				{#if browser}
-					<Carousel bind:this={carousel}>
-						<img
-							src="/products/{productData?.id}.webp"
-							alt={productData?.name}
-							class="aspect-square w-full h-full"
-						/></Carousel
-					>
+					<Carousel bind:this={carousel} infinite={false}>
+						<!-- {#each productData.image_urls as image} -->
+						<picture class="aspect-square card flex justify-center items-center">
+							<source src="/usercontent/" />
+							<div>
+								<Logo />
+								<p class="text-center">No Image Found</p>
+							</div>
+						</picture>
+						<!-- {/each} -->
+					</Carousel>
 				{/if}
 			</div>
 		</div>

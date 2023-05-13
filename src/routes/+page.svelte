@@ -46,6 +46,7 @@
 
 	import { isLoggedInStore, screenWidthStore } from '$lib/stores';
 	import Logo from '$lib/icons/Logo.svelte';
+	import TinyLogo from '$lib/icons/TinyLogo.svelte';
 	let isLoggedIn: boolean;
 	isLoggedInStore.subscribe((value) => {
 		isLoggedIn = value;
@@ -67,94 +68,113 @@
 </svelte:head>
 <!-- <Toast position='br' /> -->
 <div class="space-y-3 mt-4">
-	<div class="container">
+	<div>
 		{#if browser}
-			<div class="relative h-64">
-				<button
-					type="button"
-					class="btn-icon variant-glass-surface absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-1/2 z-10"
-					on:click={() => carouselBanner.goToPrev()}
-				>
-					<span><Prev /></span>
-				</button>
-				<button
-					type="button"
-					class="btn-icon variant-glass-surface absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-1/2 z-10"
-					on:click={() => carouselBanner.goToNext()}
-				>
-					<span><Next /></span>
-				</button>
+			<div class="relative aspect-[21/5]">
+				{#if screenWidth > 1154}
+					<button
+						type="button"
+						class="btn-icon variant-glass-surface absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-1/2 z-10"
+						on:click={() => carouselBanner.goToPrev()}
+					>
+						<span><Prev /></span>
+					</button>
+					<button
+						type="button"
+						class="btn-icon variant-glass-surface absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-1/2 z-10"
+						on:click={() => carouselBanner.goToNext()}
+					>
+						<span><Next /></span>
+					</button>
+				{/if}
 				<Carousel bind:this={carouselBanner} arrows={false} autoplay autoplayDuration={3000}>
-					<img src="LinkedIn Banner 2023.png" alt="tokopedia logo" class="rounded-md h-64" />
-					<img src="tokopedia logo.png" alt="tokopedia logo" class="rounded-md h-64" />
+					<picture class="rounded-md w-full z-0 aspect-[21/5]">
+						<source src="/usercontent/" />
+						<div class="grid justify-items-center place-items-center">
+							<Logo height={'1/2'} />
+							<p>No Image Found</p>
+						</div>
+					</picture>
+
+					<picture class="rounded-md w-full z-0 aspect-[21/5]">
+						<source src="/usercontent/" />
+						<div class="grid justify-items-center place-items-center">
+							<Logo height={'1/2'} />
+							<p>No Image Found</p>
+						</div>
+					</picture>
 				</Carousel>
 			</div>
 		{/if}
 	</div>
-	<div class="container">
-		<div class="font-semibold text-xl">For You</div>
-		<small><a href="/see-all" class="no-underline">See All</a></small>
-
+	<div>
+		<div>
+			<span class="font-semibold text-2xl">For You</span>
+			<a href="/see-all" class=" decoration-transparent">See All</a>
+		</div>
 		{#if browser}
 			<div class="relative">
-				<button
-					type="button"
-					class="btn-icon variant-glass-surface absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-1/2 z-10"
-					on:click={() => carouselOne.goToPrev()}
-				>
-					<span><Prev /></span>
-				</button>
-				<button
-					type="button"
-					class="btn-icon variant-glass-surface absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-1/2 z-10"
-					on:click={() => carouselOne.goToNext()}
-				>
-					<span><Next /></span>
-				</button>
-				<Carousel bind:this={carouselOne} arrows={false} dots={false}>
-					{#each chunkArray(products, 6) as productChunk}
-						<div class="flex gap-4">
-							{#each productChunk as product}
-								<a
-									class="card grid w-full h-full grid-rows-1 card-hover flex-grow"
-									href="product/{product.id}"
-								>
-									<!-- <img
-										src="/products/{product.id}.webp"
-										alt={product.name}
-										class="aspect-square shadow-xl card"
-									/> -->
-									<picture class="aspect-square shadow-xl card flex justify-center items-center">
-										<source src="/usercontent/{product.images}" />
-										<div>
-											<Logo />
-											<p class="text-center">No Image Found</p>
-										</div>
-									</picture>
-									<div class="p-4">
-										<h6>{product.name}</h6>
-										<h6 class="font-semibold">
-											{product.price.toLocaleString('id-ID', {
-												style: 'currency',
-												currency: 'IDR',
-												minimumFractionDigits: 0
-											})}
-										</h6>
-										<hr class="!border-t-2 border-current" />
-										<div class="flex">
-											<Star />
-											<span>{product.rating}</span>
-										</div>
+				{#if screenWidth > 1154}
+					<button
+						type="button"
+						class="btn-icon variant-glass-surface absolute top-1/2 left-0 transform -translate-y-1/2 -translate-x-1/2 z-10"
+						on:click={() => carouselOne.goToPrev()}
+					>
+						<span><Prev /></span>
+					</button>
+					<button
+						type="button"
+						class="btn-icon variant-glass-surface absolute top-1/2 right-0 transform -translate-y-1/2 translate-x-1/2 z-10"
+						on:click={() => carouselOne.goToNext()}
+					>
+						<span><Next /></span>
+					</button>
+				{/if}
+				<div class="flex flex-col space-x-4">
+					<Carousel
+						bind:this={carouselOne}
+						arrows={false}
+						dots={false}
+						particlesToScroll={6}
+						particlesToShow={6}
+						infinite={false}
+					>
+						{#each products as product}
+							<a class="card grid card-hover w-24" href="product/{product.id}">
+								<picture class="aspect-square shadow-xl card flex justify-center items-center">
+									<source src="/usercontent/{product.images}" />
+									<div>
+										<Logo />
+										<p class="text-center">No Image Found</p>
 									</div>
-								</a>
-							{/each}
-						</div>
-					{/each}
-				</Carousel>
+								</picture>
+
+								<section class="p-4">
+									<h6>{product.name}</h6>
+									<h6 class="font-semibold">
+										{product.price.toLocaleString('id-ID', {
+											style: 'currency',
+											currency: 'IDR',
+											minimumFractionDigits: 0
+										})}
+									</h6>
+								</section>
+								<footer class="p-4">
+									<hr class="!border-t-2 border-current" />
+									<div class="flex items-center">
+										<Star />
+										<span>{product.rating}</span>
+									</div>
+								</footer>
+							</a>
+						{/each}
+					</Carousel>
+				</div>
 			</div>
 		{/if}
 	</div>
-	<div class="container">
+
+	<!-- <div>
 		<div class="font-semibold text-xl">Recommended Products</div>
 		<small><a href="/see-all" class="no-underline">See All</a></small>
 		<div class="flex flex-wrap gap-4">
@@ -186,34 +206,39 @@
 				</a>
 			{/each}
 		</div>
-	</div>
+	</div> -->
 
-	<div class="container">
+	<div>
 		<h3>Alat Mario | Scrollbar</h3>
-		<div class="flex gap-3 overflow-x-auto hide-scrollbar">
+		<div class="grid grid-flow-col overflow-x-auto hide-scrollbar gap-1">
 			{#each products as item}
-				<a class="card p-4 grid" href="product/{item.id}">
-					<picture class="aspect-square shadow-xl card flex justify-center items-center">
+				<a class="card w-32" href="product/{item.id}">
+					<picture class="aspect-square shadow-xl flex justify-center items-center w-full">
 						<source src="/usercontent/{item.images}" />
-						<div>
+						<div class="grid place-items-center">
+							<!-- <TinyLogo height="8"/> -->
 							<Logo />
 							<p class="text-center">No Image Found</p>
 						</div>
 					</picture>
-					<div class="placeholder place-self-center" />
-					<h5>{item.name}</h5>
-					<h6>
-						{item.price.toLocaleString('en-US', {
-							style: 'currency',
-							currency: 'IDR',
-							minimumFractionDigits: 0
-						})}
-					</h6>
-					<hr class="!border-t-2 border-current" />
-					<div class="flex">
-						<Star />
-						<span>{item.rating}</span>
-					</div>
+
+					<section class="p-4">
+						<h6>{item.name}</h6>
+						<h6 class="font-semibold">
+							{item.price.toLocaleString('id-ID', {
+								style: 'currency',
+								currency: 'IDR',
+								minimumFractionDigits: 0
+							})}
+						</h6>
+					</section>
+					<footer class="p-4 card-footer">
+						<hr class="!border-t-2 border-current" />
+						<div class="flex items-center">
+							<Star />
+							<span>{item.rating}</span>
+						</div>
+					</footer>
 				</a>
 			{/each}
 		</div>

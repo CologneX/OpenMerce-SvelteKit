@@ -1,6 +1,6 @@
-
 import { error } from "@sveltejs/kit";
-export const load = (async ({ fetch }) => {
+import type { PageLoad } from "./$types";
+export const load: PageLoad = (async ({ fetch }) => {
     const getAllProducts = async () => {
         const response = await fetch('/api/v1/product', {
             method: 'GET',
@@ -20,4 +20,4 @@ export const load = (async ({ fetch }) => {
     return {
         productData: response
     };
-});
+}) satisfies PageLoad;
