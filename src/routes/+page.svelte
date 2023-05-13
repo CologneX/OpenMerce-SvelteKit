@@ -12,7 +12,7 @@
 		toast.triggerToast();
 	}
 	// -- toast settings and trigger function
-
+	export const isMobile: boolean = false;
 	import type { PageData } from './$types';
 	export let data: PageData;
 	const { productData } = data;

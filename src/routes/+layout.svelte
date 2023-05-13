@@ -112,7 +112,12 @@
 	// for screenwidth
 	let screenWidth: number = 0;
 	$: screenWidthStore.set(screenWidth);
-
+	export let isMobile: boolean = false;
+	$: if (screenWidth < 768) {
+		isMobile = true;
+	} else {
+		isMobile = false;
+	}
 	// end for screenwidth
 
 	// for logout
@@ -158,7 +163,7 @@
 	const searchBar: PopupSettings = {
 		event: 'focus-click',
 		target: 'searchBar',
-		placement: 'bottom-start',
+		placement: 'bottom-start'
 	};
 	// end for search bar
 </script>
@@ -170,7 +175,7 @@
 
 <AppShell on:scroll={scrollHandler} slotHeader="z-20">
 	<Toast position="br" />
-	{#if screenWidth < 768}
+	{#if isMobile}
 		<Drawer>
 			<div class="flex flex-col p-4 gap-2">
 				<div class="h-auto w-full flex justify-end place-items-center">
@@ -221,11 +226,11 @@
 	{/if}
 	<svelte:fragment slot="header">
 		<AppBar
-			padding="mx-1 md:mx-4"
 			gridColumns="md:grid-cols-5 grid-cols-3"
-			slotLead="w-32 hidden md:block"
+			slotLead="w-auto hidden md:block"
 			slotDefault="place-self-center w-full col-span-2 md:col-span-3 max-w-4xl"
 			slotTrail="place-content-end col-span-1"
+			gap="gap-8"
 		>
 			{#if screenWidth < 768 && $page.url.pathname !== '/'}
 				<button class="btn-icon btn-icon-sm" on:click={() => history.back()}>
@@ -234,10 +239,12 @@
 					</span>
 				</button>
 			{/if}
-
+			<!-- <svelte:fragment slot="headline">
+				<small>Categories</small>
+			</svelte:fragment> -->
 			<svelte:fragment slot="lead">
 				<a href="/" aria-label="Logo that redirects to home page" class="md:block hidden w-full">
-					<Logo height={"6"} />
+					<Logo  />
 				</a>
 			</svelte:fragment>
 
@@ -284,85 +291,86 @@
 			</div>
 
 			<svelte:fragment slot="trail">
-				<div class="btn-group md:flex hidden [&>*+*]:border-transparent gap-1">
-					<button
-						type="button"
-						class="btn btn-sm"
-						on:click={handleShoppingCartClick}
-						use:popup={cartHover}
-					>
-						<span>
-							<ShoppingCart />
-						</span>
-					</button>
-					<span class="divider-vertical" />
-					<div
-						class="card p-2 bg-filled [&>*]:pointer-events-none w-full max-w-md"
-						data-popup="cartHover"
-					>
-						<header class="card-header grid grid-cols-2">
-							<p class="text-start">Your Cart</p>
-							<p class="font-semibold text-end">Cart</p>
-						</header>
-						<section class="p-2" />
-					</div>
-					{#if isLoggedIn||isStaffLoggedIn}
-					<button type="button" class="btn-icon btn-icon-sm" on:click={handleBellClick}>
-						<span>
-							<Bell />
-						</span>
-					</button>
-					{/if}
-					{#if !isLoggedIn && !isStaffLoggedIn}
-						<a href="/login" class="btn btn-sm variant-ringed-primary"><span>Login</span></a>
-						<a href="/register" class="btn btn-sm h-1/2 variant-glass-primary"
-							><span>Register</span></a
+				{#if !isMobile}
+					<div class="flex gap-2">
+						<button
+							type="button"
+							class="btn-sm"
+							on:click={handleShoppingCartClick}
+							use:popup={cartHover}
 						>
-					{/if}
-					<button
-						type="button"
-						class="btn btn-sm"
-						use:popup={popupSettings}
-						aria-labelledby="setting button"
-					>
-						{#if isLoggedIn}
-							<div>
-								<Avatar initials="{first_name?.charAt(0)}{last_name?.charAt(0)}" width="w-6" />
-							</div>
-							<div>{first_name}</div>
-						{:else if isStaffLoggedIn}
-							<div>
-								<Avatar initials={username?.charAt(0)} width="w-6" />
-							</div>
-							<div>{username}</div>
-						{:else}
 							<span>
-								<Settings />
+								<ShoppingCart />
 							</span>
+						</button>
+						<span class="divider-vertical !border-current" />
+						<div
+							class="card p-2 bg-filled [&>*]:pointer-events-none w-full max-w-md"
+							data-popup="cartHover"
+						>
+							<header class="card-header grid grid-cols-2">
+								<p class="text-start">Your Cart</p>
+								<p class="font-semibold text-end">Cart</p>
+							</header>
+							<section class="p-2" />
+						</div>
+						{#if isLoggedIn || isStaffLoggedIn}
+							<button type="button" class="btn-icon btn-icon-sm" on:click={handleBellClick}>
+								<span>
+									<Bell />
+								</span>
+							</button>
 						{/if}
-					</button>
-				</div>
-				<div class="md:hidden sm:block btn-group">
-					<button type="button" class="btn-icon btn-icon-sm" on:click={handleShoppingCartClick}>
-						<span>
-							<ShoppingCart />
-						</span>
-					</button>
-					<button type="button" class="btn-icon btn-icon-sm" on:click={handleBellClick}>
-						<span>
-							<Bell />
-						</span>
-					</button>
-					<button
-						class="btn-icon btn-icon-sm"
-						type="button"
-						on:click={() => drawerStore.open(drawerMobile)}
-					>
-						<span>
-							<Hamburger />
-						</span>
-					</button>
-				</div>
+						{#if !isLoggedIn && !isStaffLoggedIn}
+							<a href="/login" class="btn btn-sm variant-ringed-primary"><span>Login</span></a>
+							<a href="/register" class="btn btn-sm variant-glass-primary"><span>Register</span></a>
+						{/if}
+						<button
+							type="button"
+							class="btn-icon btn-icon-sm"
+							use:popup={popupSettings}
+							aria-labelledby="setting button"
+						>
+							{#if isLoggedIn}
+								<div>
+									<Avatar initials="{first_name?.charAt(0)}{last_name?.charAt(0)}" width="w-6" />
+								</div>
+								<div>{first_name}</div>
+							{:else if isStaffLoggedIn}
+								<div>
+									<Avatar initials={username?.charAt(0)} width="w-6" />
+								</div>
+								<div>{username}</div>
+							{:else}
+								<span>
+									<Settings />
+								</span>
+							{/if}
+						</button>
+					</div>
+				{:else}
+					<div class="flex">
+						<button type="button" class="btn-icon btn-icon-sm" on:click={handleShoppingCartClick}>
+							<span>
+								<ShoppingCart />
+							</span>
+						</button>
+						<button type="button" class="btn-icon btn-icon-sm" on:click={handleBellClick}>
+							<span>
+								<Bell />
+							</span>
+						</button>
+						<button
+							class="btn-icon btn-icon-sm"
+							type="button"
+							on:click={() => drawerStore.open(drawerMobile)}
+						>
+							<span>
+								<Hamburger />
+							</span>
+						</button>
+					</div>
+				{/if}
 				<div class="card variant-primary p-4 w-72 z-30" data-popup="settingPopup">
 					<div class="card-body space-y-3">
 						<h4>Settings</h4>
