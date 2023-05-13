@@ -45,6 +45,7 @@
 	// end of pagination using svelte-pagination
 
 	import { isLoggedInStore, screenWidthStore } from '$lib/stores';
+	import Logo from '$lib/icons/Logo.svelte';
 	let isLoggedIn: boolean;
 	isLoggedInStore.subscribe((value) => {
 		isLoggedIn = value;
@@ -118,12 +119,18 @@
 									class="card grid w-full h-full grid-rows-1 card-hover flex-grow"
 									href="product/{product.id}"
 								>
-									<img
+									<!-- <img
 										src="/products/{product.id}.webp"
 										alt={product.name}
 										class="aspect-square shadow-xl card"
-									/>
-
+									/> -->
+									<picture class="aspect-square shadow-xl card flex justify-center items-center">
+										<source src="/usercontent/{product.images}" />
+										<div>
+											<Logo />
+											<p class="text-center">No Image Found</p>
+										</div>
+									</picture>
 									<div class="p-4">
 										<h6>{product.name}</h6>
 										<h6 class="font-semibold">
@@ -153,11 +160,13 @@
 		<div class="flex flex-wrap gap-4">
 			{#each products as item}
 				<a class="card grid w-48 grid-rows-1 card-hover" href="product/{item.id}">
-					<img
-						src="/products/{item.id}.webp"
-						alt={item.name}
-						class="aspect-square shadow-xl card"
-					/>
+					<picture class="aspect-square shadow-xl card flex justify-center items-center">
+						<source src="/usercontent/{item.images}" />
+						<div>
+							<Logo />
+							<p class="text-center">No Image Found</p>
+						</div>
+					</picture>
 
 					<div class="p-4">
 						<h6>{item.name}</h6>
@@ -181,9 +190,16 @@
 
 	<div class="container">
 		<h3>Alat Mario | Scrollbar</h3>
-		<div class="flex gap-3 overflow-x-auto">
+		<div class="flex gap-3 overflow-x-auto hide-scrollbar">
 			{#each products as item}
 				<a class="card p-4 grid" href="product/{item.id}">
+					<picture class="aspect-square shadow-xl card flex justify-center items-center">
+						<source src="/usercontent/{item.images}" />
+						<div>
+							<Logo />
+							<p class="text-center">No Image Found</p>
+						</div>
+					</picture>
 					<div class="placeholder place-self-center" />
 					<h5>{item.name}</h5>
 					<h6>

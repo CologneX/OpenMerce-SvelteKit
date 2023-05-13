@@ -156,6 +156,14 @@
 
 	// handle search
 	let search: string;
+	// end handle search
+
+	// handle cart hover
+	const cartHover: PopupSettings = {
+		event: 'hover',
+		target: 'cartHover',
+		placement: 'bottom'
+	};
 </script>
 
 <svelte:window bind:innerWidth={screenWidth} />
@@ -250,11 +258,22 @@
 			<svelte:fragment slot="trail">
 				{#if !searchFocus || screenWidth > 768}
 					<div class="btn-group md:flex hidden [&>*+*]:border-transparent">
-						<button type="button" class="btn-icon btn-icon-sm" on:click={handleShoppingCartClick}>
+						<button
+							type="button"
+							class="btn-icon btn-icon-sm"
+							on:click={handleShoppingCartClick}
+							use:popup={cartHover}
+						>
 							<span>
 								<ShoppingCart />
 							</span>
 						</button>
+
+						<div class="card p-4 variant-filled-secondary" data-popup="cartHover">
+							<p>Hover Content</p>
+							<div class="arrow variant-filled-secondary" />
+						</div>
+
 						<button type="button" class="btn-icon btn-icon-sm" on:click={handleBellClick}>
 							<span>
 								<Bell />
