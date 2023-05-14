@@ -20,13 +20,8 @@
 	import { isLoggedInStore, screenWidthStore } from '$lib/stores';
 	import Logo from '$lib/icons/Logo.svelte';
 	let isLoggedIn: boolean;
-	isLoggedInStore.subscribe((value) => {
-		isLoggedIn = value;
-	});
+
 	let screenWidth: number;
-	screenWidthStore.subscribe((value) => {
-		screenWidth = value;
-	});
 	interface Product {
 		id: string;
 		name: string;
@@ -59,6 +54,12 @@
 			products = productsData[0].products;
 			isLoading = false;
 		});
+		isLoggedInStore.subscribe((value) => {
+			isLoggedIn = value;
+		});
+		screenWidthStore.subscribe((value) => {
+			screenWidth = value;
+		});
 	});
 </script>
 
@@ -72,8 +73,8 @@
 	<meta name="author" content="OpenMerce" />
 </svelte:head>
 <!-- <Toast position='br' /> -->
-<div class="space-y-3 mt-4 w-full h-full">
-	<!-- <div class="w-full border-2">
+<div class="space-y-10 mt-4 w-full h-full">
+	<div class="w-full border-2">
 		{#if browser}
 			<div class="relative aspect-[21/5] w-full">
 				{#if screenWidth > 1154}
@@ -104,9 +105,9 @@
 				</Carousel>
 			</div>
 		{/if}
-	</div> -->
+	</div>
 
-	<div class="w-full h-full max-h-80">
+	<div class="w-full">
 		<div>
 			<span class="font-semibold text-2xl">For You</span>
 			<a href="/see-all" class=" decoration-transparent">See All</a>
@@ -140,8 +141,6 @@
 							infinite={false}
 						>
 							{#each products as product}
-								<!-- this div will add margin to child component as a hacky workaround of Carousel component -->
-								<!-- TODO:the first and last component shown in carousel has a ml and mr in it -->
 								<div class="bg-transparent w-auto md:w-24">
 									<a
 										class="card grid card-hover w-full h-full first:p-0 last:p-0"
@@ -187,42 +186,8 @@
 		{/if}
 	</div>
 
-	<!-- <div>
-		<div class="font-semibold text-xl">Recommended Products</div>
-		<small><a href="/see-all" class="no-underline">See All</a></small>
-		<div class="flex flex-wrap gap-4">
-			{#each products as item}
-				<a class="card grid w-48 grid-rows-1 card-hover" href="product/{item.id}">
-					<picture class="aspect-square shadow-xl card flex justify-center items-center">
-						<source src="/usercontent/{item.images}" />
-						<div>
-							<Logo />
-							<p class="text-center">No Image Found</p>
-						</div>
-					</picture>
-
-					<div class="p-4">
-						<h6>{item.name}</h6>
-						<h6 class="font-semibold">
-							{item.price.toLocaleString('id-ID', {
-								style: 'currency',
-								currency: 'IDR',
-								minimumFractionDigits: 0
-							})}
-						</h6>
-						<hr class="!border-t-2 border-current" />
-						<div class="flex">
-							<Star />
-							<span>{item.rating}</span>
-						</div>
-					</div>
-				</a>
-			{/each}
-		</div>
-	</div> -->
-
-	<!-- <div>
-		<h3>Alat Mario | Scrollbar</h3>
+	<div>
+		<h3>All Products</h3>
 		<div class="grid grid-flow-col overflow-x-auto hide-scrollbar gap-1">
 			{#each products as item}
 				<a class="card w-32" href="product/{item.id}">
@@ -257,5 +222,5 @@
 				</a>
 			{/each}
 		</div>
-	</div> -->
+	</div>
 </div>

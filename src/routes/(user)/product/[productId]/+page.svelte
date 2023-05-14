@@ -1,8 +1,7 @@
 <script lang="ts">
 	export let data;
 	const { productData } = data;
-	let tabSet: number = 0;
-	import { TabGroup, Tab } from '@skeletonlabs/skeleton';
+
 	let Y = 0;
 	// for scroll to id in div
 	// onMount(() => {});
@@ -31,7 +30,7 @@
 		<div class="h-full w-full">
 			<div class=" w-full aspect-square sticky top-0 p-0 md:pt-7">
 				{#if browser}
-					<Carousel bind:this={carousel} infinite={false}>
+					<Carousel bind:this={carousel} infinite={false} arrows={false}>
 						{#if productData.image_urls}
 							{#each productData.image_urls as image}
 								<picture class="aspect-square shadow-xl card flex justify-center items-center">
@@ -58,13 +57,6 @@
 			</div>
 		</div>
 		<div class="grid w-full h-full">
-			<div class="hidden md:block sticky top-0 variant-glass card">
-				<TabGroup flex="flex flex-col items-center w-1/3">
-					<Tab bind:group={tabSet} name="productDetail" value={0}>Product Detail</Tab>
-					<Tab bind:group={tabSet} name="description" value={1}>Description</Tab>
-					<Tab bind:group={tabSet} name="review" value={2}>Review</Tab>
-				</TabGroup>
-			</div>
 			<div class="md:pt-4 md:pl-4 space-y-4">
 				<h4 id="productDetail">
 					{productData?.name}

@@ -8,7 +8,8 @@
 	export let t: ToastSettings = {
 		message: messageText,
 		background: `variant-ghost-${type}`,
-		position:"t",
+		
+
 	};
 
 	export const triggerToast = () => {

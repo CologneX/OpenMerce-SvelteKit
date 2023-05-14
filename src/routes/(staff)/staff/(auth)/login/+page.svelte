@@ -12,7 +12,7 @@
 			target: document.body,
 			props: {
 				messageText: message,
-				type: type
+				type: type,
 			}
 		});
 		toast.triggerToast();
