@@ -8,7 +8,7 @@
 		id: string;
 		name: string;
 		price: number;
-		images: string[];
+		image: string;
 		rating: number;
 	}
 	let products: Product[] = productData[0].products;
@@ -129,25 +129,24 @@
 										</div>
 									</picture>
 
-									<section class="p-4">
-										<h6>{product.name}</h6>
-										<h6 class="font-semibold">
-											{product.price.toLocaleString('id-ID', {
-												style: 'currency',
-												currency: 'IDR',
-												minimumFractionDigits: 0
-											})}
-										</h6>
-									</section>
-									<footer class="p-4">
-										<hr class="!border-t-2 border-current" />
-										<div class="flex items-center">
-											<Star />
-											<h6>{product.rating}</h6>
-										</div>
-									</footer>
-								</a>
-							</div>
+								<section class="p-4">
+									<h6>{product.name}</h6>
+									<h6 class="font-semibold">
+										{product.price.toLocaleString('id-ID', {
+											style: 'currency',
+											currency: 'IDR',
+											minimumFractionDigits: 0
+										})}
+									</h6>
+								</section>
+								<footer class="p-4">
+									<hr class="!border-t-2 border-current" />
+									<div class="flex items-center">
+										<Star />
+										<span>{product.rating}</span>
+									</div>
+								</footer>
+							</a>
 						{/each}
 					</Carousel>
 				</div>
@@ -195,12 +194,14 @@
 			{#each products as item}
 				<a class="card w-32" href="product/{item.id}">
 					<picture class="aspect-square shadow-xl flex justify-center items-center w-full">
-						<source src="/usercontent/{item.images}" />
-						<div class="grid place-items-center">
-							<!-- <TinyLogo height="8"/> -->
-							<Logo />
-							<p class="text-center">No Image Found</p>
-						</div>
+						{#if item.image}
+							<img src="/usercontent/{item.image}" alt="{item.name}'s image" />
+						{:else}
+							<div class="no-image">
+								<Logo />
+								<p class="text-center">No Image Found</p>
+							</div>
+						{/if}
 					</picture>
 
 					<section class="p-4">
