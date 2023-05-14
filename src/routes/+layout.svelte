@@ -12,7 +12,6 @@
 		popup,
 		ListBox,
 		ListBoxItem,
-		localStorageStore,
 		Toast,
 		Drawer,
 		drawerStore,
@@ -71,6 +70,11 @@
 
 	onMount(() => {
 		isLoading = false;
+		if (localStorage.getItem('first_name') !== null) {
+			isLoggedInStore.set(true);
+		} else if (localStorage.getItem('username') !== null) {
+			isStaffLoggedInStore.set(true);
+		}
 	});
 	// end for isLoggedin
 	let isLoggedIn: boolean;
@@ -110,19 +114,62 @@
 	// end for screenwidth
 
 	// for logout
+	let isLoggingOut: boolean = false;
+	import { error } from '@sveltejs/kit';
 	const handleLogout = () => {
 		if (isLoggedIn) {
-			localStorage.removeItem('first_name');
-			localStorage.removeItem('last_name');
-			isLoggedInStore.set(false);
-			goto('/login');
+			const logoutUser = async () => {
+				isLoggingOut = true;
+				const response = await fetch('/api/v1/auth/logout', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				});
+
+				const data = await response.json();
+				console.log(data);
+				if (data.success) {
+					localStorage.removeItem('first_name');
+					localStorage.removeItem('last_name');
+					isLoggedInStore.set(false);
+					goto('/login');
+				} else {
+					throw error(response.status, {
+						message: data.message
+					});
+				}
+
+				isLoggingOut = false;
+			};
+			logoutUser();
 		} else if (isStaffLoggedIn) {
-			localStorage.removeItem('username');
-			localStorage.removeItem('inv_user');
-			localStorage.removeItem('sys_admin');
-			localStorage.removeItem('fin_user');
-			isStaffLoggedInStore.set(false);
-			goto('/staff/login');
+			const logoutStaff = async () => {
+				isLoggingOut = true;
+				const response = await fetch('/api/v1/auth/logout', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				});
+
+				const data = await response.json();
+				if (data.success) {
+					localStorage.removeItem('username');
+					localStorage.removeItem('inv_user');
+					localStorage.removeItem('sys_admin');
+					localStorage.removeItem('fin_user');
+					isStaffLoggedInStore.set(false);
+					goto('/staff/login');
+				} else {
+					throw error(response.status, {
+						message: data.message
+					});
+				}
+
+				isLoggingOut = false;
+			};
+			logoutStaff();
 		}
 
 		if (screenWidth < 768) {
@@ -158,68 +205,75 @@
 </script>
 
 <svelte:window bind:innerWidth={screenWidth} />
-
+{#if isLoading || $navigating}
 	<Preloader />
-
+{/if}
 
 <AppShell on:scroll={scrollHandler} slotHeader="z-20">
 	<Toast position="br" />
 	{#if screenWidth < 768}
 		<Drawer>
-			<div class="flex flex-col p-4 gap-2">
-				<div class="h-auto w-full flex justify-end place-items-center">
+			<div class="flex flex-col p-4 gap-2 card h-full border-2">
+				<header class="w-full flex justify-end place-items-center card-header">
 					<h4 class="font-bold">Main Menu</h4>
 					<button on:click={() => drawerStore.close()} class="btn">
 						<span>
 							<Exit />
 						</span>
 					</button>
-				</div>
+				</header>
 				<hr class="!border !border-current" />
-				<div class="grid justify-items-center gap-2">
+				<section class="gap-2 grid">
 					{#if !isLoggedIn}
-						<a
-							href="/login"
-							class="btn h-fit variant-ringed-primary w-full"
-							on:click={() => drawerStore.close()}><span class="font-semibold">Login</span></a
-						>
-						<a
-							href="/register"
-							class="btn h-fit variant-glass-primary w-full"
-							on:click={() => drawerStore.close()}><span class="font-semibold">Register</span></a
-						>
-					{:else}
-						<span>
-							<Avatar
-								initials="{first_name?.charAt(0)}{last_name?.charAt(0)}"
-								background="bg-primary-500"
-								width="w-12"
-							/>
-						</span>
-						<span>{first_name}</span>
-					{/if}
-					<div class="grid grid-cols-2 gap-2 justify-items-center w-full">
 						<div>
-							<p>Theme</p>
-							<LightSwitch />
+							<a
+								href="/login"
+								class="btn h-fit variant-ringed-primary w-full"
+								on:click={() => drawerStore.close()}><span class="font-semibold">Login</span></a
+							>
+							<a
+								href="/register"
+								class="btn h-fit variant-glass-primary w-full"
+								on:click={() => drawerStore.close()}><span class="font-semibold">Register</span></a
+							>
 						</div>
+					{:else}
+						<div class="card p-4 border-2 grid place-items-center">
+							<span>
+								<Avatar
+									initials="{first_name?.charAt(0)}{last_name?.charAt(0)}"
+									background="bg-primary-500"
+									width="w-12"
+								/>
+							</span>
+							<span>{first_name} {last_name}</span>
+						</div>
+					{/if}
+					<footer class="card-footer">
 						<div>
 							{#if isLoggedIn || isStaffLoggedIn}
-								<button class="btn variant-filled w-full" on:click={handleLogout}>Logout</button>
+								<button
+									class="btn variant-filled w-full"
+									disabled={isLoggingOut}
+									on:click={handleLogout}>{isLoggingOut ? 'Logging Out...' : 'Log Out'}</button
+								>
 							{/if}
 						</div>
-					</div>
-				</div>
+					</footer>
+				</section>
 			</div>
 		</Drawer>
 	{/if}
 	<svelte:fragment slot="header">
 		<AppBar
-			gridColumns="md:grid-cols-5 grid-cols-3"
-			slotLead="w-auto hidden md:block"
-			slotDefault="place-self-center w-full col-span-2 md:col-span-3 max-w-4xl"
+			gridColumns="lg:grid-cols-5 grid-cols-3"
+			slotLead="w-auto hidden lg:block"
+			slotDefault="place-self-center w-full col-span-2 lg:col-span-3 max-w-4xl"
 			slotTrail="place-content-end col-span-1"
 			gap="gap-8"
+			background="bg-primary-500"
+			padding="p-2"
+			regionRowHeadline=""
 		>
 			{#if screenWidth < 768 && $page.url.pathname !== '/'}
 				<button class="btn-icon btn-icon-sm" on:click={() => history.back()}>
@@ -228,29 +282,18 @@
 					</span>
 				</button>
 			{/if}
-			<!-- <svelte:fragment slot="headline">
-				<small>Categories</small>
-			</svelte:fragment> -->
+			<svelte:fragment slot="headline">
+				<div class="text-end">
+					<small
+						>Location <button class="font-semibold btn btn-sm">Universitas Ciputra</button></small
+					>
+				</div>
+			</svelte:fragment>
 			<svelte:fragment slot="lead">
-				<a href="/" aria-label="Logo that redirects to home page" class="md:block hidden w-full">
-					<Logo />
+				<a href="/" aria-label="Logo that redirects to home page" class="lg:block hidden w-full">
+					<Logo height={'6'} />
 				</a>
 			</svelte:fragment>
-
-			<!-- <div class="h-8 w-full input-group input-group-divider grid-cols-[auto_1fr_auto]">
-				<div class="input-group-shim bg-transparent h-8">
-					<Search />
-				</div>
-				<form action="/search/{search}" class="w-full h-8">
-					<input
-						type="search"
-						placeholder="Search Openmerce"
-						class="w-full h-full max-w-4xl text-sm md:text-base md:placeholder:text-base placeholder:text-sm"
-						bind:value={search}
-						use:popup={searchBar}
-					/>
-				</form>
-			</div> -->
 			<form action="/search/{search}" class="w-full h-8">
 				<input
 					type="search"
@@ -280,7 +323,7 @@
 			</div>
 
 			<svelte:fragment slot="trail">
-				{#if !screenWidth < 768}
+				{#if screenWidth > 768}
 					<div class="flex gap-2">
 						<button
 							type="button"
@@ -292,6 +335,13 @@
 								<ShoppingCart />
 							</span>
 						</button>
+						{#if isLoggedIn || isStaffLoggedIn}
+							<button type="button" class="btn-icon btn-icon-sm" on:click={handleBellClick}>
+								<span>
+									<Bell />
+								</span>
+							</button>
+						{/if}
 						<span class="divider-vertical !border-current" />
 						<div
 							class="card p-2 bg-filled [&>*]:pointer-events-none w-full max-w-md"
@@ -303,13 +353,7 @@
 							</header>
 							<section class="p-2" />
 						</div>
-						{#if isLoggedIn || isStaffLoggedIn}
-							<button type="button" class="btn-icon btn-icon-sm" on:click={handleBellClick}>
-								<span>
-									<Bell />
-								</span>
-							</button>
-						{/if}
+
 						{#if !isLoggedIn && !isStaffLoggedIn}
 							<a href="/login" class="btn btn-sm variant-ringed-primary"
 								><span class="font-semibold">Login</span></a
@@ -320,7 +364,7 @@
 						{/if}
 						<button
 							type="button"
-							class="btn-icon btn-icon-sm"
+							class="btn btn-sm"
 							use:popup={popupSettings}
 							aria-labelledby="setting button"
 						>
@@ -386,7 +430,11 @@
 							<div class="arrow bg-surface-100-800-token" />
 						</div>
 						{#if isLoggedIn || isStaffLoggedIn}
-							<button class="btn variant-filled w-full" on:click={handleLogout}>Logout</button>
+							<button
+								class="btn variant-filled w-full"
+								disabled={isLoggingOut}
+								on:click={handleLogout}>{isLoggingOut ? 'Logging Out...' : 'Log Out'}</button
+							>
 						{/if}
 					</div>
 				</div>

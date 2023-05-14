@@ -3,7 +3,6 @@
 	const { productData } = data;
 	let tabSet: number = 0;
 	import { TabGroup, Tab } from '@skeletonlabs/skeleton';
-	import { onMount } from 'svelte';
 	let Y = 0;
 	// for scroll to id in div
 	// onMount(() => {});
@@ -83,11 +82,9 @@
 				<div class="md:flex gap-2 hidden">
 					<button class="btn variant-filled-primary">Buy Now</button>
 					<button class="btn variant-soft-primary">Add to cart</button>
-					<!-- <p>{Y}</p> -->
 				</div>
 
 				<div class="card" id="productDescription">
-					<!-- {productData?.description} -->
 					this is description Lorem ipsum dolor, sit amet consectetur adipisicing elit. Provident voluptates
 					blanditiis asperiores dolores magni architecto? Repellat laudantium, aliquid aperiam temporibus
 					vero aut ipsum? Asperiores harum, consequatur aliquam quia tempore quae at eveniet officia

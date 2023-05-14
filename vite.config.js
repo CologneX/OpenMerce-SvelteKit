@@ -10,11 +10,14 @@ export default ({ mode }) => {
 					target: process.env.VITE_API_URL,
 					changeOrigin: true
 				},
-				'/usercontent':{
+				'/usercontent': {
 					target: process.env.VITE_API_URL,
 					changeOrigin: true
 				}
 			}
+		},
+		optimizeDeps: {
+			include: ['lodash.get', 'lodash.isequal', 'lodash.clonedeep']
 		}
 	});
 };

@@ -34,6 +34,3 @@ export const load: PageLoad = async ({ fetch, params }) => {
     };
 };
 
-export const csr = true;
-export const ssr = false;
-export const prerender = false;
