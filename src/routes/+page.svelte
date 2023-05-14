@@ -20,7 +20,7 @@
 		id: string;
 		name: string;
 		price: number;
-		images: string[];
+		image: string;
 		rating: number;
 	}
 	let products: Product[] = productData[0].products;
@@ -140,33 +140,40 @@
 						infinite={false}
 					>
 						{#each products as product}
-							<a class="card grid card-hover w-24" href="product/{product.id}">
-								<picture class="aspect-square shadow-xl card flex justify-center items-center">
-									<source src="/usercontent/{product.images}" />
-									<div>
-										<Logo />
-										<p class="text-center">No Image Found</p>
-									</div>
-								</picture>
+							<!-- this div will add margin to child component as a hacky workaround of Carousel component -->
+							<!-- TODO:the first and last component shown in carousel has a ml and mr in it -->
+							<div class="px-2 bg-transparent w-24">
+								<a class="card grid card-hover w-full h-full" href="product/{product.id}">
+									<picture class="aspect-square shadow-xl card flex justify-center items-center">
+										{#if product.image}
+											<img src="/usercontent/{product.image}" alt="{product.name}'s image" />
+												{:else}
+											<div class="no-image">
+												<Logo />
+												<p class="text-center">No Image Found</p>
+											</div>
+										{/if}
+									</picture>
 
-								<section class="p-4">
-									<h6>{product.name}</h6>
-									<h6 class="font-semibold">
-										{product.price.toLocaleString('id-ID', {
-											style: 'currency',
-											currency: 'IDR',
-											minimumFractionDigits: 0
-										})}
-									</h6>
-								</section>
-								<footer class="p-4">
-									<hr class="!border-t-2 border-current" />
-									<div class="flex items-center">
-										<Star />
-										<span>{product.rating}</span>
-									</div>
-								</footer>
-							</a>
+									<section class="p-4">
+										<h6>{product.name}</h6>
+										<h6 class="font-semibold">
+											{product.price.toLocaleString('id-ID', {
+												style: 'currency',
+												currency: 'IDR',
+												minimumFractionDigits: 0
+											})}
+										</h6>
+									</section>
+									<footer class="p-4">
+										<hr class="!border-t-2 border-current" />
+										<div class="flex items-center">
+											<Star />
+											<span>{product.rating}</span>
+										</div>
+									</footer>
+								</a>
+							</div>
 						{/each}
 					</Carousel>
 				</div>
@@ -214,12 +221,14 @@
 			{#each products as item}
 				<a class="card w-32" href="product/{item.id}">
 					<picture class="aspect-square shadow-xl flex justify-center items-center w-full">
-						<source src="/usercontent/{item.images}" />
-						<div class="grid place-items-center">
-							<!-- <TinyLogo height="8"/> -->
-							<Logo />
-							<p class="text-center">No Image Found</p>
-						</div>
+						{#if item.image}
+							<img src="/usercontent/{item.image}" alt="{item.name}'s image" />
+						{:else}
+							<div class="no-image">
+								<Logo />
+								<p class="text-center">No Image Found</p>
+							</div>
+						{/if}
 					</picture>
 
 					<section class="p-4">
