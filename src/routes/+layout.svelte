@@ -20,7 +20,6 @@
 	} from '@skeletonlabs/skeleton';
 	import { navigating } from '$app/stores';
 	import Logo from '$lib/icons/Logo.svelte';
-	import Search from '$lib/icons/Search.svelte';
 	import type { PopupSettings, DrawerSettings } from '@skeletonlabs/skeleton';
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
@@ -40,14 +39,10 @@
 	};
 
 	let comboboxValue: string;
-	import type { Writable, get } from 'svelte/store';
-	const storeLang: Writable<string> = localStorageStore('storeLang', 'English');
 	let popupCombobox: PopupSettings = {
 		event: 'focus-click',
 		target: 'combobox',
 		placement: 'bottom',
-		// Close the popup when the item is clicked
-		closeQuery: '.listbox-item'
 	};
 
 	// for settings (mobile) drawer
