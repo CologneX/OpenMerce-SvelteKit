@@ -1,4 +1,5 @@
 <script lang="ts">
+	export const prerender = true;
 	// The ordering of these imports is critical to your app working properly
 	import '../theme.postcss';
 	// If you have source.organizeImports set to true in VSCode, then it will auto change this ordering
@@ -42,7 +43,7 @@
 	let popupCombobox: PopupSettings = {
 		event: 'focus-click',
 		target: 'combobox',
-		placement: 'bottom',
+		placement: 'bottom'
 	};
 
 	// for settings (mobile) drawer
@@ -187,12 +188,12 @@
 						<a
 							href="/login"
 							class="btn h-fit variant-ringed-primary w-full"
-							on:click={() => drawerStore.close()}>Login</a
+							on:click={() => drawerStore.close()}><span class="font-semibold">Login</span></a
 						>
 						<a
 							href="/register"
 							class="btn h-fit variant-glass-primary w-full"
-							on:click={() => drawerStore.close()}>Register</a
+							on:click={() => drawerStore.close()}><span class="font-semibold">Register</span></a
 						>
 					{:else}
 						<span>
@@ -239,7 +240,7 @@
 			</svelte:fragment> -->
 			<svelte:fragment slot="lead">
 				<a href="/" aria-label="Logo that redirects to home page" class="md:block hidden w-full">
-					<Logo  />
+					<Logo />
 				</a>
 			</svelte:fragment>
 
@@ -317,8 +318,12 @@
 							</button>
 						{/if}
 						{#if !isLoggedIn && !isStaffLoggedIn}
-							<a href="/login" class="btn btn-sm variant-ringed-primary"><span>Login</span></a>
-							<a href="/register" class="btn btn-sm variant-glass-primary"><span>Register</span></a>
+							<a href="/login" class="btn btn-sm variant-ringed-primary"
+								><span class="font-semibold">Login</span></a
+							>
+							<a href="/register" class="btn btn-sm variant-glass-primary"
+								><span class="font-semibold">Register</span></a
+							>
 						{/if}
 						<button
 							type="button"
