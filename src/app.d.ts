@@ -8,7 +8,7 @@ declare namespace App {
 		message: string;
 	}
 	// interface Platform {}
-}
+};
 
 declare class Products {
 	id: string;
@@ -17,14 +17,15 @@ declare class Products {
 	quantity: number;
 	rating: number;
 	image: string;
-}
+};
 
-declare class ProductDetail {
+declare class ProductDetail{
 	id: string;
 	name: string;
-	price: number;
-	quantity: number;
-	rating: number;
-	image_urls: string;
 	description: string;
-}
+	price: number;
+	weight: number;
+	category_name: string;
+	cumulative_review: number;
+	image_urls: string[];
+};

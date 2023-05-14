@@ -1,11 +1,43 @@
 <script lang="ts">
-	export let data;
-	const { productData } = data;
-
-	let Y = 0;
-	// for scroll to id in div
-	// onMount(() => {});
-	// end for scroll to id in div
+	import { page } from '$app/stores';
+	import { onMount } from 'svelte';
+	import { error } from '@sveltejs/kit';
+	const param = $page.params.productId;
+	let product: ProductDetail = {
+		id: '',
+		name: '',
+		description: '',
+		price: 0,
+		image_urls: [],
+		cumulative_review: 0,
+		weight: 0,
+		category_name: ''
+	};
+	onMount(() => {
+		const getProduct = async () => {
+			const response = await fetch(`/api/v1/product?id=${param}`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+			if (response.status == 400 || response.status == 404) {
+				throw error(400, {
+					message: 'Oops, product not found!'
+				});
+			} else if (!response.ok) {
+				throw error(response.status, {
+					message: `${response.statusText}`
+				});
+			}
+			const productData: ProductDetail = await response.json();
+			return productData;
+		};
+		getProduct().then((productData) => {
+			product = productData;
+		});
+	});
+	// let Y = 0;
 
 	// for image carousel
 	import Carousel from 'svelte-carousel';
@@ -16,12 +48,12 @@
 </script>
 
 <svelte:head>
-	<title>{productData.name}</title>
-	<meta name="description" content={productData?.name} />
+	<title>{product.name}</title>
+	<meta name="description" content={product.name} />
 
 	<meta
 		name="keywords"
-		content="OpenMerce, E-Commerce, Open-Source ECommerce, Svelte, SvelteKit, OpenMerce Register, Register, {productData?.name}"
+		content="OpenMerce, E-Commerce, Open-Source ECommerce, Svelte, SvelteKit, OpenMerce Register, Register, {product.name}"
 	/>
 	<meta name="author" content="OpenMerce" />
 </svelte:head>
@@ -31,8 +63,8 @@
 			<div class=" w-full aspect-square sticky top-0 p-0 md:pt-7">
 				{#if browser}
 					<Carousel bind:this={carousel} infinite={false} arrows={false}>
-						{#if productData.image_urls}
-							{#each productData.image_urls as image}
+						{#if product.image_urls}
+							{#each product.image_urls as image}
 								<picture class="aspect-square shadow-xl card flex justify-center items-center">
 									{#if image}
 										<img src="/usercontent/{image}" alt="{image}'s image" />
@@ -59,12 +91,12 @@
 		<div class="grid w-full h-full">
 			<div class="md:pt-4 md:pl-4 space-y-4">
 				<h4 id="productDetail">
-					{productData?.name}
+					{product.name}
 				</h4>
 				<h3
 					class="font-bold bg-gradient-to-br from-primary-500 box-decoration-clone bg-clip-text text-transparent to-secondary-500"
 				>
-					{productData?.price.toLocaleString('id-ID', {
+					{product.price.toLocaleString('id-ID', {
 						style: 'currency',
 						currency: 'IDR',
 						minimumFractionDigits: 0
@@ -77,31 +109,7 @@
 				</div>
 
 				<div class="card" id="productDescription">
-					this is description Lorem ipsum dolor, sit amet consectetur adipisicing elit. Provident voluptates
-					blanditiis asperiores dolores magni architecto? Repellat laudantium, aliquid aperiam temporibus
-					vero aut ipsum? Asperiores harum, consequatur aliquam quia tempore quae at eveniet officia
-					iure saepe excepturi non voluptas cum deleniti consectetur quis? Odit et distinctio nihil delectus
-					amet officiis neque excepturi eius accusamus tempore incidunt non nobis at explicabo id saepe
-					expedita ratione facere molestias, dignissimos quos placeat dolor. Nihil debitis voluptas enim
-					quidem inventore architecto. Deserunt maxime est nam sequi magnam labore? Ut dolore corporis
-					eius, eaque animi similique ipsum officia error, molestias enim voluptatibus voluptatum ipsa.
-					Fugiat obcaecati recusandae impedit est reprehenderit, illo expedita enim sunt beatae temporibus
-					dolor odit repellat consectetur id sapiente ad unde molestiae sequi quasi nostrum ullam itaque
-					cum dicta harum! Tempore, laboriosam. Doloribus tempore corrupti quam animi laborum porro optio,
-					hic quos nobis, nisi laboriosam unde ipsum minima sit autem earum ea. Consectetur enim quibusdam
-					animi obcaecati ipsam voluptates maiores, fugiat in exercitationem dolor praesentium pariatur.
-					Deleniti tenetur mollitia numquam aspernatur ut ea, illum assumenda. Assumenda harum quasi
-					obcaecati, explicabo itaque adipisci accusamus dolorum illo facilis. Quo ipsam consequuntur
-					quisquam corporis itaque facilis dignissimos laboriosam quam molestiae eveniet at omnis atque
-					delectus velit, ullam perspiciatis corrupti perferendis? Modi, cumque consectetur sed culpa
-					distinctio quod facilis, aut excepturi quo dolore ut reiciendis vitae expedita minus! Impedit
-					cumque accusantium qui quis nisi, sit rerum nesciunt dolorem molestias officia totam illum
-					laboriosam! Commodi facilis provident nostrum sapiente laboriosam facere maiores nisi saepe
-					illum excepturi. Ipsum quaerat modi sit excepturi reprehenderit repellendus nam? Voluptate
-					placeat facere corrupti sint veniam est nulla quae dolorem ratione, repudiandae distinctio
-					facilis. Tempora quidem voluptates dolore quisquam ipsam illo dolorum repudiandae illum, pariatur
-					perferendis, optio ipsa. Repudiandae iusto facere, enim itaque dolor, molestias impedit dolores
-					voluptatum adipisci nobis nihil optio reprehenderit veritatis!
+					{product.description}
 				</div>
 			</div>
 		</div>
