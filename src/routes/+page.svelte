@@ -122,31 +122,32 @@
 							<div class="px-2 bg-transparent w-28 first:pl-0 last:pr-0">
 								<a class="card grid card-hover w-full h-full" href="product/{product.id}">
 									<picture class="aspect-square shadow-xl card flex justify-center items-center">
-										<source src="/usercontent/{product.images}" />
+										<source src="/usercontent/{product.image}" />
 										<div>
 											<Logo />
 											<p class="text-center">No Image Found</p>
 										</div>
 									</picture>
 
-								<section class="p-4">
-									<h6>{product.name}</h6>
-									<h6 class="font-semibold">
-										{product.price.toLocaleString('id-ID', {
-											style: 'currency',
-											currency: 'IDR',
-											minimumFractionDigits: 0
-										})}
-									</h6>
-								</section>
-								<footer class="p-4">
-									<hr class="!border-t-2 border-current" />
-									<div class="flex items-center">
-										<Star />
-										<span>{product.rating}</span>
-									</div>
-								</footer>
-							</a>
+									<section class="p-4">
+										<h6>{product.name}</h6>
+										<h6 class="font-semibold">
+											{product.price.toLocaleString('id-ID', {
+												style: 'currency',
+												currency: 'IDR',
+												minimumFractionDigits: 0
+											})}
+										</h6>
+									</section>
+									<footer class="p-4">
+										<hr class="!border-t-2 border-current" />
+										<div class="flex items-center">
+											<Star />
+											<span>{product.rating}</span>
+										</div>
+									</footer>
+								</a>
+							</div>
 						{/each}
 					</Carousel>
 				</div>
