@@ -9,3 +9,22 @@ declare namespace App {
 	}
 	// interface Platform {}
 }
+
+declare class Products {
+	id: string;
+	name: string;
+	price: number;
+	quantity: number;
+	rating: number;
+	image: string;
+}
+
+declare class ProductDetail {
+	id: string;
+	name: string;
+	price: number;
+	quantity: number;
+	rating: number;
+	images_url: string;
+	description: string;
+}
