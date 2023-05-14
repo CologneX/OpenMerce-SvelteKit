@@ -119,14 +119,19 @@
 						infinite={false}
 					>
 						{#each products as product}
-							<div class="px-2 bg-transparent w-28 first:pl-0 last:pr-0">
+							<!-- this div will add margin to child component as a hacky workaround of Carousel component -->
+							<!-- TODO:the first and last component shown in carousel has a ml and mr in it -->
+							<div class="px-2 bg-transparent w-24">
 								<a class="card grid card-hover w-full h-full" href="product/{product.id}">
 									<picture class="aspect-square shadow-xl card flex justify-center items-center">
-										<source src="/usercontent/{product.image}" />
-										<div>
-											<Logo />
-											<p class="text-center">No Image Found</p>
-										</div>
+										{#if product.image}
+											<img src="/usercontent/{product.image}" alt="{product.name}'s image" />
+										{:else}
+											<div>
+												<Logo />
+												<p class="text-center">No Image Found</p>
+											</div>
+										{/if}
 									</picture>
 
 									<section class="p-4">
@@ -143,7 +148,7 @@
 										<hr class="!border-t-2 border-current" />
 										<div class="flex items-center">
 											<Star />
-											<span>{product.rating}</span>
+											<h6>{product.rating}</h6>
 										</div>
 									</footer>
 								</a>
@@ -198,7 +203,7 @@
 						{#if item.image}
 							<img src="/usercontent/{item.image}" alt="{item.name}'s image" />
 						{:else}
-							<div class="no-image">
+							<div>
 								<Logo />
 								<p class="text-center">No Image Found</p>
 							</div>

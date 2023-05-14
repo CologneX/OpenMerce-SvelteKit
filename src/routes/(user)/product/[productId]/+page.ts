@@ -32,3 +32,4 @@ export const load: PageLoad = async ({ fetch, params }) => {
         productData: productData
     };
 };
+export const ssr = false;

@@ -33,15 +33,27 @@
 			<div class=" w-full aspect-square sticky top-0 p-0 md:pt-7">
 				{#if browser}
 					<Carousel bind:this={carousel} infinite={false}>
-						<!-- {#each productData.image_urls as image} -->
-						<picture class="aspect-square card flex justify-center items-center">
-							<source src="/usercontent/" />
-							<div>
-								<Logo />
-								<p class="text-center">No Image Found</p>
-							</div>
-						</picture>
-						<!-- {/each} -->
+						{#if productData.image_urls}
+							{#each productData.image_urls as image}
+								<picture class="aspect-square shadow-xl card flex justify-center items-center">
+									{#if image}
+										<img src="/usercontent/{image}" alt="{image}'s image" />
+									{:else}
+										<div>
+											<Logo />
+											<p class="text-center">No Image Found</p>
+										</div>
+									{/if}
+								</picture>
+							{/each}
+						{:else}
+							<picture class="aspect-square shadow-xl card flex justify-center items-center">
+								<div>
+									<Logo />
+									<p class="text-center">No Image Found</p>
+								</div>
+							</picture>
+						{/if}
 					</Carousel>
 				{/if}
 			</div>
