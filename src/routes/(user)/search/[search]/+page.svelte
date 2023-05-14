@@ -14,7 +14,7 @@
 		{#each productData as item}
 			<a class="card grid w-48 grid-rows-1 card-hover" href="product/{item.id}">
 				<picture class="aspect-square shadow-xl card flex justify-center items-center">
-					<source src="/usercontent/{item.images}" />
+					<source src="/usercontent/{item.image}" />
 					<div>
 						<Logo />
 						<p class="text-center">No Image Found</p>

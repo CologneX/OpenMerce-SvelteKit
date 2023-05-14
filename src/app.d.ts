@@ -25,6 +25,6 @@ declare class ProductDetail {
 	price: number;
 	quantity: number;
 	rating: number;
-	images_url: string;
+	image_urls: string;
 	description: string;
 }

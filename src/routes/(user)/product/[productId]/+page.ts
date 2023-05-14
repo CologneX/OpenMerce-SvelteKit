@@ -27,7 +27,7 @@ export const load: PageLoad = async ({ fetch, params }) => {
         const products = await response.json();
         return products;
     };
-    const productData = await getProduct();
+    const productData:ProductDetail = await getProduct();
     return {
         productData: productData
     };

@@ -16,7 +16,7 @@
 </script>
 
 <svelte:head>
-	<title>{productData?.name}</title>
+	<title>{productData.name}</title>
 	<meta name="description" content={productData?.name} />
 
 	<meta

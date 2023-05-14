@@ -22,14 +22,7 @@
 	let isLoggedIn: boolean;
 
 	let screenWidth: number;
-	interface Product {
-		id: string;
-		name: string;
-		price: number;
-		image: string;
-		rating: number;
-	}
-	let products: Product[] = [];
+	let products: Products[] = [];
 	let isLoading = true;
 	// fetch data
 	import { error } from '@sveltejs/kit';
