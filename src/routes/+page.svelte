@@ -4,14 +4,7 @@
 	import type { PageData } from './$types';
 	export let data: PageData;
 	const { productData } = data;
-	interface Product {
-		id: string;
-		name: string;
-		price: number;
-		image: string;
-		rating: number;
-	}
-	let products: Product[] = productData[0].products;
+
 	// if failed to fetch data
 
 	// pagination using svelte-pagination
@@ -22,7 +15,7 @@
 	let carouselOne: any;
 	let carouselBanner: any;
 	// end of pagination using svelte-pagination
-
+	
 	import { isLoggedInStore, screenWidthStore } from '$lib/stores';
 	import Logo from '$lib/icons/Logo.svelte';
 	let isLoggedIn: boolean;
@@ -33,6 +26,14 @@
 	screenWidthStore.subscribe((value) => {
 		screenWidth = value;
 	});
+	interface Product {
+		id: string;
+		name: string;
+		price: number;
+		image: string;
+		rating: number;
+	}
+	let products: Product[] = productData[0].products;
 </script>
 
 <svelte:head>

@@ -21,5 +21,3 @@ export const load: PageLoad = (async ({ fetch }) => {
         productData: response
     };
 }) satisfies PageLoad;
-
-export const ssr = false;

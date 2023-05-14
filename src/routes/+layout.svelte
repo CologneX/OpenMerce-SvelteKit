@@ -1,5 +1,4 @@
 <script lang="ts">
-	export const prerender = true;
 	// The ordering of these imports is critical to your app working properly
 	import '../theme.postcss';
 	// If you have source.organizeImports set to true in VSCode, then it will auto change this ordering
@@ -108,12 +107,6 @@
 	// for screenwidth
 	let screenWidth: number = 0;
 	$: screenWidthStore.set(screenWidth);
-	export let isMobile: boolean = false;
-	$: if (screenWidth < 768) {
-		isMobile = true;
-	} else {
-		isMobile = false;
-	}
 	// end for screenwidth
 
 	// for logout
@@ -165,13 +158,13 @@
 </script>
 
 <svelte:window bind:innerWidth={screenWidth} />
-{#if isLoading || $navigating}
+
 	<Preloader />
-{/if}
+
 
 <AppShell on:scroll={scrollHandler} slotHeader="z-20">
 	<Toast position="br" />
-	{#if isMobile}
+	{#if screenWidth < 768}
 		<Drawer>
 			<div class="flex flex-col p-4 gap-2">
 				<div class="h-auto w-full flex justify-end place-items-center">
@@ -287,7 +280,7 @@
 			</div>
 
 			<svelte:fragment slot="trail">
-				{#if !isMobile}
+				{#if !screenWidth < 768}
 					<div class="flex gap-2">
 						<button
 							type="button"
