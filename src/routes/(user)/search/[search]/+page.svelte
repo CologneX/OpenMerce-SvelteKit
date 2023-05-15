@@ -46,7 +46,7 @@
 	<div class="font-semibold text-xl">Search Result</div>
 	<div class="flex flex-wrap gap-4">
 		{#each products as item}
-			<a class="card grid w-48 grid-rows-1 card-hover" href="product/{item.id}">
+			<a class="card grid w-48 grid-rows-1 card-hover" href="/product/{item.id}">
 				<picture class="aspect-square shadow-xl card flex justify-center items-center">
 					<source src="/usercontent/{item.image}" />
 					<div>

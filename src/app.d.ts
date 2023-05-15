@@ -29,3 +29,11 @@ declare class ProductDetail{
 	cumulative_review: number;
 	image_urls: string[];
 };
+
+declare class CartProducts{
+	id: string;
+	name: string;
+	price: number;
+	quantity: number;
+	image: string;
+}

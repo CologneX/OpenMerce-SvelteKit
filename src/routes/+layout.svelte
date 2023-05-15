@@ -126,16 +126,14 @@
 						'Content-Type': 'application/json'
 					}
 				});
-
-				const data = await response.json();
-				if (data.success) {
+				if (response.ok) {
 					localStorage.removeItem('first_name');
 					localStorage.removeItem('last_name');
 					isLoggedInStore.set(false);
 					goto('/login');
 				} else {
 					throw error(response.status, {
-						message: data.message
+						message: response.statusText
 					});
 				}
 
@@ -145,15 +143,13 @@
 		} else if (isStaffLoggedIn) {
 			const logoutStaff = async () => {
 				isLoggingOut = true;
-				const response = await fetch('/api/v1/auth/logout', {
+				const response = await fetch('/api/v1/staff/auth/logout', {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json'
 					}
 				});
-
-				const data = await response.json();
-				if (data.success) {
+				if (response.ok) {
 					localStorage.removeItem('username');
 					localStorage.removeItem('inv_user');
 					localStorage.removeItem('sys_admin');
@@ -162,7 +158,7 @@
 					goto('/staff/login');
 				} else {
 					throw error(response.status, {
-						message: data.message
+						message: response.statusText
 					});
 				}
 
