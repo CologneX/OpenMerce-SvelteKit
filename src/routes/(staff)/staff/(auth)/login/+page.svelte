@@ -29,12 +29,6 @@
 		password: ''
 	};
 
-	export const snapshot: Snapshot<FormValues> = {
-		capture: () => form,
-		restore: (data: FormValues) => {
-			form.username = data.username;
-		}
-	};
 
 	// $: lockEmail =
 	// 	!form.email || !(form.email && /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(form.email))

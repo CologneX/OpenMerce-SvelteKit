@@ -26,6 +26,7 @@
 	let isLoading = true;
 	// fetch data
 	import { error } from '@sveltejs/kit';
+	import ProductCard from '$lib/ProductCard.svelte';
 	onMount(() => {
 		const getAllProducts = async () => {
 			isLoading = true;
@@ -123,8 +124,8 @@
 						<span><Next /></span>
 					</button>
 				{/if}
-				<div class="flex w-full h-full">
-					{#if !isLoading}
+				<div class="flex w-full h-full border-2 max-h-96">
+					{#if isLoading}
 						<Carousel
 							bind:this={carouselOne}
 							arrows={false}
@@ -179,7 +180,7 @@
 		{/if}
 	</div>
 
-	<div>
+	<div class="card">
 		<h3>All Products</h3>
 		<div class="grid grid-flow-col overflow-x-auto hide-scrollbar gap-1">
 			{#each products as item}
@@ -215,5 +216,10 @@
 				</a>
 			{/each}
 		</div>
+	</div>
+	<div class="grid grid-flow-col gap-1 overflow-x-auto hide-scrollbar card p-2">
+		{#each products as item}
+			<ProductCard products={item} />
+		{/each}
 	</div>
 </div>

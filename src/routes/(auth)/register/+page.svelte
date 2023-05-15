@@ -33,14 +33,6 @@
 		pin: string;
 	}
 
-	export const snapshot: Snapshot<FormValues> = {
-		capture: () => values,
-		restore: (data: FormValues) => {
-			values.email = data.email;
-			values.firstname = data.firstname;
-			values.lastname = data.lastname;
-		}
-	};
 	interface FormErrors {
 		email?: string;
 		password?: string;
