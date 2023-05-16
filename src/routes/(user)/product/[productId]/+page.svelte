@@ -111,24 +111,26 @@
 					{/if}
 				{/if}
 				<div class="flex gap-2">
-					{#each product.image_urls as image}
-						<button type="button" class="border-primary-500 border-2 rounded-md">
-							<picture class=" shadow-xl card flex justify-center items-center w-20">
-								{#if image}
-									<img
-										src="/usercontent/{image}"
-										alt="{image}'s image"
-										class="aspect-square object-contain"
-									/>
-								{:else}
-									<div>
-										<Logo />
-										<p class="text-center">No Image Found</p>
-									</div>
-								{/if}
-							</picture></button
-						>
-					{/each}
+					{#if product.image_urls}
+						{#each product.image_urls as image}
+							<button type="button" class="border-primary-500 border-2 rounded-md">
+								<picture class=" shadow-xl card flex justify-center items-center w-20">
+									{#if image}
+										<img
+											src="/usercontent/{image}"
+											alt="{image}'s image"
+											class="aspect-square object-contain"
+										/>
+									{:else}
+										<div>
+											<Logo />
+											<p class="text-center">No Image Found</p>
+										</div>
+									{/if}
+								</picture></button
+							>
+						{/each}
+					{/if}
 				</div>
 			</div>
 		</div>

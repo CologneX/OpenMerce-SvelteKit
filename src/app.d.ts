@@ -27,7 +27,7 @@ declare class ProductDetail {
 	weight: number;
 	category_name: string;
 	cumulative_review: number;
-	image_urls: string[];
+	image_urls: string[] | null;
 };
 
 declare class MainBanner {
