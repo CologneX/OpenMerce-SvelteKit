@@ -49,7 +49,7 @@
 
 <div class="w-full h-full">
 	<div class="font-semibold text-xl">Search Result</div>
-	<div class="flex flex-wrap gap-4 w-full border">
+	<div class="flex flex-wrap gap-4 w-full">
 		{#if isLoading}
 			<div class="placeholder w-full h-64 card animate-pulse" />
 			<div class="flex w-full gap-4">
