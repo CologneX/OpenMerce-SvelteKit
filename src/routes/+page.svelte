@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Star from '$lib/icons/Star.svelte';
 
-
 	// if failed to fetch data
 	import Logo from '$lib/icons/Logo.svelte';
 	// pagination using svelte-pagination
@@ -171,21 +170,40 @@
 			{/if}
 		</div>
 	</div>
-	<div>
+	<div class="w-full">
 		<div class="flex">
-			<h4 class="font-semibold flex-1">Sale just for you</h4>
+			<h4 class="font-semibold flex-1">Special Promo for You!!</h4>
 			<a href="/see-all" class=" decoration-transparent">See All</a>
 		</div>
-		<div class="grid grid-flow-col gap-1 overflow-x-auto hide-scrollbar card p-2 h-96">
+
+		<div class="grid grid-flow-col gap-1 overflow-x-auto hide-scrollbar card md:hidden">
+			{#each products as item}
+				<ProductCard products={item} />
+			{/each}
+		</div>
+
+		<div class="w-full hidden md:block h-96">
 			{#if !isLoading}
-				{#each products as item}
-					<ProductCard products={item} />
-				{/each}
+				<swiper-container
+					slides-per-view={6}
+					space-between={10}
+					navigation="true"
+					slides-per-group={3}
+					pagination="true"
+					grab-cursor="true"
+					on:progress={onProgress}
+					on:slidechange={onSlideChange}
+				>
+					{#each products as product}
+						<swiper-slide class="card"> <ProductCard products={product} /></swiper-slide>
+					{/each}
+				</swiper-container>
 			{:else}
 				<div class="w-full animate-pulse text-center placeholder h-full" />
 			{/if}
 		</div>
 	</div>
+
 	<hr class="!border-t-8" />
 
 	<div
