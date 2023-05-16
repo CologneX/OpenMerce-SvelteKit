@@ -1,4 +1,6 @@
+import { goto } from "$app/navigation";
 import { error } from "@sveltejs/kit";
+import { logoutUser, logoutStaff } from "./auth";
 export const refreshTokenUser = async () => {
     const response = await fetch('/api/v1/auth/refresh', {
         method: 'GET',
@@ -6,10 +8,9 @@ export const refreshTokenUser = async () => {
             'Content-Type': 'application/json'
         }
     });
-    if (!response.ok) {
-        throw error(response.status, {
-            message: `${response.statusText}, please login again!`
-        });
+    console.log(response.status)
+    if (response.status == 401) {
+        logoutUser();
     }
 };
 
@@ -20,9 +21,7 @@ export const refreshTokenStaff = async () => {
             'Content-Type': 'application/json'
         }
     });
-    if (!response.ok) {
-        throw error(response.status, {
-            message: `${response.statusText}, please login again!`
-        });
-    }
+  if(response.status == 401){
+    logoutStaff();
+  }
 };

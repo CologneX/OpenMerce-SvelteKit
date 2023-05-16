@@ -130,8 +130,6 @@
 				});
 				if (response.ok) {
 					logoutUser();
-					isLoggedInStore.set(false);
-					goto('/login');
 				} else {
 					throw error(response.status, {
 						message: response.statusText
@@ -152,8 +150,6 @@
 				});
 				if (response.ok) {
 					logoutStaff();
-					isStaffLoggedInStore.set(false);
-					goto('/staff/login');
 				} else {
 					throw error(response.status, {
 						message: response.statusText
@@ -327,7 +323,8 @@
 				<div class="text-end">
 					<small>
 						<div class="btn btn-sm py-0">
-							<span><MapPin /></span> <span> Location </span> <span class="font-bold"> Universitas Ciputra</span>
+							<span><MapPin /></span> <span> Location </span>
+							<span class="font-bold"> Universitas Ciputra</span>
 						</div>
 					</small>
 				</div>
@@ -412,9 +409,7 @@
 						</div>
 
 						{#if !isLoggedIn && !isStaffLoggedIn}
-							<a href="/login" class="btn btn-sm"
-								><span class="font-semibold">Login</span></a
-							>
+							<a href="/login" class="btn btn-sm"><span class="font-semibold">Login</span></a>
 							<a href="/register" class="btn btn-sm variant-ringed"
 								><span class="font-semibold">Register</span></a
 							>

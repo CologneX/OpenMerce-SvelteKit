@@ -1,8 +1,10 @@
+import { goto } from "$app/navigation";
 import { isLoggedInStore, isStaffLoggedInStore } from "./stores";
 export const logoutUser = () => {
     localStorage.removeItem('first_name');
     localStorage.removeItem('last_name');
     isLoggedInStore.set(false)
+    goto('/login');
 }
 
 export const isUserLoggedIn = () => {
@@ -15,6 +17,7 @@ export const logoutStaff = () => {
     localStorage.removeItem('fin_user');
     localStorage.removeItem('inv_admin');
     isStaffLoggedInStore.set(false)
+    goto('/staff/login');
 }
 
 export const isStaffLogged = () => {
@@ -44,9 +47,7 @@ export const getUserFirstName = () => {
 export const getUserLastName = () => {
     return localStorage.getItem('last_name');
 }
-let isLoggedIn = isUserLoggedIn();
 
-$: {
-    isLoggedIn = isUserLoggedIn();
-    console.log(`Is user logged in? ${isLoggedIn}`);
+export const loginUser = () =>{
+    
 }

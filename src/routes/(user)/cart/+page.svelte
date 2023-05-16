@@ -22,13 +22,17 @@
 				}
 			});
 			if (response.status === 401) {
-				refreshTokenUser();
+				await refreshTokenUser();
 				const response = await fetch('/api/v1/customer/cart', {
 					method: 'GET',
 					headers: {
 						'Content-Type': 'application/json'
 					}
 				});
+				if (response.ok) {
+					const cartData: CartProducts[] = await response.json();
+					return cartData; 
+				}
 			} else if (!response.ok) {
 				throw error(response.status, {
 					message: `${response.statusText}`
@@ -70,9 +74,7 @@
 					<label class="flex items-center space-x-2">
 						<input class="checkbox" type="checkbox" bind:checked={item.checked} />
 					</label>
-					<picture
-						class="aspect-square shadow-xl flex justify-center items-center h-24 rounded"
-					>
+					<picture class="aspect-square shadow-xl flex justify-center items-center h-24 rounded">
 						{#if item.image}
 							<a href="/product/{item.id}" class="unstyled"
 								><img
