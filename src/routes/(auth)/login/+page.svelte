@@ -2,34 +2,21 @@
 	import Logo from '$lib/icons/Logo.svelte';
 	import Google from '$lib/icons/Google.svelte';
 	import Facebook from '$lib/icons/Facebook.svelte';
-	import type { Snapshot } from './$types';
-	import Toast from '$lib/Toast.svelte';
+	import { triggerToast } from '$lib/utils/toast';
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
 	import { goto } from '$app/navigation';
-
-	// for toast
-	function triggerToast(type: string, message: string) {
-		const toast = new Toast({
-			target: document.body,
-			props: {
-				messageText: message,
-				type: type
-			}
-		});
-		toast.triggerToast();
-	}
-	// -- end for toast
 
 	interface FormValues {
 		email: string;
 		password: string;
+		remember_me: boolean;
 	}
 
 	const form: FormValues = {
 		email: '',
-		password: ''
+		password: '',
+		remember_me: false
 	};
-
 
 	// $: lockEmail =
 	// 	!form.email || !(form.email && /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(form.email))
@@ -44,7 +31,7 @@
 	// };
 	let loggingIn: boolean = false;
 	let error: boolean = false;
-	import { isLoggedInStore, isStaffLoggedInStore } from '$lib/stores';
+	import { isLoggedInStore, isStaffLoggedInStore } from '$lib/utils/stores';
 	const handleLoginSubmit = async () => {
 		loggingIn = true;
 		const response = await fetch('/api/v1/auth/login', {
@@ -54,7 +41,8 @@
 			},
 			body: JSON.stringify({
 				email: form.email,
-				password: form.password
+				password: form.password,
+				remember_me: form.remember_me
 			})
 		});
 
@@ -62,19 +50,19 @@
 			const data = await response.json();
 			localStorage.setItem('first_name', data.first_name);
 			localStorage.setItem('last_name', data.last_name);
-			triggerToast('success', `Welcome back, ${data.first_name} ${data.last_name}!`);
+			triggerToast(`Welcome back, ${data.first_name} ${data.last_name}!`, 'variant-filled-success');
 			isLoggedInStore.set(true);
 			goto('/', {
 				replaceState: true
 			});
 		} else if (response.status === 401) {
-			triggerToast('error', 'Invalid credentials');
+			triggerToast(`Invalid credentials`, 'variant-filled-error');
 			error = true;
 		} else if (response.status === 500) {
-			triggerToast('error', 'Server Error');
+			triggerToast(`Server Error`, 'variant-filled-error');
 			error = true;
 		} else {
-			triggerToast('error', response.statusText);
+			triggerToast( response.statusText, 'variant-filled-error');
 			error = true;
 		}
 		loggingIn = false;
@@ -95,7 +83,7 @@
 	<form on:submit|preventDefault={handleLoginSubmit} class="w-full h-full md:h-fit max-w-3xl">
 		<div class="card p-4 gap-y-12 h-full w-full grid">
 			<header class="card-header">
-				<span class="flex justify-center"><Logo /></span>
+				<span class="flex justify-center"><Logo height="10" /></span>
 				<!-- <h2>Login</h2> -->
 			</header>
 			<section>
@@ -118,6 +106,10 @@
 						disabled={loggingIn}
 						on:keypress={() => (error = false)}
 					/>
+					<label class="flex items-center space-x-2">
+						<input class="checkbox" type="checkbox" bind:checked={form.remember_me} />
+						<p>Remember Me</p>
+					</label>
 				</label>
 			</section>
 			<footer class="grid content-end">

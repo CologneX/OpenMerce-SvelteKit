@@ -19,7 +19,7 @@ declare class Products {
 	image: string;
 };
 
-declare class ProductDetail{
+declare class ProductDetail {
 	id: string;
 	name: string;
 	description: string;
@@ -30,10 +30,34 @@ declare class ProductDetail{
 	image_urls: string[];
 };
 
-declare class CartProducts{
+declare class MainBanner {
+	id: number;
+	image_url: string;
+	href: string;
+}
+declare class CartProducts {
 	id: string;
 	name: string;
 	price: number;
 	quantity: number;
 	image: string;
+	checked: boolean;
 }
+
+declare class LoginUser {
+	email: string;
+	password: string;
+	remember_me: boolean;
+}
+
+declare class RegisterUser {
+	name: string;
+	email: string;
+	password: string;
+	code: string;
+	first_name: string;
+	last_name: string;
+	birth_date: string;
+	gender: string;
+}
+

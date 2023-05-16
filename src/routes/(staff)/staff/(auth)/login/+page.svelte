@@ -1,34 +1,22 @@
 <script lang="ts">
 	import Logo from '$lib/icons/Logo.svelte';
 	import type { Snapshot } from './$types';
-	import Toast from '$lib/Toast.svelte';
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
+	import { triggerToast } from '$lib/utils/toast';
 	import { goto } from '$app/navigation';
-	import { isLoggedInStore, isStaffLoggedInStore } from '$lib/stores';
-
-	// for toast
-	function triggerToast(type: string, message: string) {
-		const toast = new Toast({
-			target: document.body,
-			props: {
-				messageText: message,
-				type: type,
-			}
-		});
-		toast.triggerToast();
-	}
-	// -- end for toast
+	import { isLoggedInStore, isStaffLoggedInStore } from '$lib/utils/stores';
 
 	interface FormValues {
 		username: string;
 		password: string;
+		remember_me: boolean;
 	}
 
 	const form: FormValues = {
 		username: '',
-		password: ''
+		password: '',
+		remember_me: false
 	};
-
 
 	// $: lockEmail =
 	// 	!form.email || !(form.email && /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(form.email))
@@ -62,19 +50,19 @@
 			localStorage.setItem('sys_admin', data.sys_admin);
 			localStorage.setItem('inv_user', data.inv_user);
 			localStorage.setItem('username', data.username);
-			triggerToast('success', `Welcome back, ${data.username}!`);
+			triggerToast(`Welcome back, ${data.username}!`, 'variant-filled-success');
 			isStaffLoggedInStore.set(true);
 			goto('/staff', {
 				replaceState: true
 			});
 		} else if (response.status === 401) {
-			triggerToast('error', 'Invalid credentials');
+			triggerToast('Invalid credentials', 'variant-filled-error');
 			error = true;
 		} else if (response.status === 500) {
-			triggerToast('error', 'Server Error');
+			triggerToast('Server Error', 'variant-filled-error');
 			error = true;
 		} else {
-			triggerToast('error', response.statusText);
+			triggerToast(response.statusText, 'variant-filled-error');
 			error = true;
 		}
 		loggingIn = false;
@@ -95,8 +83,8 @@
 	<form on:submit|preventDefault={handleLoginSubmit} class="w-full h-full md:h-fit max-w-3xl">
 		<div class="card p-4 gap-y-12 h-full w-full grid">
 			<header class="card-header">
-				<span class="flex justify-center"><Logo /></span>
-				<h2>Staff Login</h2>
+				<span class="flex justify-center"><Logo height="10" /></span>
+				<!-- <h2>Staff Login</h2> -->
 			</header>
 			<section>
 				<label class="label">
@@ -118,6 +106,10 @@
 						disabled={loggingIn}
 						on:keypress={() => (error = false)}
 					/>
+					<label class="flex items-center space-x-2">
+						<input class="checkbox" type="checkbox" bind:checked={form.remember_me} />
+						<p>Remember Me</p>
+					</label>
 				</label>
 			</section>
 			<footer class="grid content-end">

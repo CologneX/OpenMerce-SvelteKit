@@ -10,8 +10,6 @@
 		AppShell,
 		LightSwitch,
 		popup,
-		ListBox,
-		ListBoxItem,
 		Toast,
 		Drawer,
 		drawerStore,
@@ -37,16 +35,9 @@
 		placement: 'bottom-end'
 	};
 
-	let comboboxValue: string;
-	let popupCombobox: PopupSettings = {
-		event: 'focus-click',
-		target: 'combobox',
-		placement: 'bottom'
-	};
-
 	// for settings (mobile) drawer
 	const drawerMobile: DrawerSettings = {
-		bgDrawer: 'w-full h-full card md:hidden sm:block',
+		bgDrawer: 'w-full h-full card',
 		position: 'bottom',
 		blur: 'backdrop-blur-xl',
 		duration: 500
@@ -62,22 +53,29 @@
 	import { writable } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { isLoggedInStore, isStaffLoggedInStore, screenWidthStore } from '$lib/stores';
+	import { isLoggedInStore, isStaffLoggedInStore, screenWidthStore } from '$lib/utils/stores';
 
 	let last_name: string | null;
 	let username: string | null;
 	let first_name: string | null;
+	let selectedLanguage: string | null;
+	function setLanguage(lang: string) {
+		localStorage.setItem('prefLang', lang);
+		selectedLanguage = localStorage.getItem('prefLang');
+	}
 
+	let isLoggedIn = isUserLoggedIn();
 	onMount(() => {
 		isLoading = false;
-		if (localStorage.getItem('first_name') !== null) {
+		if (getUserFirstName() !== null) {
 			isLoggedInStore.set(true);
-		} else if (localStorage.getItem('username') !== null) {
+		} else if (getUserLastName !== null) {
 			isStaffLoggedInStore.set(true);
 		}
+		selectedLanguage = localStorage.getItem('prefLang');
 	});
 	// end for isLoggedin
-	let isLoggedIn: boolean;
+
 	isLoggedInStore.subscribe((value) => {
 		isLoggedIn = value;
 		if (value) {
@@ -86,15 +84,12 @@
 		}
 	});
 	let isStaffLoggedIn: boolean;
-	isStaffLoggedInStore.subscribe((value) => {
-		isStaffLoggedIn = value;
-		if (value) {
-			username = localStorage.getItem('username');
-		}
-	});
+
 	// for handling shopping cart click
 	function handleShoppingCartClick() {
-		if (!isLoggedIn || !isStaffLoggedIn) {
+		if (isLoggedIn || isStaffLoggedIn) {
+			goto('/cart');
+		} else {
 			goto('/login');
 		}
 	}
@@ -112,13 +107,20 @@
 	let screenWidth: number;
 	$: screenWidthStore.set(screenWidth);
 	// end for screenwidth
-
+	import {
+		logoutStaff,
+		logoutUser,
+		isUserLoggedIn,
+		getUserFirstName,
+		getUserLastName
+	} from '$lib/utils/auth';
 	// for logout
 	let isLoggingOut: boolean = false;
-	import { error } from '@sveltejs/kit';
+	import { error, type HttpError } from '@sveltejs/kit';
+	import MapPin from '$lib/icons/MapPin.svelte';
 	const handleLogout = () => {
 		if (isLoggedIn) {
-			const logoutUser = async () => {
+			const logoutUserAPI = async () => {
 				isLoggingOut = true;
 				const response = await fetch('/api/v1/auth/logout', {
 					method: 'POST',
@@ -127,8 +129,7 @@
 					}
 				});
 				if (response.ok) {
-					localStorage.removeItem('first_name');
-					localStorage.removeItem('last_name');
+					logoutUser();
 					isLoggedInStore.set(false);
 					goto('/login');
 				} else {
@@ -139,9 +140,9 @@
 
 				isLoggingOut = false;
 			};
-			logoutUser();
+			logoutUserAPI();
 		} else if (isStaffLoggedIn) {
-			const logoutStaff = async () => {
+			const logoutStaffAPI = async () => {
 				isLoggingOut = true;
 				const response = await fetch('/api/v1/staff/auth/logout', {
 					method: 'POST',
@@ -150,10 +151,7 @@
 					}
 				});
 				if (response.ok) {
-					localStorage.removeItem('username');
-					localStorage.removeItem('inv_user');
-					localStorage.removeItem('sys_admin');
-					localStorage.removeItem('fin_user');
+					logoutStaff();
 					isStaffLoggedInStore.set(false);
 					goto('/staff/login');
 				} else {
@@ -164,21 +162,14 @@
 
 				isLoggingOut = false;
 			};
-			logoutStaff();
+			logoutStaffAPI();
 		}
 
-		if (screenWidth < 768) {
+		if (screenWidth < 1024) {
 			drawerStore.close();
 		}
 	};
 	// end for logout
-
-	// for scrollY value
-	export let Y = writable(0);
-	function scrollHandler(event: any) {
-		Y = event.target.scrollTop;
-	}
-	// end for scrollY value
 
 	// handle search
 	let search: string;
@@ -188,8 +179,7 @@
 	const cartHover: PopupSettings = {
 		event: 'hover',
 		target: 'cartHover',
-		placement: 'bottom',
-		closeQuery: ''
+		placement: 'bottom'
 	};
 	// for search bar
 	const searchBar: PopupSettings = {
@@ -205,12 +195,21 @@
 	<Preloader />
 {/if}
 
-<AppShell on:scroll={scrollHandler} slotHeader="z-20">
-	<Toast position="t" zIndex="z-50" />
-	{#if screenWidth < 768}
+<AppShell slotHeader="z-20">
+	<Toast
+		position="t"
+		zIndex="z-50"
+		buttonDismiss="btn-icon btn-icon-small"
+		width="md:w-96 w-80"
+		shadow="shadow-2xl"
+	/>
+	{#if screenWidth < 1024}
 		<Drawer>
 			<div class="flex flex-col p-3 gap-2 card h-full w-full">
-				<header class="w-full flex justify-end place-items-center card-header">
+				<header class="w-full flex place-items-center">
+					<LightSwitch class="flex-none" />
+
+					<div class="flex-1" />
 					<h4 class="font-bold">Main Menu</h4>
 					<button on:click={() => drawerStore.close()} class="btn">
 						<span>
@@ -219,9 +218,9 @@
 					</button>
 				</header>
 				<hr class="!border !border-current" />
-				<section class="gap-2 grid w-full">
-					{#if !isLoggedIn}
-						<div>
+				<section class="gap-2 grid w-full h-full overflow-y-auto hide-scrollbar">
+					<div class="h-fit space-y-2">
+						{#if !isLoggedIn}
 							<a
 								href="/login"
 								class="btn h-fit variant-ringed-primary w-full"
@@ -232,27 +231,84 @@
 								class="btn h-fit variant-glass-primary w-full"
 								on:click={() => drawerStore.close()}><span class="font-semibold">Register</span></a
 							>
+						{:else}
+							<div class="card p-4 grid place-items-center w-full">
+								<span>
+									<Avatar
+										initials="{first_name?.charAt(0)}{last_name?.charAt(0)}"
+										background="bg-primary-500"
+										width="w-12"
+									/>
+								</span>
+								<span>{first_name} {last_name}</span>
+							</div>
+						{/if}
+						<div class="space-y-6">
+							<h4 class="font-semibold">My Activity</h4>
+							<div>
+								<a href="/blmada" class="btn btn-sm p-0"
+									><span> <ShoppingCart /> </span> <span>Transaction List</span></a
+								>
+							</div>
+							<div>
+								<a href="/blmada" class="btn btn-sm p-0"
+									><span> <ShoppingCart /> </span> <span>Wish List</span></a
+								>
+							</div>
+							<div>
+								<a href="/blmada" class="btn btn-sm p-0"
+									><span> <ShoppingCart /> </span> <span>Reviews</span></a
+								>
+							</div>
+
+							<h4 class="font-semibold">All Categories</h4>
+							<div>
+								<a href="/blmada" class="btn btn-sm p-0"
+									><span> <ShoppingCart /> </span> <span>Categories</span></a
+								>
+							</div>
+							<div>
+								<a href="/blmada" class="btn btn-sm p-0"
+									><span> <ShoppingCart /> </span> <span>Others</span></a
+								>
+							</div>
+							<h4 class="font-semibold">Help Center</h4>
+							<div>
+								<a href="/blmada" class="btn btn-sm p-0"
+									><span> <ShoppingCart /> </span> <span>Complaints</span></a
+								>
+							</div>
+							<div>
+								<a href="/blmada" class="btn btn-sm p-0"
+									><span> <ShoppingCart /> </span> <span>OpenMerce Care Helpdesk</span></a
+								>
+							</div>
 						</div>
-					{:else}
-						<div class="card p-4 border-2 grid place-items-center w-full">
-							<span>
-								<Avatar
-									initials="{first_name?.charAt(0)}{last_name?.charAt(0)}"
-									background="bg-primary-500"
-									width="w-12"
-								/>
-							</span>
-							<span>{first_name} {last_name}</span>
-						</div>
-					{/if}
+					</div>
 				</section>
-				<footer class="w-full self-end">
-					<button
-						class="btn btn-sm variant-filled w-full"
-						disabled={isLoggingOut}
-						on:click={handleLogout}>{isLoggingOut ? 'Logging Out...' : 'Log Out'}</button
-					>
-				</footer>
+
+				{#if isLoggedIn}
+					<footer class="w-full space-y-2">
+						<div>
+							<div class="flex">
+								{#each ['Indonesia', 'English'] as c}
+									<span
+										class="chip w-1/2 {selectedLanguage === c ? 'variant-filled' : 'variant-soft'}"
+										on:click={() => setLanguage(c)}
+										on:keypress
+									>
+										<span>{c}</span>
+									</span>
+								{/each}
+							</div>
+						</div>
+						<button
+							class="btn btn-sm variant-filled w-full"
+							disabled={isLoggingOut}
+							on:click={handleLogout}>{isLoggingOut ? 'Logging Out...' : 'Log Out'}</button
+						>
+					</footer>
+				{/if}
 			</div>
 		</Drawer>
 	{/if}
@@ -269,13 +325,15 @@
 		>
 			<svelte:fragment slot="headline">
 				<div class="text-end">
-					<small
-						>Location <button class="font-semibold btn btn-sm">Universitas Ciputra</button></small
-					>
+					<small>
+						<div class="btn btn-sm py-0">
+							<span><MapPin /></span> <span> Location </span> <span class="font-bold"> Universitas Ciputra</span>
+						</div>
+					</small>
 				</div>
 			</svelte:fragment>
 			<svelte:fragment slot="lead">
-				{#if screenWidth < 768 && $page.url.pathname !== '/'}
+				{#if screenWidth < 1024 && $page.url.pathname !== '/'}
 					<button class="btn-icon btn-icon-sm" on:click={() => history.back()}>
 						<span>
 							<Back />
@@ -315,7 +373,7 @@
 			</div>
 
 			<svelte:fragment slot="trail">
-				{#if screenWidth > 768}
+				{#if screenWidth > 1024}
 					<div class="flex gap-2">
 						<button
 							type="button"
@@ -335,22 +393,29 @@
 							</button>
 						{/if}
 						<span class="divider-vertical !border-current" />
-						<div
-							class="card p-2 bg-filled [&>*]:pointer-events-none w-full max-w-md"
-							data-popup="cartHover"
-						>
-							<header class="card-header grid grid-cols-2">
+						<div class="card p-6 bg-filled w-full max-w-md min-h-64 h-full" data-popup="cartHover">
+							<header class=" grid grid-cols-2">
 								<p class="text-start">Your Cart</p>
 								<p class="font-semibold text-end">Cart</p>
 							</header>
-							<section class="p-2" />
+							<section class="flex items-center justify-center">
+								{#if !isLoggedIn}
+									<p>Please log in to start purchasing :)</p>
+								{:else}
+									<div class="flex flex-row gap-x-2 w-full">
+										<div class="card">
+											<div class="placeholder" />
+										</div>
+									</div>
+								{/if}
+							</section>
 						</div>
 
 						{#if !isLoggedIn && !isStaffLoggedIn}
-							<a href="/login" class="btn btn-sm variant-ringed-primary"
+							<a href="/login" class="btn btn-sm"
 								><span class="font-semibold">Login</span></a
 							>
-							<a href="/register" class="btn btn-sm variant-glass-primary"
+							<a href="/register" class="btn btn-sm variant-ringed"
 								><span class="font-semibold">Register</span></a
 							>
 						{/if}
@@ -404,26 +469,21 @@
 					<div class="card-body space-y-3">
 						<h4>Settings</h4>
 						<LightSwitch />
-						<button class="btn variant-filled w-full" use:popup={popupCombobox}>
-							{comboboxValue ?? 'Language'}
-						</button>
 
-						<div class="card w-48 shadow-xl py-2" data-popup="combobox">
-							<!-- Listbox -->
-							<ListBox rounded="rounded-none">
-								<ListBoxItem bind:group={comboboxValue} name="medium" value="Bahasa Indonesia">
-									Bahasa Indonesia
-								</ListBoxItem>
-								<ListBoxItem bind:group={comboboxValue} name="medium" value="English">
-									English
-								</ListBoxItem>
-							</ListBox>
-							<!-- Arrow -->
-							<div class="arrow bg-surface-100-800-token" />
+						<div class="w-full shadow-xl py-2 flex">
+							{#each ['Indonesia', 'English'] as c}
+								<span
+									class="chip w-full {selectedLanguage === c ? 'variant-filled' : 'variant-soft'}"
+									on:click={() => setLanguage(c)}
+									on:keypress
+								>
+									<span>{c}</span>
+								</span>
+							{/each}
 						</div>
 						{#if isLoggedIn || isStaffLoggedIn}
 							<button
-								class="btn variant-filled w-full"
+								class="btn btn-sm variant-filled w-full"
 								disabled={isLoggingOut}
 								on:click={handleLogout}>{isLoggingOut ? 'Logging Out...' : 'Log Out'}</button
 							>
@@ -434,7 +494,7 @@
 		</AppBar>
 	</svelte:fragment>
 	<main class="h-full w-full grid place-items-center mx-0 mb:px-10 z-0">
-		<div class="h-full w-full max-w-6xl">
+		<div class="h-full w-full max-w-7xl overflow-y-auto hide-scrollbar lg:overflow-y-hidden pt-10">
 			<slot />
 		</div>
 	</main>

@@ -6,23 +6,10 @@
 	import { fade } from 'svelte/transition';
 	import { writable } from 'svelte/store';
 	import type { Snapshot } from './$types';
-	import Toast from '$lib/Toast.svelte';
+	import { triggerToast } from '$lib/utils/toast';
 	import Back from '$lib/icons/Back.svelte';
 	import { DateInput } from 'date-picker-svelte';
 	let date = new Date();
-
-	// for toast
-	function triggerToast(type: string, message: string) {
-		const toast = new Toast({
-			target: document.body,
-			props: {
-				messageText: message,
-				type: type
-			}
-		});
-		toast.triggerToast();
-	}
-	// -- end for toast
 
 	interface FormValues {
 		email: string;
@@ -99,9 +86,9 @@
 			body: JSON.stringify({ email: values.email })
 		});
 		if (res.ok) {
-			triggerToast('success', 'An verification E-Mail has been sent!');
+			triggerToast('An verification E-Mail has been sent!', 'variant-filled-success');
 		} else {
-			triggerToast('error', res.statusText);
+			triggerToast(res.statusText, 'variant-filled-error');
 		}
 	}
 	async function sendPin() {
@@ -113,9 +100,9 @@
 			body: JSON.stringify({ email: values.email, code: values.pin })
 		});
 		if (res.ok) {
-			triggerToast('success', 'An verification E-Mail has been sent!');
+			// Next step
 		} else {
-			triggerToast('error', res.statusText);
+			triggerToast(res.statusText, 'variant-filled-error');
 		}
 	}
 	let emailSent: boolean = false;
@@ -137,21 +124,6 @@
 	}
 
 	let lockPIN: boolean = true;
-	const sendPIN = async () => {
-		const res = await fetch('/api/v1/auth/register-2', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ email: values.email, pin: values.pin })
-		});
-		if (res.ok) {
-			triggerToast('success', 'PIN verified!');
-			lockPIN = false;
-		} else {
-			triggerToast('error', res.statusText);
-		}
-	};
 </script>
 
 <svelte:head>
@@ -167,7 +139,7 @@
 	<form class="w-full h-full md:h-fit max-w-3xl" on:submit|preventDefault>
 		<div class="card p-4 gap-y-12 h-full w-full grid">
 			<header class="card-header">
-				<span class="flex justify-center"><Logo /></span>
+				<span class="flex justify-center"><Logo height="10" /></span>
 			</header>
 			<section>
 				<Stepper

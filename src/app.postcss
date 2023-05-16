@@ -1,2 +1,25 @@
 /*place global styles here */
-html, body { @apply h-full overflow-hidden; }
+html,
+body {
+	@apply h-full overflow-hidden;
+}
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: #dedede #000000;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+	width: 3px;
+}
+
+*::-webkit-scrollbar-track {
+	background: #000000;
+}
+
+*::-webkit-scrollbar-thumb {
+	background-color: #454545;
+	border-radius: 10px;
+}
