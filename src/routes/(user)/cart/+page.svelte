@@ -57,7 +57,7 @@
 	<title>Cart | OpenMerce</title>
 </svelte:head>
 
-<div class="border-2 grid grid-cols-3 gap-x-2">
+<div class="grid grid-cols-3 gap-x-2 mt-6">
 	<div class="col-span-2 overflow-auto">
 		<header><h3 class="font-bold">Cart</h3></header>
 		<label class="flex items-center space-x-2 px-2">
@@ -71,7 +71,7 @@
 						<input class="checkbox" type="checkbox" bind:checked={item.checked} />
 					</label>
 					<picture
-						class="aspect-square shadow-xl flex justify-center items-center border h-24 rounded"
+						class="aspect-square shadow-xl flex justify-center items-center h-24 rounded"
 					>
 						{#if item.image}
 							<a href="/product/{item.id}" class="unstyled"
@@ -97,7 +97,7 @@
 								minimumFractionDigits: 0
 							})}
 						</h6>
-						<div class="flex border-2 justify-end">
+						<div class="flex justify-end">
 							<button class="btn-icon btn-icon-sm" type="button">
 								<Trash />
 							</button>
@@ -124,7 +124,7 @@
 	<div class="card p-3 h-fit space-y-8">
 		<h5 class="font-bold flex-none">Shopping Summary</h5>
 
-		<h6 class="border-2 flex">
+		<h6 class="flex">
 			<span class="flex-none">Total Price (item)</span>
 			<div class="flex-1" />
 			<span>

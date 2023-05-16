@@ -103,7 +103,7 @@
 	<meta name="author" content="OpenMerce" />
 </svelte:head>
 <!-- <Toast position='br' /> -->
-<div class="space-y-10 w-full h-full">
+<div class="space-y-10 w-full h-full mt-6">
 	{#if browser}
 		<div class="w-full space-y-2">
 			<div class="aspect-[21/5]">
