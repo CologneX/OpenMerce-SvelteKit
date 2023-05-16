@@ -191,7 +191,7 @@
 	<Preloader />
 {/if}
 
-<AppShell slotHeader="z-20">
+<AppShell slotHeader="z-20" slotPageContent="flex justify-center">
 	<Toast
 		position="t"
 		zIndex="z-50"
@@ -311,7 +311,6 @@
 	<svelte:fragment slot="header">
 		<AppBar
 			gridColumns="grid-cols-[auto_1fr_auto]"
-			slotLead=""
 			slotDefault="place-self-center w-full max-w-4xl"
 			slotTrail="place-content-end"
 			gap="gap-4"
@@ -488,9 +487,7 @@
 			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>
-	<main class="w-full grid place-items-center mx-0 mb:px-10 z-0">
-		<div class="w-full max-w-7xl overflow-y-auto hide-scrollbar lg:overflow-y-hidden">
-			<slot />
-		</div>
+	<main class="z-0 max-w-7xl w-full h-full">
+		<slot />
 	</main>
 </AppShell>

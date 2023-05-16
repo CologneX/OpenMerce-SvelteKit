@@ -5,9 +5,9 @@
 	import { Stepper, Step, ProgressRadial } from '@skeletonlabs/skeleton';
 	import { fade } from 'svelte/transition';
 	import { writable } from 'svelte/store';
-	import type { Snapshot } from './$types';
+
 	import { triggerToast } from '$lib/utils/toast';
-	import Back from '$lib/icons/Back.svelte';
+
 	import { DateInput } from 'date-picker-svelte';
 	let date = new Date();
 

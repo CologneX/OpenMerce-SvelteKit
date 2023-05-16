@@ -22,7 +22,7 @@
 			<img
 				src="/usercontent/{products.image}"
 				alt="{products.name}'s image"
-				class="aspect-square object-contain"
+				class="aspect-square object-cover"
 			/>
 		{:else}
 			<div>
