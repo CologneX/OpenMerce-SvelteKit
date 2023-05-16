@@ -57,7 +57,7 @@
 	<meta name="author" content="OpenMerce" />
 </svelte:head>
 <div class="h-fit w-full grid grid-rows-2">
-	<div class="grid md:grid-cols-2 sm:grid-cols-1 w-full h-full ">
+	<div class="grid md:grid-cols-2 sm:grid-cols-1 w-full h-full">
 		<div class=" w-full p-0 md:pt-7 space-y-2">
 			{#if browser}
 				<Carousel bind:this={carousel} infinite={false} arrows={false} dots={false}>
@@ -90,20 +90,22 @@
 			{/if}
 			<div class="flex gap-2">
 				{#each product.image_urls as image}
-					<picture class=" shadow-xl card flex justify-center items-center w-20">
-						{#if image}
-							<img
-								src="/usercontent/{image}"
-								alt="{image}'s image"
-								class="aspect-square object-contain"
-							/>
-						{:else}
-							<div>
-								<Logo />
-								<p class="text-center">No Image Found</p>
-							</div>
-						{/if}
-					</picture>
+					<button type="button" class="border-primary-500 border-2 rounded-md">
+						<picture class=" shadow-xl card flex justify-center items-center w-20">
+							{#if image}
+								<img
+									src="/usercontent/{image}"
+									alt="{image}'s image"
+									class="aspect-square object-contain"
+								/>
+							{:else}
+								<div>
+									<Logo />
+									<p class="text-center">No Image Found</p>
+								</div>
+							{/if}
+						</picture></button
+					>
 				{/each}
 			</div>
 		</div>
