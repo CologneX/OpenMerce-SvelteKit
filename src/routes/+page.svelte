@@ -158,8 +158,8 @@
 			{/each}
 		</div>
 		{#if browser}
-			<div class="w-full space-y-2 hidden md:block">
-				<div class="flex w-full h-full card p-2">
+			<div class="w-full space-y-2 hidden md:block h-full">
+				<div class="flex w-full h-96 card p-2">
 					{#if !isLoading}
 						<Carousel
 							bind:this={carouselOne}
@@ -174,10 +174,10 @@
 							{/each}
 						</Carousel>
 					{:else}
-						<div class="w-full animate-pulse text-center h-full">Loading...</div>
+						<div class="w-full animate-pulse text-center placeholder h-full" />
 					{/if}
 				</div>
-				{#if !isLoading}
+				{#if isLoading}
 					<div class="flex justify-evenly">
 						<button
 							type="button"
@@ -203,19 +203,32 @@
 			<h4 class="font-semibold flex-1">Sale just for you</h4>
 			<a href="/see-all" class=" decoration-transparent">See All</a>
 		</div>
-		<div class="grid grid-flow-col gap-1 overflow-x-auto hide-scrollbar card p-2">
-			{#each products as item}
-				<ProductCard products={item} />
-			{/each}
+		<div class="grid grid-flow-col gap-1 overflow-x-auto hide-scrollbar card p-2 h-96">
+			{#if !isLoading}
+				{#each products as item}
+					<ProductCard products={item} />
+				{/each}
+			{:else}
+				<div class="w-full animate-pulse text-center placeholder h-full" />
+			{/if}
 		</div>
 	</div>
 	<hr class="!border-t-8" />
 
 	<div
-		class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-6 gap-5 justify-items-center"
+		class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-6 gap-5 justify-items-center h-96"
 	>
-		{#each products as item}
-			<ProductCard products={item} />
-		{/each}
+		{#if !isLoading}
+			{#each products as item}
+				<ProductCard products={item} />
+			{/each}
+		{:else}
+			<div class="w-full animate-pulse text-center placeholder h-full" />
+			<div class="w-full animate-pulse text-center placeholder h-full" />
+			<div class="w-full animate-pulse text-center placeholder h-full" />
+			<div class="w-full animate-pulse text-center placeholder h-full" />
+			<div class="w-full animate-pulse text-center placeholder h-full" />
+			<div class="w-full animate-pulse text-center placeholder h-full" />
+		{/if}
 	</div>
 </div>

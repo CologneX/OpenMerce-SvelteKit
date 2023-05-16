@@ -488,8 +488,8 @@
 			</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>
-	<main class="h-full w-full grid place-items-center mx-0 mb:px-10 z-0">
-		<div class="h-full w-full max-w-7xl overflow-y-auto hide-scrollbar lg:overflow-y-hidden">
+	<main class="w-full grid place-items-center mx-0 mb:px-10 z-0">
+		<div class="w-full max-w-7xl overflow-y-auto hide-scrollbar lg:overflow-y-hidden">
 			<slot />
 		</div>
 	</main>
