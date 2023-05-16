@@ -37,7 +37,6 @@
 			product = productData;
 		});
 	});
-	// let Y = 0;
 
 	// for image carousel
 	import Carousel from 'svelte-carousel';
@@ -60,14 +59,18 @@
 <div class="h-full w-full grid grid-rows-2">
 	<div class="grid md:grid-cols-2 sm:grid-cols-1 w-full h-full">
 		<div class="h-full w-full">
-			<div class=" w-full aspect-square sticky top-0 p-0 md:pt-7">
+			<div class=" w-full sticky top-0 p-0 md:pt-7">
 				{#if browser}
 					<Carousel bind:this={carousel} infinite={false} arrows={false}>
 						{#if product.image_urls}
 							{#each product.image_urls as image}
-								<picture class="aspect-square shadow-xl card flex justify-center items-center">
+								<picture class=" shadow-xl card flex justify-center items-center">
 									{#if image}
-										<img src="/usercontent/{image}" alt="{image}'s image" />
+										<img
+											src="/usercontent/{image}"
+											alt="{image}'s image"
+											class="aspect-square object-contain"
+										/>
 									{:else}
 										<div>
 											<Logo />

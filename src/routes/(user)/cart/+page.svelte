@@ -31,7 +31,7 @@
 				});
 				if (response.ok) {
 					const cartData: CartProducts[] = await response.json();
-					return cartData; 
+					return cartData;
 				}
 			} else if (!response.ok) {
 				throw error(response.status, {
@@ -76,12 +76,8 @@
 					</label>
 					<picture class="aspect-square shadow-xl flex justify-center items-center h-24 rounded">
 						{#if item.image}
-							<a href="/product/{item.id}" class="unstyled"
-								><img
-									src="/usercontent/{item.image}"
-									alt="{item.name}'s image"
-									class="rounded"
-								/></a
+							<a href="/product/{item.id}" class="unstyled">
+								<img src="/usercontent/{item.image}" alt="{item.name}'s image" class="rounded" /></a
 							>
 						{:else}
 							<div>
