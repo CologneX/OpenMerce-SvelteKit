@@ -61,3 +61,8 @@ declare class RegisterUser {
 	gender: string;
 }
 
+declare class BannerMain {
+	id: number;
+	image_url: string;
+	href: string;
+}

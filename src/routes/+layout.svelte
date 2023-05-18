@@ -60,13 +60,14 @@
 	let username: string | null;
 	let first_name: string | null;
 	let selectedLanguage: string | null;
+	let cartCount: number | null;
 	function setLanguage(lang: string) {
 		localStorage.setItem('prefLang', lang);
 		selectedLanguage = localStorage.getItem('prefLang');
 	}
 
 	let isLoggedIn = isUserLoggedIn();
-	onMount(() => {
+	onMount(async () => {
 		isLoading = false;
 		if (getUserFirstName() !== null) {
 			isLoggedInStore.set(true);
@@ -74,6 +75,32 @@
 			isStaffLoggedInStore.set(true);
 		}
 		selectedLanguage = localStorage.getItem('prefLang');
+		const [getCartCount] = await Promise.all([
+			fetch('/api/v1/customer/cart-count', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			})
+		]);
+		if (getCartCount.status === 401) {
+			await refreshTokenUser();
+			const getCartCount = await fetch('/api/v1/customer/cart-count', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+			if (getCartCount.ok) {
+				const cartCountData = await getCartCount.json();
+				cartCount = cartCountData.count;
+			}
+		}
+		if (getCartCount.ok) {
+			const cartCountData = await getCartCount.json();
+			cartCount = cartCountData.count;
+		}
+		console.log(cartCount);
 	});
 	// end for isLoggedin
 
@@ -120,6 +147,7 @@
 	import { error, type HttpError } from '@sveltejs/kit';
 	import MapPin from '$lib/icons/MapPin.svelte';
 	import { triggerModal } from '$lib/utils/modal';
+	import { refreshTokenUser } from '$lib/utils/refreshToken';
 	const handleLogout = () => {
 		if (isLoggedIn) {
 			const logoutUserAPI = async () => {
@@ -324,7 +352,11 @@
 			<svelte:fragment slot="headline">
 				<div class="text-end">
 					<small>
-						<button type="button" class="btn btn-sm py-0" on:click={()=>triggerModal({type: 'prompt'})}>
+						<button
+							type="button"
+							class="btn btn-sm py-0"
+							on:click={() => triggerModal({ type: 'prompt' })}
+						>
 							<span><MapPin /></span> <span> Location </span>
 							<span class="font-bold"> Universitas Ciputra</span>
 						</button>
@@ -380,9 +412,19 @@
 							on:click={handleShoppingCartClick}
 							use:popup={cartHover}
 						>
-							<span>
-								<ShoppingCart />
-							</span>
+							{#if cartCount}
+								<div class="relative inline-block">
+									<span
+										class="badge-icon variant-filled-secondary absolute -top-2 -right-2 z-10 shadow-md"
+										>{cartCount}</span
+									>
+									<ShoppingCart />
+								</div>
+							{:else}
+								<span>
+									<ShoppingCart />
+								</span>
+							{/if}
 						</button>
 						{#if isLoggedIn || isStaffLoggedIn}
 							<button type="button" class="btn-icon btn-icon-sm" on:click={handleBellClick}>
@@ -442,9 +484,20 @@
 				{:else}
 					<div class="flex">
 						<button type="button" class="btn-icon btn-icon-sm" on:click={handleShoppingCartClick}>
-							<span>
-								<ShoppingCart />
-							</span>
+							{#if cartCount}
+								<div class="relative inline-block">
+									<span
+										class="badge-icon variant-filled-secondary absolute -top-2 -right-2 z-10 shadow-md"
+										>{cartCount}</span
+									>
+
+									<ShoppingCart />
+								</div>
+							{:else}
+								<span>
+									<ShoppingCart />
+								</span>
+							{/if}
 						</button>
 						<button type="button" class="btn-icon btn-icon-sm" on:click={handleBellClick}>
 							<span>
