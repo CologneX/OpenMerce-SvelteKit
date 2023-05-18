@@ -20,6 +20,7 @@
 	// fetch data
 	import { error } from '@sveltejs/kit';
 	import ProductCard from '$lib/ProductCard.svelte';
+	import ProductCarousel from '$lib/ProductCarousel.svelte';
 	onMount(() => {
 		// for fetcing all products
 		// const getDataMain = async () => {
@@ -111,10 +112,11 @@
 			<div class="aspect-[21/5]">
 				{#if !isLoading}
 					<swiper-container
-						navigation="true"
+						navigation={true}
 						slides-per-group={1}
-						pagination="true"
-						grab-cursor="true"
+						autoplay={true}
+						delay={2000}
+						grab-cursor={true}
 					>
 						{#each banner as item}
 							<swiper-slide class="shadow-lg flex justify-center items-center">
@@ -151,20 +153,7 @@
 
 		<div class="w-full hidden md:block h-96">
 			{#if !isLoading}
-				<swiper-container
-					slides-per-view={6}
-					space-between={10}
-					navigation="true"
-					slides-per-group={3}
-					pagination="true"
-					grab-cursor="true"
-					on:progress={onProgress}
-					on:slidechange={onSlideChange}
-				>
-					{#each products as product}
-						<swiper-slide class="card"> <ProductCard products={product} /></swiper-slide>
-					{/each}
-				</swiper-container>
+				<ProductCarousel {products} />
 			{:else}
 				<div class="w-full animate-pulse text-center placeholder h-full" />
 			{/if}
@@ -184,20 +173,7 @@
 
 		<div class="w-full hidden md:block h-96">
 			{#if !isLoading}
-				<swiper-container
-					slides-per-view={6}
-					space-between={10}
-					navigation="true"
-					slides-per-group={3}
-					pagination="true"
-					grab-cursor="true"
-					on:progress={onProgress}
-					on:slidechange={onSlideChange}
-				>
-					{#each products as product}
-						<swiper-slide class="card"> <ProductCard products={product} /></swiper-slide>
-					{/each}
-				</swiper-container>
+				<ProductCarousel {products} />
 			{:else}
 				<div class="w-full animate-pulse text-center placeholder h-full" />
 			{/if}

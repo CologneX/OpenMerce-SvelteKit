@@ -13,6 +13,7 @@
 		Toast,
 		Drawer,
 		drawerStore,
+		Modal,
 		Avatar
 	} from '@skeletonlabs/skeleton';
 	import { navigating } from '$app/stores';
@@ -118,6 +119,7 @@
 	let isLoggingOut: boolean = false;
 	import { error, type HttpError } from '@sveltejs/kit';
 	import MapPin from '$lib/icons/MapPin.svelte';
+	import { triggerModal } from '$lib/utils/modal';
 	const handleLogout = () => {
 		if (isLoggedIn) {
 			const logoutUserAPI = async () => {
@@ -192,6 +194,8 @@
 {/if}
 
 <AppShell slotHeader="z-20" slotPageContent="flex justify-center">
+	<Modal class="w-full h-full" shadow="shadow-xl" />
+
 	<Toast
 		position="t"
 		zIndex="z-50"
@@ -316,15 +320,14 @@
 			gap="gap-4"
 			background="bg-primary-500 drop-shadow-xl"
 			padding="p-2"
-			regionRowHeadline=""
 		>
 			<svelte:fragment slot="headline">
 				<div class="text-end">
 					<small>
-						<div class="btn btn-sm py-0">
+						<button type="button" class="btn btn-sm py-0" on:click={()=>triggerModal({type: 'prompt'})}>
 							<span><MapPin /></span> <span> Location </span>
 							<span class="font-bold"> Universitas Ciputra</span>
-						</div>
+						</button>
 					</small>
 				</div>
 			</svelte:fragment>
