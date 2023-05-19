@@ -1,14 +1,8 @@
 <script lang="ts">
-	export let products: Products = {
-		id: '',
-		name: '',
-		price: 0,
-		quantity: 0,
-		image: '',
-		rating: 0
-	};
+	export let products: Products;
 	import Logo from './icons/Logo.svelte';
 	import Star from './icons/Star.svelte';
+	import { lazyLoad } from './utils/lazyLoad';
 </script>
 
 <a
@@ -21,6 +15,7 @@
 		{#if products.image}
 			<img
 				src="/usercontent/{products.image}"
+				loading="lazy"
 				alt="{products.name}'s image"
 				class="aspect-square object-cover"
 				width="100%"

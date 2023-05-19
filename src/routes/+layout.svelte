@@ -45,7 +45,6 @@
 	// end settings (mobile) drawer
 
 	// for preloader
-	import Preloader from '$lib/Preloader.svelte';
 	let isLoading: boolean = true;
 	// end for preloader
 

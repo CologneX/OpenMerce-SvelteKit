@@ -19,6 +19,13 @@ declare class Products {
 	image: string;
 };
 
+declare class ProductsMain {
+	category_id: number;
+	catergory_name: string;
+	catergory_desc: string;
+	products: Products[];
+}
+
 declare class ProductDetail {
 	id: string;
 	name: string;

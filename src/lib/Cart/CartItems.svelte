@@ -5,8 +5,6 @@
 	import Trash from '$lib/icons/Trash.svelte';
 	import { getCart, handleDeleteItem } from '$lib/utils/cart';
 	import { lazyLoad } from '$lib/utils/lazyLoad';
-	import { LazyImage } from 'svelte-lazy-image';
-	let products: CartProducts[] = [];
 </script>
 
 <div class="grid grid-flow-row gap-y-2">
@@ -46,12 +44,12 @@
 						<a href="/product/{item.id}" class="unstyled"
 							><img
 								loading="lazy"
-								use:lazyLoad={'/usercontent/' + item.image}
-								src="/usercontent/{item.image}"
+								use:lazyLoad={`/usercontent/${item.image}`}
 								alt="{item.name}'s image"
 								class="rounded"
 								width="100%"
 								height="100%"
+								title={item.name}
 							/></a
 						>
 					{:else}
