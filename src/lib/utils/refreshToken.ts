@@ -8,7 +8,6 @@ export const refreshTokenUser = async () => {
             'Content-Type': 'application/json'
         }
     });
-    console.log(response.status)
     if (response.status == 401) {
         logoutUser();
     }

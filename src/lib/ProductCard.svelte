@@ -23,6 +23,8 @@
 				src="/usercontent/{products.image}"
 				alt="{products.name}'s image"
 				class="aspect-square object-cover"
+				width="100%"
+				height="100%"
 			/>
 		{:else}
 			<div>

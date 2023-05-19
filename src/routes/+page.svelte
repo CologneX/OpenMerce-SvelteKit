@@ -22,11 +22,11 @@
 	import ProductCard from '$lib/ProductCard.svelte';
 	import ProductCarousel from '$lib/ProductCarousel.svelte';
 	import { refreshTokenUser } from '$lib/utils/refreshToken';
-	import Cart from '$lib/Cart.svelte';
+	import Cart from '$lib/Cart/CartItems.svelte';
 	onMount(async () => {
 		const getDataMain = async () => {
 			isLoading = true;
-			const [getProduct, getBanner, getCartCount] = await Promise.all([
+			const [getProduct, getBanner] = await Promise.all([
 				fetch('/api/v1/product', {
 					method: 'GET',
 					headers: {
@@ -38,15 +38,9 @@
 					headers: {
 						'Content-Type': 'application/json'
 					}
-				}),
-				fetch('/api/v1/customer/cart-count', {
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json'
-					}
 				})
 			]);
-		
+
 			const productsData = await getProduct.json();
 			const bannerData = await getBanner.json();
 			return [productsData, bannerData];

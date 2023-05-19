@@ -16,7 +16,6 @@
 		Modal,
 		Avatar
 	} from '@skeletonlabs/skeleton';
-	import { navigating } from '$app/stores';
 	import Logo from '$lib/icons/Logo.svelte';
 	import type { PopupSettings, DrawerSettings } from '@skeletonlabs/skeleton';
 	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
@@ -51,7 +50,6 @@
 	// end for preloader
 
 	// for isLoggedin
-	import { writable } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { isLoggedInStore, isStaffLoggedInStore, screenWidthStore } from '$lib/utils/stores';
@@ -100,7 +98,6 @@
 			const cartCountData = await getCartCount.json();
 			cartCount = cartCountData.count;
 		}
-		console.log(cartCount);
 	});
 	// end for isLoggedin
 
@@ -144,7 +141,7 @@
 	} from '$lib/utils/auth';
 	// for logout
 	let isLoggingOut: boolean = false;
-	import { error, type HttpError } from '@sveltejs/kit';
+	import { error } from '@sveltejs/kit';
 	import MapPin from '$lib/icons/MapPin.svelte';
 	import { triggerModal } from '$lib/utils/modal';
 	import { refreshTokenUser } from '$lib/utils/refreshToken';
@@ -217,9 +214,9 @@
 </script>
 
 <svelte:window bind:innerWidth={screenWidth} />
-{#if $navigating}
+<!-- {#if $navigating}
 	<Preloader />
-{/if}
+{/if} -->
 
 <AppShell slotHeader="z-20" slotPageContent="flex justify-center">
 	<Modal class="w-full h-full" shadow="shadow-xl" />
@@ -365,7 +362,7 @@
 			</svelte:fragment>
 			<svelte:fragment slot="lead">
 				{#if screenWidth < 1024 && $page.url.pathname !== '/'}
-					<button class="btn-icon btn-icon-sm" on:click={() => history.back()}>
+					<button class="btn-icon btn-icon-sm" aria-label="back" on:click={() => history.back()}>
 						<span>
 							<Back />
 						</span>
@@ -427,7 +424,12 @@
 							{/if}
 						</button>
 						{#if isLoggedIn || isStaffLoggedIn}
-							<button type="button" class="btn-icon btn-icon-sm" on:click={handleBellClick}>
+							<button
+								type="button"
+								class="btn-icon btn-icon-sm"
+								aria-label="notification"
+								on:click={handleBellClick}
+							>
 								<span>
 									<Bell />
 								</span>
@@ -499,7 +501,12 @@
 								</span>
 							{/if}
 						</button>
-						<button type="button" class="btn-icon btn-icon-sm" on:click={handleBellClick}>
+						<button
+							type="button"
+							class="btn-icon btn-icon-sm"
+							on:click={handleBellClick}
+							aria-label="notification"
+						>
 							<span>
 								<Bell />
 							</span>
@@ -508,6 +515,7 @@
 							class="btn-icon btn-icon-sm"
 							type="button"
 							on:click={() => drawerStore.open(drawerMobile)}
+							aria-label="mobile menu"
 						>
 							<span>
 								<Hamburger />
