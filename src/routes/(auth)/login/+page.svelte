@@ -7,7 +7,7 @@
 	import { goto } from '$app/navigation';
 	import type { LoginForm } from '../../../app';
 
-	let form: LoginForm= {
+	let form: LoginForm = {
 		email: '',
 		password: '',
 		remember_me: false
@@ -33,8 +33,8 @@
 			const data = await response.json();
 			localStorage.setItem('first_name', data.first_name);
 			localStorage.setItem('last_name', data.last_name);
-			triggerToast(`Welcome back, ${data.first_name} ${data.last_name}!`, 'variant-filled-success');
 			isLoggedInStore.set(true);
+			triggerToast(`Welcome back, ${data.first_name} ${data.last_name}!`, 'variant-filled-success');
 			goto('/');
 		} else if (response.status === 401) {
 			triggerToast(`Invalid credentials`, 'variant-filled-error');

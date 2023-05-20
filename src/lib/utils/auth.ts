@@ -19,8 +19,14 @@ export const logoutStaff = () => {
     goto('/staff/login');
 }
 
-export const isUserLoggedIn = () => {
-    return !!localStorage.getItem('first_name');
+export const isLoggedIn = () => {
+    if (localStorage.getItem('first_name') !== null) {
+        isLoggedInStore.set(true)
+    }
+    else if (localStorage.getItem('username') !== null) {
+        isStaffLoggedInStore.set(true)
+    }
+
 }
 
 export const isStaffLogged = () => {

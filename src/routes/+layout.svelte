@@ -30,8 +30,7 @@
 	import {
 		logoutStaff,
 		logoutUser,
-		isUserLoggedIn,
-		isStaffLogged,
+		isLoggedIn,
 		getUserNames,
 		getStaffUsername
 	} from '$lib/utils/auth';
@@ -70,27 +69,17 @@
 	let username: string | null;
 	let first_name: string | null;
 	let selectedLanguage: string | null;
-	let cartCount: any;
 
-	import { getCartCount } from '$lib/utils/navbar';
-	onMount(async () => {
-		if (isUserLoggedIn()) {
-			isLoggedInStore.set(true);
-		} else if (isStaffLogged()) {
-			isStaffLoggedInStore.set(true);
-		}
+	onMount(() => {
+		isLoggedIn();
 		selectedLanguage = localStorage.getItem('prefLang');
 	});
 	// end for isLoggedin
 
-	if (isLoggedInStore) {
+	$: if ($isLoggedInStore) {
 		[first_name, last_name] = getUserNames();
-	} else if (isStaffLoggedInStore) {
+	} else if ($isStaffLoggedInStore) {
 		username = getStaffUsername();
-	}
-
-	if (isLoggedInStore) {
-		cartCount = getCartCount();
 	}
 	// isLoading = false;
 	// for handling shopping cart click

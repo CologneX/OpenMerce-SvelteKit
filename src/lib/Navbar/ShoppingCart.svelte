@@ -4,7 +4,7 @@
 	import { isLoggedInStore } from '$lib/utils/stores';
 	import type { CartCount } from '../../app';
 	export const getCartCount = async () => {
-		if (isLoggedInStore) {
+		if ($isLoggedInStore) {
 			const response = await fetch('/api/v1/customer/cart-count', {
 				method: 'GET',
 				headers: {
