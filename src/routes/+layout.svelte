@@ -57,12 +57,12 @@
 	let username: string | null;
 	let first_name: string | null;
 	let selectedLanguage: string | null;
-	let cartCount: number | null;
+	let cartCount: any;
 	function setLanguage(lang: string) {
 		localStorage.setItem('prefLang', lang);
 		selectedLanguage = localStorage.getItem('prefLang');
 	}
-
+	import { getCartCount } from '$lib/utils/navbar';
 	let isLoggedIn = isUserLoggedIn();
 	onMount(async () => {
 		isLoading = false;
@@ -72,30 +72,8 @@
 			isStaffLoggedInStore.set(true);
 		}
 		selectedLanguage = localStorage.getItem('prefLang');
-		const [getCartCount] = await Promise.all([
-			fetch('/api/v1/customer/cart-count', {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			})
-		]);
-		if (getCartCount.status === 401) {
-			await refreshTokenUser();
-			const getCartCount = await fetch('/api/v1/customer/cart-count', {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			});
-			if (getCartCount.ok) {
-				const cartCountData = await getCartCount.json();
-				cartCount = cartCountData.count;
-			}
-		}
-		if (getCartCount.ok) {
-			const cartCountData = await getCartCount.json();
-			cartCount = cartCountData.count;
+		if (isLoggedIn) {
+			cartCount = getCartCount();
 		}
 	});
 	// end for isLoggedin

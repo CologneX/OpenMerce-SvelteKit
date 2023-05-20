@@ -1,37 +1,23 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { onMount } from 'svelte';
-	import { error } from '@sveltejs/kit';
 	const param = $page.params.search;
-	let products: Products[] = [];
-	let isLoading: boolean = true;
-	onMount(() => {
-		isLoading = true;
-		const getProduct = async () => {
-			const response = await fetch(`/api/v1/product?search=${param}`, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			});
-			if (response.status == 400 || response.status == 404) {
-				throw error(400, {
-					message: 'Oops, product not found!'
-				});
-			} else if (!response.ok) {
-				console.log(response.status);
-				throw error(response.status, {
-					message: `${response.statusText}`
-				});
+	const getProduct = async () => {
+		const response = await fetch(`/api/v1/product?search=${param}`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json'
 			}
-			const productData: Products[] = await response.json();
-			return productData;
-		};
-		getProduct().then((productData) => {
-			products = productData;
-			isLoading = false;
 		});
-	});
+		if (response.status == 400 || response.status == 404) {
+			throw new Error('Product not found');
+		} else if (!response.ok) {
+			throw new Error('Something went wrong');
+		}
+		const productData: Products[] = await response.json();
+		return productData;
+	};
+
 	import Logo from '$lib/icons/Logo.svelte';
 	import Star from '$lib/icons/Star.svelte';
 </script>
@@ -50,7 +36,7 @@
 <div class="w-full h-full">
 	<div class="font-semibold text-xl">Search Result</div>
 	<div class="flex flex-wrap gap-4 w-full">
-		{#if isLoading}
+		{#await getProduct()}
 			<div class="placeholder w-full h-64 card animate-pulse" />
 			<div class="flex w-full gap-4">
 				{#each [1, 2, 3, 4, 5, 6] as item}
@@ -73,8 +59,8 @@
 					</div>
 				{/each}
 			</div>
-		{:else}
-			{#each products as item}
+		{:then productData}
+			{#each productData as item}
 				<a class="card grid w-48 grid-rows-1 card-hover" href="/product/{item.id}">
 					<picture class="aspect-square shadow-xl card flex justify-center items-center">
 						<source src="/usercontent/{item.image}" />
@@ -94,6 +80,13 @@
 					</div>
 				</a>
 			{/each}
-		{/if}
+		{:catch error}
+			<div class="card w-full h-64">
+				<div class="flex flex-col justify-center items-center h-full">
+					<h1 class="text-2xl font-semibold">Error</h1>
+					<p class="text-center">{error.message}</p>
+				</div>
+			</div>
+		{/await}
 	</div>
 </div>

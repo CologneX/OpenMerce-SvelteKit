@@ -56,3 +56,4 @@ export const handleDeleteItem = (itemID: string) => {
     });
     getCart();
 };
+
