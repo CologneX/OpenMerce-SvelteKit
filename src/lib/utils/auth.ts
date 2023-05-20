@@ -1,16 +1,15 @@
 import { goto } from "$app/navigation";
 import { isLoggedInStore, isStaffLoggedInStore } from "./stores";
+
+
+
+
 export const logoutUser = () => {
     localStorage.removeItem('first_name');
     localStorage.removeItem('last_name');
     isLoggedInStore.set(false)
     goto('/login');
 }
-
-export const isUserLoggedIn = () => {
-    return localStorage.getItem('first_name') !== null;
-}
-
 export const logoutStaff = () => {
     localStorage.removeItem('username');
     localStorage.removeItem('sys_admin');
@@ -20,8 +19,12 @@ export const logoutStaff = () => {
     goto('/staff/login');
 }
 
+export const isUserLoggedIn = () => {
+    return !!localStorage.getItem('first_name');
+}
+
 export const isStaffLogged = () => {
-    return localStorage.getItem('username') !== null;
+    return !!localStorage.getItem('username');
 }
 
 export const isSysAdmin = () => {
@@ -40,15 +43,9 @@ export const getStaffUsername = () => {
     return localStorage.getItem('username');
 }
 
-export const getUserFirstName = () => {
-    return localStorage.getItem('first_name');
-}
-
-export const getUserLastName = () => {
-    return localStorage.getItem('last_name');
-}
-
-export const loginUser = () =>{
-    
-}
+export const getUserNames = () => {
+    const firstName = localStorage.getItem('first_name');
+    const lastName = localStorage.getItem('last_name');
+    return [firstName, lastName];
+};
 

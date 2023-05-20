@@ -1,5 +1,8 @@
 // See https://kit.svelte.dev/docs/types#app
 // for information about these interfaces
+
+import type DateInput from "date-picker-svelte/DateInput.svelte";
+
 // and what to do when importing types
 declare namespace App {
 	// interface Locals {}
@@ -10,7 +13,7 @@ declare namespace App {
 	// interface Platform {}
 };
 
-declare class Products {
+declare interface Products {
 	id: string;
 	name: string;
 	price: number;
@@ -19,14 +22,14 @@ declare class Products {
 	image: string;
 };
 
-declare class ProductsMain {
+declare interface ProductsMain {
 	category_id: number;
 	catergory_name: string;
 	catergory_desc: string;
 	products: Products[];
 }
 
-declare class ProductDetail {
+declare interface ProductDetail {
 	id: string;
 	name: string;
 	description: string;
@@ -37,12 +40,12 @@ declare class ProductDetail {
 	image_urls: string[] | null;
 };
 
-declare class MainBanner {
+declare interface MainBanner {
 	id: number;
 	image_url: string;
 	href: string;
 }
-declare class CartProducts {
+declare interface CartProducts {
 	id: string;
 	name: string;
 	price: number;
@@ -51,13 +54,12 @@ declare class CartProducts {
 	checked: boolean;
 }
 
-declare class LoginUser {
+declare interface LoginUser {
 	email: string;
 	password: string;
 	remember_me: boolean;
 }
-
-declare class RegisterUser {
+declare interface RegisterUser {
 	name: string;
 	email: string;
 	password: string;
@@ -67,9 +69,38 @@ declare class RegisterUser {
 	birth_date: string;
 	gender: string;
 }
-
-declare class BannerMain {
+declare interface BannerMain {
 	id: number;
 	image_url: string;
 	href: string;
+}
+declare interface LoginForm {
+	email: string;
+	password: string;
+	remember_me: boolean;
+}
+declare interface RegisterPhaseOne {
+	email: string;
+}
+declare interface RegisterPhaseTwo {
+	email: string;
+	code: number;
+}
+
+declare interface RegisterPhaseThree {
+	email: string;
+	password: string;
+	first_name: string;
+	last_name: string;
+	birth_date: DateInput;
+	gender: string;
+}
+
+declare interface UserBasicInfo {
+	first_name: string;
+	last_name: string;
+}
+
+declare interface CartCount {
+	count: number;
 }

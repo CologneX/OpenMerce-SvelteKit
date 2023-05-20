@@ -5,33 +5,16 @@
 	import { triggerToast } from '$lib/utils/toast';
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
 	import { goto } from '$app/navigation';
+	import type { LoginForm } from '../../../app';
 
-	interface FormValues {
-		email: string;
-		password: string;
-		remember_me: boolean;
-	}
-
-	const form: FormValues = {
+	let form: LoginForm= {
 		email: '',
 		password: '',
 		remember_me: false
 	};
-
-	// $: lockEmail =
-	// 	!form.email || !(form.email && /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(form.email))
-	// 		? true
-	// 		: false;
-
-	// $: lockPassword = form.password && form.password.length >= 8 ? false : true;
-
-	// $: errors = {
-	// 	email: lockEmail ? 'Please enter a valid email' : '',
-	// 	password: lockPassword ? 'Invalid credentials' : ''
-	// };
 	let loggingIn: boolean = false;
 	let error: boolean = false;
-	import { isLoggedInStore, isStaffLoggedInStore } from '$lib/utils/stores';
+	import { isLoggedInStore } from '$lib/utils/stores';
 	const handleLoginSubmit = async () => {
 		loggingIn = true;
 		const response = await fetch('/api/v1/auth/login', {
@@ -52,9 +35,7 @@
 			localStorage.setItem('last_name', data.last_name);
 			triggerToast(`Welcome back, ${data.first_name} ${data.last_name}!`, 'variant-filled-success');
 			isLoggedInStore.set(true);
-			goto('/', {
-				replaceState: true
-			});
+			goto('/');
 		} else if (response.status === 401) {
 			triggerToast(`Invalid credentials`, 'variant-filled-error');
 			error = true;
@@ -62,7 +43,7 @@
 			triggerToast(`Server Error`, 'variant-filled-error');
 			error = true;
 		} else {
-			triggerToast( response.statusText, 'variant-filled-error');
+			triggerToast(response.statusText, 'variant-filled-error');
 			error = true;
 		}
 		loggingIn = false;
@@ -84,7 +65,6 @@
 		<div class="card p-4 gap-y-12 h-full w-full grid">
 			<header class="card-header">
 				<span class="flex justify-center"><Logo height="10" /></span>
-				<!-- <h2>Login</h2> -->
 			</header>
 			<section>
 				<label class="label">

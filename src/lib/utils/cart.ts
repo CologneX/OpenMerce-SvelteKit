@@ -1,36 +1,42 @@
+import type { CartProducts } from "../../app";
 import { refreshTokenUser } from "./refreshToken";
+import { isLoggedInStore } from "./stores";
+
 export const getCart = async () => {
-    let cartData: CartProducts[] = [];
-    const response = await fetch('/api/v1/customer/cart', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-    if (response.status === 401) {
-        await refreshTokenUser();
+    if (isLoggedInStore) {
         const response = await fetch('/api/v1/customer/cart', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             }
         });
+        if (response.status === 401) {
+            await refreshTokenUser();
+            const response = await fetch('/api/v1/customer/cart', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.ok) {
+                const cartData: CartProducts[] = await response.json();
+                console.log(cartData);
+                return cartData;
+            }
+            else if (response.status === 404) {
+                throw new Error('Start Shopping Now!');
+            }
 
+        }
         if (response.ok) {
-            cartData = await response.json();
-            cartData;
+            const cartData: CartProducts[] = await response.json();
+            console.log(cartData);
+            return cartData;
         }
         else if (response.status === 404) {
             throw new Error('Start Shopping Now!');
         }
-
     }
-
-    else if (response.status === 404) {
-        throw new Error('Start Shopping Now!');
-    }
-    cartData = await response.json();
-    return cartData;
 };
 
 

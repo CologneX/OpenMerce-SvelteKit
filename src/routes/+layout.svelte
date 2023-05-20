@@ -27,6 +27,19 @@
 	import Bell from '$lib/icons/Bell.svelte';
 	import Back from '$lib/icons/Back.svelte';
 	import { page } from '$app/stores';
+	import {
+		logoutStaff,
+		logoutUser,
+		isUserLoggedIn,
+		isStaffLogged,
+		getUserNames,
+		getStaffUsername
+	} from '$lib/utils/auth';
+	let isLoggingOut: boolean = false;
+	import { error } from '@sveltejs/kit';
+	import MapPin from '$lib/icons/MapPin.svelte';
+	import { triggerModal } from '$lib/utils/modal';
+	import ShoppingCartCount from '$lib/Navbar/ShoppingCart.svelte';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	let popupSettings: PopupSettings = {
@@ -58,38 +71,31 @@
 	let first_name: string | null;
 	let selectedLanguage: string | null;
 	let cartCount: any;
-	function setLanguage(lang: string) {
-		localStorage.setItem('prefLang', lang);
-		selectedLanguage = localStorage.getItem('prefLang');
-	}
+
 	import { getCartCount } from '$lib/utils/navbar';
-	let isLoggedIn = isUserLoggedIn();
 	onMount(async () => {
-		isLoading = false;
-		if (getUserFirstName() !== null) {
+		if (isUserLoggedIn()) {
 			isLoggedInStore.set(true);
-		} else if (getUserLastName !== null) {
+		} else if (isStaffLogged()) {
 			isStaffLoggedInStore.set(true);
 		}
 		selectedLanguage = localStorage.getItem('prefLang');
-		if (isLoggedIn) {
-			cartCount = getCartCount();
-		}
 	});
 	// end for isLoggedin
 
-	isLoggedInStore.subscribe((value) => {
-		isLoggedIn = value;
-		if (value) {
-			first_name = localStorage.getItem('first_name');
-			last_name = localStorage.getItem('last_name');
-		}
-	});
-	let isStaffLoggedIn: boolean;
+	if (isLoggedInStore) {
+		[first_name, last_name] = getUserNames();
+	} else if (isStaffLoggedInStore) {
+		username = getStaffUsername();
+	}
 
+	if (isLoggedInStore) {
+		cartCount = getCartCount();
+	}
+	// isLoading = false;
 	// for handling shopping cart click
 	function handleShoppingCartClick() {
-		if (isLoggedIn || isStaffLoggedIn) {
+		if ($isLoggedInStore || $isStaffLoggedInStore) {
 			goto('/cart');
 		} else {
 			goto('/login');
@@ -99,31 +105,20 @@
 
 	//for handling bell click
 	function handleBellClick() {
-		if (!isLoggedIn || !isStaffLoggedIn) {
+		if ($isLoggedInStore || $isStaffLoggedInStore) {
 			goto('/login');
 		}
 	}
 	// end for handling bell click
-
-	// for screenwidth
-	let screenWidth: number;
-	$: screenWidthStore.set(screenWidth);
-	// end for screenwidth
-	import {
-		logoutStaff,
-		logoutUser,
-		isUserLoggedIn,
-		getUserFirstName,
-		getUserLastName
-	} from '$lib/utils/auth';
+	// for setting lang
+	function setLanguage(lang: string) {
+		localStorage.setItem('prefLang', lang);
+		selectedLanguage = localStorage.getItem('prefLang');
+	}
+	// for setting lang
 	// for logout
-	let isLoggingOut: boolean = false;
-	import { error } from '@sveltejs/kit';
-	import MapPin from '$lib/icons/MapPin.svelte';
-	import { triggerModal } from '$lib/utils/modal';
-	import { refreshTokenUser } from '$lib/utils/refreshToken';
 	const handleLogout = () => {
-		if (isLoggedIn) {
+		if ($isLoggedInStore) {
 			const logoutUserAPI = async () => {
 				isLoggingOut = true;
 				const response = await fetch('/api/v1/auth/logout', {
@@ -143,7 +138,7 @@
 				isLoggingOut = false;
 			};
 			logoutUserAPI();
-		} else if (isStaffLoggedIn) {
+		} else if ($isStaffLoggedInStore) {
 			const logoutStaffAPI = async () => {
 				isLoggingOut = true;
 				const response = await fetch('/api/v1/staff/auth/logout', {
@@ -165,7 +160,7 @@
 			logoutStaffAPI();
 		}
 
-		if (screenWidth < 1024) {
+		if ($screenWidthStore < 1024) {
 			drawerStore.close();
 		}
 	};
@@ -190,7 +185,7 @@
 	// end for search bar
 </script>
 
-<svelte:window bind:innerWidth={screenWidth} />
+<svelte:window bind:innerWidth={$screenWidthStore} />
 <!-- {#if $navigating}
 	<Preloader />
 {/if} -->
@@ -205,7 +200,7 @@
 		width="md:w-96 w-80"
 		shadow="shadow-2xl"
 	/>
-	{#if screenWidth < 1024}
+	{#if $screenWidthStore < 1024}
 		<Drawer>
 			<div class="flex flex-col p-3 gap-2 card h-full w-full">
 				<header class="w-full flex place-items-center">
@@ -222,7 +217,7 @@
 				<hr class="!border !border-current" />
 				<section class="gap-2 grid w-full h-full overflow-y-auto hide-scrollbar">
 					<div class="h-fit space-y-2">
-						{#if !isLoggedIn}
+						{#if !$isLoggedInStore}
 							<a
 								href="/login"
 								class="btn h-fit variant-ringed-primary w-full"
@@ -237,7 +232,7 @@
 							<div class="card p-4 grid place-items-center w-full">
 								<span>
 									<Avatar
-										initials="{first_name?.charAt(0)}{last_name?.charAt(0)}"
+										initials="{first_name}{last_name}"
 										background="bg-primary-500"
 										width="w-12"
 									/>
@@ -289,7 +284,7 @@
 					</div>
 				</section>
 
-				{#if isLoggedIn}
+				{#if $isLoggedInStore}
 					<footer class="w-full space-y-2">
 						<div>
 							<div class="flex">
@@ -338,7 +333,7 @@
 				</div>
 			</svelte:fragment>
 			<svelte:fragment slot="lead">
-				{#if screenWidth < 1024 && $page.url.pathname !== '/'}
+				{#if $screenWidthStore < 1024 && $page.url.pathname !== '/'}
 					<button class="btn-icon btn-icon-sm" aria-label="back" on:click={() => history.back()}>
 						<span>
 							<Back />
@@ -378,7 +373,7 @@
 			</div>
 
 			<svelte:fragment slot="trail">
-				{#if screenWidth > 1024}
+				{#if $screenWidthStore > 1024}
 					<div class="flex gap-2">
 						<button
 							type="button"
@@ -386,21 +381,9 @@
 							on:click={handleShoppingCartClick}
 							use:popup={cartHover}
 						>
-							{#if cartCount}
-								<div class="relative inline-block">
-									<span
-										class="badge-icon variant-filled-secondary absolute -top-2 -right-2 z-10 shadow-md"
-										>{cartCount}</span
-									>
-									<ShoppingCart />
-								</div>
-							{:else}
-								<span>
-									<ShoppingCart />
-								</span>
-							{/if}
+							<ShoppingCartCount />
 						</button>
-						{#if isLoggedIn || isStaffLoggedIn}
+						{#if $isLoggedInStore || $isStaffLoggedInStore}
 							<button
 								type="button"
 								class="btn-icon btn-icon-sm"
@@ -419,7 +402,7 @@
 								<p class="font-semibold text-end">Cart</p>
 							</header>
 							<section class="flex items-center justify-center">
-								{#if !isLoggedIn}
+								{#if !$isLoggedInStore}
 									<p>Please log in to start purchasing :)</p>
 								{:else}
 									<div class="flex flex-row gap-x-2 w-full">
@@ -431,7 +414,7 @@
 							</section>
 						</div>
 
-						{#if !isLoggedIn && !isStaffLoggedIn}
+						{#if !$isLoggedInStore && !$isStaffLoggedInStore}
 							<a href="/login" class="btn btn-sm"><span class="font-semibold">Login</span></a>
 							<a href="/register" class="btn btn-sm variant-ringed"
 								><span class="font-semibold">Register</span></a
@@ -443,12 +426,12 @@
 							use:popup={popupSettings}
 							aria-labelledby="setting button"
 						>
-							{#if isLoggedIn}
+							{#if $isLoggedInStore}
 								<div>
 									<Avatar initials="{first_name?.charAt(0)}{last_name?.charAt(0)}" width="w-6" />
 								</div>
 								<div>{first_name}</div>
-							{:else if isStaffLoggedIn}
+							{:else if $isStaffLoggedInStore}
 								<div>
 									<Avatar initials={username?.charAt(0)} width="w-6" />
 								</div>
@@ -463,20 +446,7 @@
 				{:else}
 					<div class="flex">
 						<button type="button" class="btn-icon btn-icon-sm" on:click={handleShoppingCartClick}>
-							{#if cartCount}
-								<div class="relative inline-block">
-									<span
-										class="badge-icon variant-filled-secondary absolute -top-2 -right-2 z-10 shadow-md"
-										>{cartCount}</span
-									>
-
-									<ShoppingCart />
-								</div>
-							{:else}
-								<span>
-									<ShoppingCart />
-								</span>
-							{/if}
+							<ShoppingCartCount />
 						</button>
 						<button
 							type="button"
@@ -516,7 +486,7 @@
 								</span>
 							{/each}
 						</div>
-						{#if isLoggedIn || isStaffLoggedIn}
+						{#if $isLoggedInStore || $isStaffLoggedInStore}
 							<button
 								class="btn btn-sm variant-filled w-full"
 								disabled={isLoggingOut}
