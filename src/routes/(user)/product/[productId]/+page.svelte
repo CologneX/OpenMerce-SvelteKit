@@ -1,95 +1,135 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { onMount } from 'svelte';
-	import { error } from '@sveltejs/kit';
 	const param = $page.params.productId;
-	let product: ProductDetail = {
-		id: '',
-		name: '',
-		description: '',
-		price: 0,
-		image_urls: [],
-		cumulative_review: 0,
-		weight: 0,
-		category_name: ''
-	};
-	onMount(() => {
-		const getProduct = async () => {
-			const response = await fetch(`/api/v1/product?id=${param}`, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			});
-			if (response.status == 400 || response.status == 404) {
-				throw error(400, {
-					message: 'Oops, product not found!'
-				});
-			} else if (!response.ok) {
-				throw error(response.status, {
-					message: `${response.statusText}`
-				});
-			}
-			const productData: ProductDetail = await response.json();
-			return productData;
-		};
-		getProduct().then((productData) => {
-			product = productData;
-		});
-	});
-
-	// for image carousel
-
-	import { browser } from '$app/environment';
+	import { getProductDetails } from '$lib/utils/products';
 	import Logo from '$lib/icons/Logo.svelte';
 	import Star from '$lib/icons/Star.svelte';
-	let carousel;
-	// end for image carousel
-
 	import { register } from 'swiper/element/bundle';
-
+	import PlusSmall from '$lib/icons/PlusSmall.svelte';
+	import MinusSmall from '$lib/icons/MinusSmall.svelte';
+	import ShareMini from '$lib/icons/ShareMini.svelte';
+	import Wishlist from '$lib/Product/Wishlist.svelte';
+	import { screenWidthStore, urlFromStore } from '$lib/utils/stores';
+	import HeartMini from '$lib/icons/HeartMini.svelte';
 	register();
-	const onProgress = (e: any) => {
-		const [swiper, progress] = e.detail;
-		console.log(progress);
-	};
-	const onSlideChange = (e: any) => {
-		console.log('slide changed');
-	};
+	let selectedStock: number = 1;
+	urlFromStore.set(`/product/${param}`);
 </script>
 
 <svelte:head>
-	<title>{product.name}</title>
-	<meta name="description" content={product.name} />
+	{#await getProductDetails(param) then productDetail}
+		<title>{productDetail.name}</title>
+		<meta name="description" content={productDetail.name} />
 
-	<meta
-		name="keywords"
-		content="OpenMerce, E-Commerce, Open-Source ECommerce, Svelte, SvelteKit, OpenMerce Register, Register, {product.name}"
-	/>
-	<meta name="author" content="OpenMerce" />
+		<meta
+			name="keywords"
+			content="OpenMerce, E-Commerce, Open-Source ECommerce, Svelte, SvelteKit, OpenMerce Register, Register, {productDetail.name}"
+		/>
+		<meta name="author" content="OpenMerce" />
+	{/await}
 </svelte:head>
 <div class="h-fit w-full grid grid-rows-2">
-	<div class="grid md:grid-cols-2 sm:grid-cols-1 w-full h-full">
-		<div class="h-full w-full">
-			<div class=" w-full p-0 sticky top-0 space-y-2">
-				{#if browser}
-					{#if product.image_urls}
+	{#await getProductDetails(param)}
+		<div class="grid md:grid-cols-2 sm:grid-cols-1 w-full h-full gap-x-2 gap-y-2">
+			<div class="h-full w-full">
+				<div class=" w-full p-0 sticky top-0 space-y-2 placeholder aspect-square h-full" />
+			</div>
+			<div class="flex h-full">
+				<div class="space-y-4 w-full">
+					<div class="space-y-2">
+						<div id="productDetail" class="font-semibold placeholder animate-pulse" />
+						<small class="flex gap-x-2">
+							<div class="flex items-center animate-pulse placeholder w-10" />
+							<span>•</span>
+							<div class="flex items-center">
+								<Star />
+								&nbsp;
+								<span class="text-surface-900-50-token placeholder animate-pulse w-20" />
+							</div>
+						</small>
+					</div>
+
+					<div class="font-bold placeholder animate-pulse" />
+
+					<div class="card p-3 space-y-2">
+						<div class="flex items-center gap-x-2">
+							<button class="btn btn-sm text-primary-500 placeholder animate-pulse" />
+							<button class="btn btn-sm text-primary-500 placeholder animate-pulse" />
+							<button class="btn btn-sm text-primary-500 placeholder animate-pulse" />
+
+							<p class="placeholder animate-pulse w-16" />
+						</div>
+						<small class=" text-surface-900-50-token placeholder animate-pulse" />
+						<div class="md:flex gap-2 hidden">
+							<button class="btn variant-ringed-primary text-primary-500 font-bold flex-1"
+								>Buy Now</button
+							>
+							<button class="btn variant-filled-primary font-bold flex-1"
+								><span class="text-white flex items-center"> <PlusSmall />Add to cart</span>
+							</button>
+						</div>
+
+						<div class="flex">
+							<button class="btn btn-sm flex-1"
+								><span><HeartMini /></span><span>Wishlist</span></button
+							>
+
+							<span class="divider-vertical h-8" />
+							<button class="btn btn-sm flex-1"><span><ShareMini /></span><span>Share</span></button
+							>
+						</div>
+					</div>
+
+					<div class="" id="productDescription">
+						<h4 class="font-semibold">Description</h4>
+						<div class="h-6" />
+						<p class="text-sm">
+							<span class=" text-surface-900-50-token">Weight: </span>
+						</p>
+						<p class="text-sm">
+							<span class=" text-surface-900-50-token">Dimension: </span>
+						</p>
+						<p class="text-sm">
+							<span class=" text-surface-900-50-token">Category: </span>
+						</p>
+
+						<div class="h-2" />
+
+						<p class="placeholder animate-pulse" />
+						<div class="h-3" />
+						<p class="placeholder animate-pulse" />
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="productReview">
+			<div class="logo-cloud grid-cols-1 lg:!grid-cols-3 gap-1">
+				<div class="logo-item animate-pulse placeholder"><h1>Reviews</h1></div>
+				<div class="logo-item animate-pulse placeholder" />
+				<div class="logo-item animate-pulse placeholder" />
+			</div>
+		</div>
+	{:then productDetail}
+		<div class="grid md:grid-cols-2 sm:grid-cols-1 w-full h-full gap-x-2">
+			<div class="h-full w-full">
+				<div class=" w-full p-0 sticky top-0 space-y-2">
+					{#if productDetail.image_urls}
 						<swiper-container
-							navigation="true"
+							navigation={'true'}
 							slides-per-group={1}
-							pagination="true"
-							grab-cursor="true"
-							on:progress={onProgress}
-							on:slidechange={onSlideChange}
+							pagination={'true'}
+							grab-cursor={'true'}
 						>
-							{#each product.image_urls as image}
-								<swiper-slide class=" shadow-xl card flex justify-center items-center">
+							{#each productDetail.image_urls as image}
+								<swiper-slide
+									class=" shadow-xl card flex justify-center items-center aspect-square"
+								>
 									<picture>
 										{#if image}
 											<img
 												src="/usercontent/{image}"
 												alt="{image}'s image"
-												class="aspect-square object-contain"
+												class=" object-contain"
 											/>
 										{:else}
 											<div>
@@ -101,137 +141,159 @@
 								>
 							{/each}
 						</swiper-container>
-					{:else}
-						<picture class="aspect-square shadow-xl card flex justify-center items-center">
-							<div>
-								<Logo />
-								<p class="text-center">No Image Found</p>
+					{/if}
+					{#if $screenWidthStore > 768}
+						<div class="flex gap-2">
+							{#if productDetail.image_urls}
+								{#each productDetail.image_urls as image}
+									<button type="button" class="border-primary-500 border-2 rounded-md">
+										<picture class=" shadow-xl card flex justify-center items-center w-20">
+											{#if image}
+												<img
+													src="/usercontent/{image}"
+													alt="{image}'s image"
+													class="aspect-square object-contain"
+												/>
+											{:else}
+												<div>
+													<Logo />
+													<p class="text-center">No Image Found</p>
+												</div>
+											{/if}
+										</picture></button
+									>
+								{/each}
+							{/if}
+						</div>
+					{/if}
+				</div>
+			</div>
+			<div class="flex h-full w-full">
+				<div class="space-y-4">
+					<div class="space-y-2">
+						<h4 id="productDetail" class="font-semibold">
+							{productDetail.name}
+						</h4>
+						<small class="flex gap-x-2">
+							<div class="flex items-center">
+								Terjual &nbsp; <span class=" text-surface-900-50-token"> 0</span>
 							</div>
-						</picture>
-					{/if}
-				{/if}
-				<div class="flex gap-2">
-					{#if product.image_urls}
-						{#each product.image_urls as image}
-							<button type="button" class="border-primary-500 border-2 rounded-md">
-								<picture class=" shadow-xl card flex justify-center items-center w-20">
-									{#if image}
-										<img
-											src="/usercontent/{image}"
-											alt="{image}'s image"
-											class="aspect-square object-contain"
-										/>
-									{:else}
-										<div>
-											<Logo />
-											<p class="text-center">No Image Found</p>
-										</div>
-									{/if}
-								</picture></button
+							<span>•</span>
+							<div class="flex items-center">
+								<Star />
+								{productDetail.cumulative_review} &nbsp;
+								<span class="text-surface-900-50-token">(0 rating)</span>
+							</div>
+						</small>
+					</div>
+
+					<h2
+						class="font-bold bg-gradient-to-br from-primary-500 box-decoration-clone bg-clip-text text-transparent to-secondary-500"
+					>
+						{productDetail.price.toLocaleString('id-ID', {
+							style: 'currency',
+							currency: 'IDR',
+							minimumFractionDigits: 0
+						})}
+					</h2>
+
+					<div class="card p-3 space-y-2">
+						<div class="flex items-center gap-x-2">
+							<div class="input-group grid-cols-[auto_1fr_auto] flex-1">
+								<button
+									class="btn btn-sm text-primary-500"
+									on:click={() => {
+										if (selectedStock > 0) {
+											selectedStock--;
+										}
+									}}
+									disabled={selectedStock <= 1}
+								>
+									<MinusSmall />
+								</button>
+								<input type="text" min="0" class="input" bind:value={selectedStock} />
+								<button
+									class="btn btn-sm text-primary-500"
+									on:click={() => {
+										if (selectedStock <= productDetail.stock) {
+											selectedStock++;
+										}
+									}}
+									disabled={selectedStock >= productDetail.stock}
+								>
+									<PlusSmall />
+								</button>
+							</div>
+							<p class="flex-1">
+								Total Stock: <span class="font-bold">{productDetail.stock}</span>
+							</p>
+						</div>
+						<small class=" text-surface-900-50-token"
+							>Max. purchased items {productDetail.stock}</small
+						>
+						<div class="md:flex gap-2 hidden">
+							<button class="btn variant-ringed-primary text-primary-500 font-bold flex-1"
+								>Buy Now</button
 							>
-						{/each}
-					{/if}
-				</div>
-			</div>
-		</div>
-		<div class="grid w-full h-full card">
-			<div class="md:pt-4 md:pl-4 space-y-4">
-				<h4 id="productDetail">
-					{product.name}
-				</h4>
-				<h3
-					class="font-bold bg-gradient-to-br from-primary-500 box-decoration-clone bg-clip-text text-transparent to-secondary-500"
-				>
-					{product.price.toLocaleString('id-ID', {
-						style: 'currency',
-						currency: 'IDR',
-						minimumFractionDigits: 0
-					})}
-				</h3>
+							<button class="btn variant-filled-primary font-bold flex-1"
+								><span class="text-white flex items-center"> <PlusSmall />Add to cart</span>
+							</button>
+						</div>
 
-				<div class="md:flex gap-2 hidden">
-					<button class="btn variant-filled-primary">Buy Now</button>
-					<button class="btn variant-soft-primary">Add to cart</button>
-				</div>
+						<div class="flex">
+							<Wishlist productId={productDetail.id} />
+							<span class="divider-vertical h-8" />
+							<button class="btn btn-sm flex-1"><span><ShareMini /></span><span>Share</span></button
+							>
+						</div>
+					</div>
 
-				<div class="card" id="productDescription">
-					Weight: {product.weight}
-					<br />
-					{product.description}
-					<br />
-					Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe nisi inventore dolorem enim
-					odio minima ipsa voluptate nobis, dignissimos repudiandae ut pariatur sed culpa eveniet! Mollitia
-					nesciunt natus ut et itaque, dolore nam tempore incidunt reiciendis non autem adipisci dignissimos
-					voluptatibus aspernatur repellendus ratione, officia dicta ducimus. Ab vitae nostrum explicabo
-					temporibus recusandae, fuga molestiae. Nobis quis eligendi totam quos molestias rerum molestiae,
-					velit earum, culpa qui suscipit. Dolores, adipisci tenetur? Ipsa fugit nisi vel, asperiores
-					temporibus vitae molestias exercitationem earum excepturi voluptas eaque! Omnis repellat harum
-					officia illum eum accusantium. Repellat nam iusto quia obcaecati velit rerum corporis iure
-					repellendus quis totam optio incidunt doloribus sapiente voluptatum, facere nemo eos libero
-					accusantium, nihil aliquid, veritatis numquam aut consectetur. Asperiores, quae sequi minus
-					quasi necessitatibus, fuga provident non perferendis officiis ab saepe tempora itaque impedit
-					ad voluptate nam! Tempora, pariatur sunt excepturi ipsam vero odit earum et recusandae reiciendis
-					est inventore dicta id ipsum deserunt labore at. Voluptatem ullam sed suscipit magnam nisi
-					accusantium mollitia qui consequuntur, nobis earum possimus cupiditate similique ipsa fugiat?
-					Commodi quia cum veniam atque ipsum explicabo voluptates voluptatum nulla sit quas magni corrupti
-					nam, facilis quibusdam nemo quidem, iure dolores nobis ratione dicta optio, exercitationem
-					deserunt! Corrupti, reprehenderit assumenda natus et molestias animi explicabo officiis? Iste
-					commodi odit doloribus a obcaecati at praesentium voluptatibus modi. Omnis quos voluptatibus
-					nobis culpa facilis dolores tempore amet vitae et, quaerat reprehenderit numquam quia voluptas
-					praesentium quas alias id, iste non. Quaerat culpa reiciendis exercitationem natus, expedita
-					est aliquam tempore quo totam. Blanditiis ipsam recusandae suscipit enim corrupti ea doloremque,
-					quo accusantium quibusdam iure reiciendis nesciunt beatae ipsum explicabo laboriosam architecto
-					placeat dolor nostrum iusto, tenetur fugiat excepturi omnis sapiente! Possimus voluptatem asperiores
-					odio! Neque, tempora facere vitae odit voluptatum natus, omnis quibusdam, expedita corporis
-					laborum veritatis aut autem reiciendis perferendis magni sit. Beatae assumenda nostrum quae
-					ipsa illum. Quasi vero voluptatum aut eos dolore officiis autem impedit, alias quae? Iusto
-					rerum aliquid delectus repellat eos, praesentium debitis necessitatibus quis exercitationem
-					aliquam, ad impedit laboriosam porro in omnis odio libero quam, voluptatum maxime itaque! Nemo,
-					enim consectetur ab consequatur tenetur harum ipsum natus itaque autem! Voluptatibus ratione
-					ipsa labore vero laudantium delectus perferendis ipsam repudiandae officia minus architecto
-					sed doloribus temporibus, tenetur ad nesciunt? Quos explicabo nisi ex nam, corrupti eligendi.
-					Sequi expedita dicta corrupti. Dolores, beatae nisi accusamus minus recusandae voluptatem fugit
-					neque tenetur minima aut? Ex architecto odit atque officia in laudantium, officiis ullam tempora,
-					exercitationem debitis id sunt reiciendis numquam, magni perspiciatis molestiae nesciunt amet
-					unde? Incidunt nam iure soluta, voluptatem esse qui velit debitis nemo itaque tempora exercitationem
-					illo quae repellendus ea at dolor voluptas quaerat perferendis quis dolores impedit! Doloribus
-					ea, dolorum a tenetur ducimus voluptate repellat, veniam iusto quas voluptatibus tempora earum
-					distinctio veritatis unde! Maxime, saepe voluptate corrupti distinctio porro fugiat labore
-					natus ab animi dolorum quo dolorem ipsum, rem voluptates vel excepturi aspernatur harum! Laudantium
-					eum eveniet voluptatem possimus perspiciatis, deleniti animi provident non adipisci? Dolorum
-					ut eius fuga sint rerum animi, optio consequuntur voluptates error, ex sunt officiis harum
-					obcaecati, incidunt soluta ipsa delectus tempora suscipit quas natus. Culpa, deleniti dolor
-					maiores cupiditate beatae quasi doloribus aliquam ut eligendi incidunt unde vel animi sed itaque
-					soluta accusantium laborum! Atque in alias non eaque, sint repellat cum optio! Ullam modi quidem
-					impedit voluptatum dolorum facere? Beatae dolor omnis facere tempore numquam ratione eum consectetur
-					assumenda qui tempora veniam, necessitatibus cupiditate est recusandae? Harum ut consectetur
-					ipsa quo libero obcaecati eius voluptatum sapiente ratione ducimus perferendis labore dicta
-					impedit id asperiores quidem nostrum reiciendis provident, nesciunt omnis ad fuga et? Harum
-					fugiat quod accusantium ipsam amet culpa, quasi, eaque illum illo nam architecto, delectus
-					at. Deleniti voluptate vel, alias laudantium harum necessitatibus, nemo illum explicabo dolorem
-					non, inventore cumque beatae repellat nesciunt! Dolores ducimus placeat a accusantium molestiae
-					suscipit modi nam dolore saepe unde. Facere necessitatibus, commodi quibusdam laboriosam voluptatibus
-					architecto perspiciatis excepturi, impedit odio similique voluptates id illo dicta cumque amet
-					reiciendis sequi maxime alias delectus ab accusamus. Quasi exercitationem minima inventore.
-					Quo, explicabo officia maiores unde obcaecati dolore modi voluptatem ab. Impedit iusto natus,
-					commodi doloribus, cum cupiditate nisi expedita aspernatur, in soluta placeat dolor quas. Molestiae
-					dolore autem tempora!
+					<div class="" id="productDescription">
+						<h4 class="font-semibold">Description</h4>
+						<div class="h-6" />
+						<p class="text-sm">
+							<span class=" text-surface-900-50-token">Weight: </span>
+							{productDetail.weight}
+							kg
+						</p>
+						<p class="text-sm">
+							<span class=" text-surface-900-50-token">Dimension: </span>
+							{productDetail.dimension}
+							cm
+						</p>
+						<p class="text-sm">
+							<span class=" text-surface-900-50-token">Category: </span>
+							<a
+								href="/category/{productDetail.category_name}"
+								class="font-semibold text-primary-500 unstyled hover:underline"
+								>{productDetail.category_name}</a
+							>
+						</p>
+						<div class="h-2" />
+
+						<p>{productDetail.name}</p>
+						<div class="h-3" />
+						<p>{productDetail.description}</p>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-	<div id="productReview">
-		<div class="logo-cloud grid-cols-1 lg:!grid-cols-3 gap-1">
-			<div class="logo-item"><h1>Reviews</h1></div>
-			<div class="logo-item" />
-			<div class="logo-item">
-				<span class="flex"><Star /><Star /><Star /><Star /><Star /></span>
-				<span><h1>{product.cumulative_review}</h1></span>
+		<div id="productReview">
+			<div class="logo-cloud grid-cols-1 lg:!grid-cols-3 gap-1">
+				<div class="logo-item"><h1>Reviews</h1></div>
+				<div class="logo-item" />
+				<div class="logo-item">
+					<span class="flex"><Star /><Star /><Star /><Star /><Star /></span>
+					<span><h1>{productDetail.cumulative_review}</h1></span>
+				</div>
 			</div>
 		</div>
-	</div>
-	<footer class="fixed sm:block md:hidden bottom-0 flex gap-2 justify-center w-screen card p-4">
-		<button class="btn variant-filled-primary w-1/2">Buy Now</button>
-		<button class="btn variant-soft-primary w-1/2">Add to cart</button>
+	{/await}
+
+	<footer class="sticky sm:block md:hidden bottom-0 flex gap-2 justify-center w-screen card p-4">
+		<button class="btn variant-ringed-primary text-primary-500 font-bold flex-1">Buy Now</button>
+		<button class="btn variant-filled-primary font-bold flex-1"
+			><span class="text-white flex items-center"> <PlusSmall />Add to cart</span>
+		</button>
 	</footer>
 </div>

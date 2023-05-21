@@ -38,6 +38,8 @@ declare interface ProductDetail {
 	category_name: string;
 	cumulative_review: number;
 	image_urls: string[] | null;
+	dimension: string;
+	stock: number;
 };
 
 declare interface MainBanner {

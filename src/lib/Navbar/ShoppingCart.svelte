@@ -13,7 +13,7 @@
 			});
 			if (response.status === 401) {
 				await refreshTokenUser();
-				const response = await fetch('/api/v1/customer/cart', {
+				const response = await fetch('/api/v1/customer/cart-count', {
 					method: 'GET',
 					headers: {
 						'Content-Type': 'application/json'

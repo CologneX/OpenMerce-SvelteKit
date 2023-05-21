@@ -1,9 +1,9 @@
 import type { CartProducts } from "../../app";
 import { refreshTokenUser } from "./refreshToken";
 import { isLoggedInStore } from "./stores";
-
+let $isLoggedInStore = isLoggedInStore;
 export const getCart = async () => {
-    if (isLoggedInStore) {
+    if ($isLoggedInStore) {
         const response = await fetch('/api/v1/customer/cart', {
             method: 'GET',
             headers: {
@@ -63,3 +63,17 @@ export const handleDeleteItem = (itemID: string) => {
     getCart();
 };
 
+
+export const handleAddItem = async (itemID: string) => {
+    const response = await fetch(`/api/v1/customer/cart?id=${itemID}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    if (response.ok) {
+        const cartData: CartProducts[] = await response.json();
+        console.log(cartData);
+        return cartData;
+    }
+}
