@@ -15,14 +15,12 @@
 			{:then productsData}
 				{#each productsData as items}
 					<a class="card w-full h-24 flex p-2 space-x-4" href="/product/{items.id}">
-						<picture class="aspect-square h-full">
+						<picture class="aspect-square h-full grid place-content-center">
 							{#if items.image}
 								<img src="/usercontent/{items.image}" alt={items.name} />
 							{:else}
-								<div>
-									<Logo />
-									<p class="text-center">No Image Found</p>
-								</div>
+								<Logo />
+								<small class="text-center">No Image Found</small>
 							{/if}
 						</picture>
 						<div class="self-center">

@@ -65,6 +65,7 @@
 	import { goto } from '$app/navigation';
 	import { isLoggedInStore, isStaffLoggedInStore, screenWidthStore } from '$lib/utils/stores';
 	import SearchDropdown from '$lib/Navbar/SearchDropdown.svelte';
+	import CartDropdown from '$lib/Cart/CartDropdown.svelte';
 
 	let last_name: string | null;
 	let username: string | null;
@@ -146,7 +147,7 @@
 		target: 'searchBar',
 		placement: 'bottom',
 		middleware: {
-			offset: 1,
+			offset: 1
 		}
 	};
 	// end for search bar
@@ -356,22 +357,8 @@
 							</button>
 						{/if}
 						<span class="divider-vertical !border-current" />
-						<div class="card p-6 bg-filled w-full max-w-md min-h-64 h-full" data-popup="cartHover">
-							<header class=" grid grid-cols-2">
-								<p class="text-start">Your Cart</p>
-								<p class="font-semibold text-end">Cart</p>
-							</header>
-							<section class="flex items-center justify-center">
-								{#if !$isLoggedInStore}
-									<p>Please log in to start purchasing :)</p>
-								{:else}
-									<div class="flex flex-row gap-x-2 w-full">
-										<div class="card">
-											<div class="placeholder" />
-										</div>
-									</div>
-								{/if}
-							</section>
+						<div class="card p-4 w-full max-w-md h-fit max-h-96" data-popup="cartHover">
+							<CartDropdown />
 						</div>
 
 						{#if !$isLoggedInStore && !$isStaffLoggedInStore}
