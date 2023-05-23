@@ -1,34 +1,18 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	const param = $page.params.search;
-	const getProduct = async () => {
-		const response = await fetch(`/api/v1/product?search=${param}`, {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		});
-		if (response.status == 400 || response.status == 404) {
-			throw new Error('Product not found');
-		} else if (!response.ok) {
-			throw new Error('Something went wrong');
-		}
-		const productData: Products[] = await response.json();
-		return productData;
-	};
-
 	import Logo from '$lib/icons/Logo.svelte';
 	import Star from '$lib/icons/Star.svelte';
+	import { getProductSearch } from '$lib/utils/products';
 </script>
 
 <svelte:head>
 	<title>Search Result | OpenMerce - Main</title>
-	<meta name="description" content="Searching for {param}?" />
+	<meta name="description" content="Searching for {$page.params.search}?" />
 
 	<meta
 		name="keywords"
-		content="OpenMerce, E-Commerce, Open-Source ECommerce, Svelte, SvelteKit, OpenMerce Register, Register, {param}"
+		content="OpenMerce, E-Commerce, Open-Source ECommerce, Svelte, SvelteKit, OpenMerce Register, Register, {$page
+			.params.search}"
 	/>
 	<meta name="author" content="OpenMerce" />
 </svelte:head>
@@ -36,7 +20,7 @@
 <div class="w-full h-full">
 	<div class="font-semibold text-xl">Search Result</div>
 	<div class="flex flex-wrap gap-4 w-full">
-		{#await getProduct()}
+		{#await getProductSearch($page.params.search)}
 			<div class="placeholder w-full h-64 card animate-pulse" />
 			<div class="flex w-full gap-4">
 				{#each [1, 2, 3, 4, 5, 6] as item}

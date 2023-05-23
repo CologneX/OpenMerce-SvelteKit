@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Logo from '$lib/icons/Logo.svelte';
-	import MinusCircle from '$lib/icons/MinusCircle.svelte';
-	import PlusCircle from '$lib/icons/PlusCircle.svelte';
+	import MinusSmall from '$lib/icons/MinusSmall.svelte';
+	import PlusSmall from '$lib/icons/PlusSmall.svelte';
 	import Trash from '$lib/icons/Trash.svelte';
 	import { getCart, handleDeleteItem } from '$lib/utils/cart';
 	import { lazyLoad } from '$lib/utils/lazyLoad';
@@ -78,20 +78,21 @@
 							<Trash />
 						</button>
 						<div><span class=" divider-vertical h-full !border-2" /></div>
-						<button class="btn-icon btn-icon-sm h-full" type="button" aria-label="Delete product">
-							<MinusCircle />
-						</button>
-						<input
-							type="text"
-							inputmode="numeric"
-							pattern="[0-9]*"
-							class="input w-8 p-0 text-center h-full"
-							value={item.quantity}
-							aria-label="Quantity"
-						/>
-						<button class="btn-icon btn-icon-sm h-full" type="button" aria-label="Add product">
-							<PlusCircle />
-						</button>
+						<div class="input-group grid-cols-[auto_1fr_auto] w-fit">
+							<button
+								class="btn btn-sm text-primary-500"
+							
+							>
+								<MinusSmall/>
+							</button>
+							<input type="text" min="0" class="input w-14 p-0 text-center" value="{item.quantity}"/>
+							<button
+								class="btn btn-sm text-primary-500"
+								
+							>
+								<PlusSmall/>
+							</button>
+						</div>
 					</div>
 				</div>
 			</div>

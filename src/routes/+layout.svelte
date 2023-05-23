@@ -64,6 +64,7 @@
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
 	import { isLoggedInStore, isStaffLoggedInStore, screenWidthStore } from '$lib/utils/stores';
+	import SearchDropdown from '$lib/Navbar/SearchDropdown.svelte';
 
 	let last_name: string | null;
 	let username: string | null;
@@ -206,18 +207,7 @@
 				<hr class="!border !border-current" />
 				<section class="gap-2 grid w-full h-full overflow-y-auto hide-scrollbar">
 					<div class="h-fit space-y-2">
-						{#if !$isLoggedInStore}
-							<a
-								href="/login"
-								class="btn h-fit variant-ringed-primary w-full"
-								on:click={() => drawerStore.close()}><span class="font-semibold">Login</span></a
-							>
-							<a
-								href="/register"
-								class="btn h-fit variant-glass-primary w-full"
-								on:click={() => drawerStore.close()}><span class="font-semibold">Register</span></a
-							>
-						{:else}
+						{#if $isLoggedInStore}
 							<div class="card p-4 grid place-items-center w-full">
 								<span>
 									<Avatar
@@ -228,6 +218,25 @@
 								</span>
 								<span>{first_name} {last_name}</span>
 							</div>
+						{:else if $isStaffLoggedInStore}
+							<div class="card p-4 grid place-items-center w-full">
+								<span>
+									<Avatar initials?={username} background="bg-primary-500" width="w-12" />
+								</span>
+								<span>{username}</span>
+								<span class="badge variant-ghost">Admin</span>
+							</div>
+						{:else}
+							<a
+								href="/login"
+								class="btn h-fit variant-ringed-primary w-full"
+								on:click={() => drawerStore.close()}><span class="font-semibold">Login</span></a
+							>
+							<a
+								href="/register"
+								class="btn h-fit variant-glass-primary w-full"
+								on:click={() => drawerStore.close()}><span class="font-semibold">Register</span></a
+							>
 						{/if}
 						<div class="space-y-6">
 							<h4 class="font-semibold">My Activity</h4>
@@ -343,24 +352,8 @@
 				/>
 			</form>
 			<div class="card w-full max-w-4xl h-fit" data-popup="searchBar">
-				<div class="card-body">
-					<div class="p-4 space-y-4">
-						<div class="placeholder animate-pulse" />
-						<div class="grid grid-cols-3 gap-8">
-							<div class="placeholder animate-pulse" />
-							<div class="placeholder animate-pulse" />
-							<div class="placeholder animate-pulse" />
-						</div>
-						<div class="grid grid-cols-4 gap-4">
-							<div class="placeholder animate-pulse" />
-							<div class="placeholder animate-pulse" />
-							<div class="placeholder animate-pulse" />
-							<div class="placeholder animate-pulse" />
-						</div>
-					</div>
-				</div>
+				<SearchDropdown searchQuery={search} />
 			</div>
-
 			<svelte:fragment slot="trail">
 				{#if $screenWidthStore > 1024}
 					<div class="flex gap-2">
@@ -369,6 +362,7 @@
 							class="btn-sm"
 							on:click={handleShoppingCartClick}
 							use:popup={cartHover}
+							aria-label="your cart"
 						>
 							<ShoppingCartCount />
 						</button>
@@ -412,6 +406,7 @@
 						<button
 							type="button"
 							class="btn btn-sm"
+							aria-label="setting button"
 							use:popup={popupSettings}
 							aria-labelledby="setting button"
 						>
@@ -425,6 +420,7 @@
 									<Avatar initials={username?.charAt(0)} width="w-6" />
 								</div>
 								<div>{username}</div>
+								<span class="badge variant-ghost">Admin</span>
 							{:else}
 								<span>
 									<Settings />

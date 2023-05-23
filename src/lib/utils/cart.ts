@@ -18,26 +18,21 @@ export const getCart = async () => {
                     'Content-Type': 'application/json'
                 }
             });
-            if (response.ok) {
-                const cartData: CartProducts[] = await response.json();
-                console.log(cartData);
-                return cartData;
-            }
-            else if (response.status === 404) {
+            if (response.status === 404) {
                 throw new Error('Start Shopping Now!');
             }
-
-        }
-        if (response.ok) {
             const cartData: CartProducts[] = await response.json();
-            console.log(cartData);
             return cartData;
         }
-        else if (response.status === 404) {
+        if (response.status === 404) {
             throw new Error('Start Shopping Now!');
         }
+        const cartData: CartProducts[] = await response.json();
+        return cartData;
     }
-};
+    return [];
+}
+
 
 
 export const handleCheckItem = (itemID: string, state: boolean) => {
@@ -64,16 +59,37 @@ export const handleDeleteItem = (itemID: string) => {
 };
 
 
-export const handleAddItem = async (itemID: string) => {
-    const response = await fetch(`/api/v1/customer/cart?id=${itemID}`, {
+export const handleAddItem = async (itemID: string, quantity: number) => {
+    const response = await fetch(`/api/v1/customer/cart`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
-        }
+        },
+        body: JSON.stringify({
+            id: itemID,
+            quantity: quantity
+        })
     });
-    if (response.ok) {
-        const cartData: CartProducts[] = await response.json();
-        console.log(cartData);
-        return cartData;
+
+    if (response.status === 401) {
+        await refreshTokenUser();
+        const response = await fetch(`/api/v1/customer/cart`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: itemID,
+                quantity: quantity
+            })
+        });
+        // if (response.ok) {
+        //     return response.json();
+        // }
     }
+    // if (response.ok) {
+    //     const cartData: CartProducts[] = await response.json();
+    //     console.log(cartData);
+    //     return cartData;
+    // }
 }

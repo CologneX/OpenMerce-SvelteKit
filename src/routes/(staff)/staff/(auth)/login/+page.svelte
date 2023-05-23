@@ -40,7 +40,8 @@
 			},
 			body: JSON.stringify({
 				username: form.username,
-				password: form.password
+				password: form.password,
+				remember_me: form.remember_me
 			})
 		});
 
@@ -52,9 +53,7 @@
 			localStorage.setItem('username', data.username);
 			triggerToast(`Welcome back, ${data.username}!`, 'variant-filled-success');
 			isStaffLoggedInStore.set(true);
-			goto('/staff', {
-				replaceState: true
-			});
+			goto('/staff');
 		} else if (response.status === 401) {
 			triggerToast('Invalid credentials', 'variant-filled-error');
 			error = true;

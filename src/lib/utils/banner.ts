@@ -1,13 +1,20 @@
+import type { MainBanner } from "../../app";
+
 export const getBannerMain = async () => {
-    const res = await fetch('/api/v1/home-banner', {
+    const response = await fetch('/api/v1/home-banner', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
         }
     });
-    if (!res.ok) {
+
+    if (response.ok) {
+        const data: MainBanner[] = await response.json();
+        return data;
+    }
+    else if (!response.ok) {
         throw new Error('Something went wrong!');
     }
-    const data: BannerMain[] = await res.json();
-    return data;
+    return [];
+
 };

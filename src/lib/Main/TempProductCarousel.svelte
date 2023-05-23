@@ -1,5 +1,6 @@
 <script lang="ts">
-	export let products: Products[] = [];
+	import type { Products } from '../../app';
+	export let products: Products[];
 	import ProductCard from '../TempProductCard.svelte';
 </script>
 

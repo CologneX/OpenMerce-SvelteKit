@@ -1,6 +1,6 @@
 export const prerender = false;
 
-import type { PageLoad } from "./$types";
+// import type { PageLoad } from "./$types";
 
 // export const load: PageLoad = (async ({ fetch, params }) => {
 //     const getSearch = await fetch(`/api/v1/product?search=${params.search}`,{

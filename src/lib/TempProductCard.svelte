@@ -1,8 +1,8 @@
 <script lang="ts">
+	import type { Products } from '../app';
 	export let products: Products;
 	import Logo from './icons/Logo.svelte';
 	import Star from './icons/Star.svelte';
-	import { lazyLoad } from './utils/lazyLoad';
 </script>
 
 <a
@@ -30,21 +30,21 @@
 	</picture>
 
 	<section class="p-4">
-		<h6 class="truncate">{products.name}</h6>
-		<h6 class="font-semibold">
+		<p class="truncate">{products.name}</p>
+		<p class="font-semibold">
 			{products.price.toLocaleString('id-ID', {
 				style: 'currency',
 				currency: 'IDR',
 				minimumFractionDigits: 0
 			})}
-		</h6>
+		</p>
 	</section>
 
 	<footer class="p-4">
 		<hr class="!border-t-2 border-current" />
 		<div class="flex items-center">
 			<Star />
-			<h6>{products.rating}</h6>
+			<p>{products.rating}</p>
 		</div>
 	</footer>
 </a>

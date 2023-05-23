@@ -17,15 +17,14 @@ declare interface Products {
 	id: string;
 	name: string;
 	price: number;
-	quantity: number;
 	rating: number;
 	image: string;
 };
 
 declare interface ProductsMain {
 	category_id: number;
-	catergory_name: string;
-	catergory_desc: string;
+	category_name: string;
+	category_desc: string;
 	products: Products[];
 }
 
@@ -105,4 +104,17 @@ declare interface UserBasicInfo {
 
 declare interface CartCount {
 	count: number;
+}
+
+
+declare interface AddToCart {
+	id: string;
+	quantity: number;
+}
+
+declare interface CategoryMain {
+	id: number;
+	name: string;
+	description: string;
+	homepage_visibility: boolean;
 }

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Logo from '$lib/icons/Logo.svelte';
 	import { getBannerMain } from '$lib/utils/banner';
-	import { lazyLoad } from '$lib/utils/lazyLoad';
 </script>
 
 <div class="w-full space-y-2">
@@ -13,9 +12,10 @@
 				navigation={true}
 				slides-per-group={1}
 				autoplay={true}
-				delay={2000}
+				delay={3000}
 				grab-cursor={true}
 				class="h-full w-full"
+				loop={true}
 			>
 				{#each banner as item}
 					<swiper-slide class="shadow-lg flex justify-center items-center">
@@ -39,8 +39,8 @@
 				{/each}
 			</swiper-container>
 		{:catch error}
-			<div class="flex justify-center items-center h-screen">
-				<p class="text-2xl text-gray-500">{error}</p>
+			<div class="flex justify-center items-center h-full">
+				<p class="text-2xl text-gray-500">{error.message}</p>
 			</div>
 		{/await}
 	</div>
