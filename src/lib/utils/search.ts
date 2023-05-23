@@ -1,7 +1,7 @@
 import type { Products } from "../../app";
 
 export const searchDropdown = async (search: string) => {
-    const response = await fetch(`/api/v1/product?search=${search}`, {
+    const response = await fetch(`/api/v1/product?search=${search}&limit=15`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -14,6 +14,6 @@ export const searchDropdown = async (search: string) => {
     const searchData: Products[] = await response.json();
     return searchData;
 
-   
-    
+
+
 }
