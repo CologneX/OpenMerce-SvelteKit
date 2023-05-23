@@ -1,7 +1,10 @@
 import { isLoggedInStore } from "./stores";
-
+let isLoggedIn: boolean;
+isLoggedInStore.subscribe((value) => {
+    isLoggedIn = value;
+});
 export const getCartCount = async () => {
-    if (isLoggedInStore) {
+    if (isLoggedIn) {
         const response = await fetch('/api/v1/customer/cart-count', {
             method: 'GET',
             headers: {
