@@ -15,8 +15,6 @@
 			{:then productsData}
 				{#each productsData as items}
 					<a class="card w-full h-24 flex p-2 space-x-4" href="/product/{items.id}">
-						<!-- <div class="placeholder aspect-square h-full" /> -->
-
 						<picture class="aspect-square h-full">
 							{#if items.image}
 								<img src="/usercontent/{items.image}" alt={items.name} />

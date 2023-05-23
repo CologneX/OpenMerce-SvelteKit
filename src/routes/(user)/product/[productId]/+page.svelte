@@ -121,7 +121,9 @@
 		{#if productDetail}
 			<div class="grid md:grid-cols-2 sm:grid-cols-1 w-full h-full gap-x-2">
 				<div class="h-full w-full">
-					<div class=" w-full p-0 sticky top-0 space-y-2">
+					<div
+						class=" w-full p-0 sticky top-0 border-2 aspect-square grid place-content-center"
+					>
 						{#if productDetail.image_urls}
 							<swiper-container
 								navigation={'true'}
@@ -130,15 +132,13 @@
 								grab-cursor={'true'}
 							>
 								{#each productDetail.image_urls as image}
-									<swiper-slide
-										class=" shadow-xl card flex justify-center items-center aspect-square"
-									>
+									<swiper-slide class=" shadow-xl card flex justify-center items-center">
 										<picture>
 											{#if image}
 												<img
 													src="/usercontent/{image}"
 													alt="{image}'s image"
-													class=" object-contain aspect-square"
+													class="object-contain aspect-square"
 												/>
 											{:else}
 												<div>
@@ -150,6 +150,9 @@
 									>
 								{/each}
 							</swiper-container>
+						{:else}
+							<Logo height="10" />
+							<p class="text-center">No Image Found</p>
 						{/if}
 						{#if $screenWidthStore > 768}
 							<div class="flex gap-2">
