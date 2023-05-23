@@ -109,45 +109,19 @@
 	// for logout
 	const handleLogout = () => {
 		if ($isLoggedInStore) {
-			const logoutUserAPI = async () => {
+			const logout = async () => {
 				isLoggingOut = true;
-				const response = await fetch('/api/v1/auth/logout', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					}
-				});
-				if (response.ok) {
-					logoutUser();
-				} else {
-					throw error(response.status, {
-						message: response.statusText
-					});
-				}
-
+				await logoutUser();
 				isLoggingOut = false;
 			};
-			logoutUserAPI();
+			logout();
 		} else if ($isStaffLoggedInStore) {
-			const logoutStaffAPI = async () => {
+			const logout = async () => {
 				isLoggingOut = true;
-				const response = await fetch('/api/v1/staff/auth/logout', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					}
-				});
-				if (response.ok) {
-					logoutStaff();
-				} else {
-					throw error(response.status, {
-						message: response.statusText
-					});
-				}
-
+				await logoutStaff();
 				isLoggingOut = false;
 			};
-			logoutStaffAPI();
+			logout();
 		}
 
 		if ($screenWidthStore < 1024) {
@@ -170,7 +144,10 @@
 	const searchBar: PopupSettings = {
 		event: 'focus-click',
 		target: 'searchBar',
-		placement: 'bottom'
+		placement: 'bottom',
+		middleware: {
+			offset: 1
+		}
 	};
 	// end for search bar
 </script>

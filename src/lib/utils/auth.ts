@@ -4,19 +4,36 @@ import { isLoggedInStore, isStaffLoggedInStore } from "./stores";
 
 
 
-export const logoutUser = () => {
-    localStorage.removeItem('first_name');
-    localStorage.removeItem('last_name');
-    isLoggedInStore.set(false)
-    goto('/login');
+export const logoutUser = async () => {
+    const response = await fetch('/api/v1/auth/logout', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    if (response.ok) {
+        localStorage.removeItem('first_name');
+        localStorage.removeItem('last_name');
+        isLoggedInStore.set(false)
+        goto('/login');
+    }
 }
-export const logoutStaff = () => {
-    localStorage.removeItem('username');
-    localStorage.removeItem('sys_admin');
-    localStorage.removeItem('fin_user');
-    localStorage.removeItem('inv_admin');
-    isStaffLoggedInStore.set(false)
-    goto('/staff/login');
+export const logoutStaff = async () => {
+    const response = await fetch('/api/v1/auth/logout', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    if (response.ok) {
+        localStorage.removeItem('username');
+        localStorage.removeItem('sys_admin');
+        localStorage.removeItem('fin_user');
+        localStorage.removeItem('inv_admin');
+        isStaffLoggedInStore.set(false)
+        goto('/staff/login');
+    }
+
 }
 
 export const isLoggedIn = () => {
