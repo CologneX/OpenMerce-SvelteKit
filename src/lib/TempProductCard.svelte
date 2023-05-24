@@ -6,7 +6,7 @@
 </script>
 
 <a
-	class="card w-40 md:w-44 lg:w-48 drop-shadow-xl h-full max-h-96 card-hover"
+	class="unstyled"
 	href="/product/{products.id}"
 	aria-label="Go to {products.name}'s page"
 	title={products.name}

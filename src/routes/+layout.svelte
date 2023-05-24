@@ -35,7 +35,6 @@
 		getStaffUsername
 	} from '$lib/utils/auth';
 	let isLoggingOut: boolean = false;
-	import { error } from '@sveltejs/kit';
 	import MapPin from '$lib/icons/MapPin.svelte';
 	import { triggerModal } from '$lib/utils/modal';
 	import ShoppingCartCount from '$lib/Navbar/ShoppingCart.svelte';

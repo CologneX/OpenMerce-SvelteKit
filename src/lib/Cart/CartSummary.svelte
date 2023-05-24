@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { rupiahCurrency } from '$lib/utils/units';
+
 	let isLoading: boolean = true;
 	let totalPrice: number = 0;
 	let grandTotal: number = 0;
@@ -12,24 +14,14 @@
 		<span class="flex-none">Total Price (item)</span>
 		<div class="flex-1" />
 		<span>
-			{totalPrice.toLocaleString('id-ID', {
-				style: 'currency',
-				currency: 'IDR',
-				minimumFractionDigits: 0
-			})}
+			{rupiahCurrency(totalPrice)}
 		</span>
 	</h6>
 	<hr class="!border-t-2 !border-current" />
 	<h5 class="font-bold flex">
 		<span class="flex-none">Grand Total</span>
 		<div class="flex-1" />
-		<span
-			>{grandTotal.toLocaleString('id-ID', {
-				style: 'currency',
-				currency: 'IDR',
-				minimumFractionDigits: 0
-			})}
-		</span>
+		<span>{rupiahCurrency(grandTotal)} </span>
 	</h5>
 	<div>
 		<button type="button" class="btn w-full variant-filled-primary text-xl font-bold text-current"

@@ -121,9 +121,7 @@
 		{#if productDetail}
 			<div class="grid md:grid-cols-2 sm:grid-cols-1 w-full h-full gap-x-2">
 				<div class="h-full w-full">
-					<div
-						class=" w-full p-0 sticky top-0 border-2 aspect-square grid place-content-center"
-					>
+					<div class=" w-full p-0 sticky top-0 aspect-square grid place-content-center">
 						{#if productDetail.image_urls}
 							<swiper-container
 								navigation={'true'}

@@ -1,23 +1,11 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { isLoggedInStore, screenWidthStore } from '$lib/utils/stores';
-	let isLoggedIn: boolean;
 	import { register } from 'swiper/element/bundle';
-
 	register();
-	let screenWidth: number;
+
 	let isLoading: boolean = true;
 	import ProductCard from '$lib/TempProductCard.svelte';
 	import BannerCarousel from '$lib/Main/BannerCarousel.svelte';
 	import { getProductsMain } from '$lib/utils/products';
-	onMount(async () => {
-		isLoggedInStore.subscribe((value) => {
-			isLoggedIn = value;
-		});
-		screenWidthStore.subscribe((value) => {
-			screenWidth = value;
-		});
-	});
 </script>
 
 <svelte:head>
@@ -56,7 +44,9 @@
 						grab-cursor="true"
 					>
 						{#each productsData[0].products as products}
-							<swiper-slide class="card"> <ProductCard {products} /></swiper-slide>
+							<swiper-slide class="card card-hover w-40 md:w-44 lg:w-48 h-full max-h-96">
+								<ProductCard {products} /></swiper-slide
+							>
 						{/each}
 					</swiper-container>
 				</div>

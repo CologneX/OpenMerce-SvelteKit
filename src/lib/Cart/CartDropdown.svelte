@@ -12,8 +12,7 @@
 	{#if !$isLoggedInStore}
 		<p>Please log in to start purchasing :)</p>
 	{:else}
-		<div class="flex flex-row gap-y-2 w-full overflow-y-auto">
-			<div class="card shadow-xl" />
+		<div class="flex flex-col gap-y-2 w-full overflow-y-auto">
 			{#await getCart() then cartProducts}
 				{#each cartProducts as cartProduct}
 					<a class="card w-full h-24 flex p-2 space-x-4 shadow-xl" href="/product/{cartProduct.id}">
