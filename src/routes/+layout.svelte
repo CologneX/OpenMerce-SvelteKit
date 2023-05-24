@@ -150,8 +150,15 @@
 		}
 	};
 	// end for search bar
+
+	// import favicon
+	import favicon from '$lib/favicon.ico';
+	// end import favicon
 </script>
 
+<svelte:head>
+	<link rel="icon" href={favicon} />
+</svelte:head>
 <svelte:window bind:innerWidth={$screenWidthStore} />
 <!-- {#if $navigating}
 	<Preloader />
