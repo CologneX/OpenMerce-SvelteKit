@@ -328,7 +328,7 @@
 					use:popup={searchBar}
 				/>
 			</form>
-			<div class="card w-full max-w-4xl h-fit [&>*]:pointer-events-none" data-popup="searchBar">
+			<div class="card w-full max-w-4xl h-fit" data-popup="searchBar">
 				<SearchDropdown searchQuery={search} />
 			</div>
 			<svelte:fragment slot="trail">
