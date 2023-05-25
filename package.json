@@ -25,7 +25,6 @@
 		"postcss": "^8.4.21",
 		"prettier": "^2.8.0",
 		"prettier-plugin-svelte": "^2.8.1",
-		"resize-observer-polyfill": "^1.5.1",
 		"svelte": "^3.54.0",
 		"svelte-check": "^3.0.1",
 		"svelte-lazy-image": "^0.5.1",
