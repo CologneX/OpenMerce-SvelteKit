@@ -3,13 +3,50 @@
 	import MinusSmall from '$lib/icons/MinusSmall.svelte';
 	import PlusSmall from '$lib/icons/PlusSmall.svelte';
 	import Trash from '$lib/icons/Trash.svelte';
-	import { getCart, handleDeleteItem, handleEditItem } from '$lib/utils/cart';
+	import { getCart, handleCheckItem, handleDeleteItem, handleEditItem } from '$lib/utils/cart';
 	import { lazyLoad } from '$lib/utils/lazyLoad';
+	import { subTotalStore } from '$lib/utils/stores';
 	import { rupiahCurrency } from '$lib/utils/units';
+	import type { CartProducts } from '../../app';
+	let cartContent: CartProducts[] = [];
+	getCart().then((res) => {
+		cartContent = res;
+	});
+
+	const handleItem = async (id: string, quantity: number) => {
+		await handleEditItem(id, quantity);
+		cartContent = await getCart();
+		$subTotalStore = cartContent.reduce((acc, cur) => {
+			if (cur.checked) {
+				return acc + cur.price * cur.quantity;
+			}
+			return acc;
+		}, 0);
+	};
+	const handleItemDelete = async (id: string) => {
+		await handleDeleteItem(id);
+		cartContent = await getCart();
+		$subTotalStore = cartContent.reduce((acc, cur) => {
+			if (cur.checked) {
+				return acc + cur.price * cur.quantity;
+			}
+			return acc;
+		}, 0);
+	};
+	const handleItemCheck = async (id: string, state: boolean) => {
+		await handleCheckItem(id, state);
+		cartContent = await getCart();
+		$subTotalStore = cartContent.reduce((acc, cur) => {
+			if (cur.checked) {
+				return acc + cur.price * cur.quantity;
+			}
+			return acc;
+		}, 0);
+	};
 </script>
 
 <div class="grid grid-flow-row gap-y-2">
-	{#await getCart()}
+	{#await cartContent}
 		<div class="card flex flex-row gap-x-2 p-3">
 			<div class="flex items-center space-x-2">
 				<div class="placeholder aspect-square animate-pulse" />
@@ -31,7 +68,13 @@
 		{#each products as item}
 			<div class="card flex flex-row gap-x-2 p-3">
 				<label class="flex items-center space-x-2">
-					<input class="checkbox" type="checkbox" aria-label="Check item" />
+					<input
+						class="checkbox"
+						type="checkbox"
+						aria-label="Check item"
+						bind:checked={item.checked}
+						on:click={() => handleItemCheck(item.id, !item.checked)}
+					/>
 				</label>
 				<picture class="aspect-square shadow-xl flex justify-center items-center h-32 rounded">
 					{#if item.image}
@@ -63,7 +106,7 @@
 							class="btn-icon btn-icon-sm h-full"
 							type="button"
 							aria-label="Delete Product"
-							on:click={() => handleDeleteItem(item.id)}
+							on:click|preventDefault={() => handleItemDelete(item.id)}
 						>
 							<Trash />
 						</button>
@@ -71,20 +114,33 @@
 						<div class="input-group grid-cols-[auto_1fr_auto] w-fit">
 							<button
 								class="btn btn-sm text-primary-500"
-								disabled={item.quantity <= 1}
-								on:click={() => handleEditItem(item.id, item.quantity - 1)}
+								disabled={item.quantity < 1}
+								on:click|preventDefault={() => handleItem(item.id, item.quantity - 1)}
 							>
 								<MinusSmall />
 							</button>
 							<input
-								type="text"
-								min="0"
+								type="number"
 								class="input w-14 p-0 text-center"
 								bind:value={item.quantity}
+								on:change|preventDefault={() => handleItem(item.id, item.quantity)}
+								on:input|preventDefault={() => {
+									if (item.quantity < 0) {
+										item.quantity = 0;
+									} else if (item.quantity > item.curr_stock) {
+										item.quantity = item.curr_stock;
+									}
+								}}
+								on:keypress={(e) => {
+									if (e.key.match(/[^0-9]/g)) {
+										e.preventDefault();
+									}
+								}}
 							/>
 							<button
 								class="btn btn-sm text-primary-500"
-								on:click={() => handleEditItem(item.id, item.quantity + 1)}
+								on:click|preventDefault={() => handleItem(item.id, item.quantity + 1)}
+								disabled={item.quantity >= item.curr_stock}
 							>
 								<PlusSmall />
 							</button>

@@ -13,12 +13,17 @@
 	import AddToCart from '$lib/Product/AddToCart.svelte';
 	import { formatNumber, rupiahCurrency } from '$lib/utils/units';
 	register();
-	let selectedStock: number = 1;
+	let productDetails: any = {};
+	const loadProducts = async (param: string) => {
+		productDetails = await getProductDetails(param);
+		return productDetails;
+	};
+	let quantity: number = 1;
 	urlFromStore.set(`/product/${$page.params.productId}`);
 </script>
 
 <svelte:head>
-	{#await getProductDetails($page.params.productId) then productDetail}
+	{#await productDetails then productDetail}
 		{#if productDetail}
 			<title>{productDetail.name}</title>
 			<meta name="description" content={productDetail.name} />
@@ -37,7 +42,7 @@
 	{/await}
 </svelte:head>
 <div class="h-fit w-full grid grid-rows-2">
-	{#await getProductDetails($page.params.productId)}
+	{#await loadProducts($page.params.productId)}
 		<div class="grid md:grid-cols-2 sm:grid-cols-1 w-full h-full gap-x-2 gap-y-2">
 			<div class="h-full w-full">
 				<div class=" w-full p-0 sticky top-0 space-y-2 placeholder aspect-square h-full" />
@@ -208,37 +213,40 @@
 								<div class="input-group grid-cols-[auto_1fr_auto] flex-1">
 									<button
 										class="btn btn-sm text-primary-500"
-										on:click={() => {
-											if (selectedStock > 0) {
-												selectedStock--;
+										on:click|preventDefault={() => {
+											if (quantity > 0) {
+												quantity--;
 											}
 										}}
-										disabled={selectedStock <= 1}
+										disabled={quantity <= 1}
 									>
 										<MinusSmall />
 									</button>
 									<input
-										type="text"
-										min="0"
+										type="number"
 										class="input"
-										bind:value={selectedStock}
-										on:change={() => {
-											if (selectedStock > productDetail.stock) {
-												selectedStock = productDetail.stock;
+										bind:value={quantity}
+										on:input|preventDefault={() => {
+											if (quantity > productDetail.stock) {
+												quantity = productDetail.stock;
+											} else if (quantity < 0) {
+												quantity = 0;
 											}
-											if (selectedStock < 1) {
-												selectedStock = 1;
+										}}
+										on:keypress={(e) => {
+											if (e.key.match(/[^0-9]/g)) {
+												e.preventDefault();
 											}
 										}}
 									/>
 									<button
 										class="btn btn-sm text-primary-500"
-										on:click={() => {
-											if (selectedStock <= productDetail.stock) {
-												selectedStock++;
+										on:click|preventDefault={() => {
+											if (quantity <= productDetail.stock) {
+												quantity++;
 											}
 										}}
-										disabled={selectedStock >= productDetail.stock}
+										disabled={quantity >= productDetail.stock}
 									>
 										<PlusSmall />
 									</button>
@@ -254,7 +262,7 @@
 								<button class="btn variant-ringed-primary text-primary-500 font-bold flex-1"
 									>Buy Now</button
 								>
-								<AddToCart productID={productDetail.id} quantity={selectedStock} />
+								<AddToCart productID={productDetail.id} {quantity} />
 							</div>
 
 							<div class="flex">

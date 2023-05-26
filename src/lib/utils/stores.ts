@@ -5,3 +5,4 @@ export const isStaffLoggedInStore = writable(false);
 export const screenWidthStore = writable(0);
 export const isWishlistedStore = writable(false);
 export const urlFromStore = writable("");
+export const subTotalStore = writable(0);

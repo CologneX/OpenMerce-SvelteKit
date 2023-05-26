@@ -25,7 +25,7 @@ export const getCart = async () => {
             const cartData: CartProducts[] = await response.json();
             return cartData;
         }
-        if (response.status === 404) {
+        else if (response.status === 404) {
             throw new Error('Start Shopping Now!');
         }
         const cartData: CartProducts[] = await response.json();
@@ -36,8 +36,8 @@ export const getCart = async () => {
 
 
 
-export const handleCheckItem = (itemID: string, state: boolean) => {
-    const checkItem = fetch('/api/v1/customer/cart-checked', {
+export const handleCheckItem = async (itemID: string, state: boolean) => {
+    const checkItem = await fetch('/api/v1/customer/cart-checked', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -49,14 +49,22 @@ export const handleCheckItem = (itemID: string, state: boolean) => {
     });
 };
 
-export const handleDeleteItem = (itemID: string) => {
-    fetch(`/api/v1/customer/cart?id=${itemID}`, {
+export const handleDeleteItem = async (itemID: string) => {
+    const response = await fetch(`/api/v1/customer/cart?id=${itemID}`, {
         method: 'DELETE',
         headers: {
             'Content-Type': 'application/json'
         }
     });
-    getCart();
+    if (response.status === 401) {
+        await refreshTokenUser();
+        const response = await fetch(`/api/v1/customer/cart?id=${itemID}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    }
 };
 
 
@@ -92,13 +100,9 @@ export const handleEditItem = async (itemID: string, quantity: number) => {
             const res = await response.json();
             triggerToast(res.error, 'variant-filled-error')
         }
-        else if (response.status === 200) {
-            getCart();
-        }
+
     }
-    else if (response.status === 200) {
-        getCart();
-    }
+
 }
 
 

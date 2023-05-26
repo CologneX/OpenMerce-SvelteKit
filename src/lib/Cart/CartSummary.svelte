@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { rupiahCurrency } from '$lib/utils/units';
-
-	let isLoading: boolean = true;
-	let totalPrice: number = 0;
+	import { subTotalStore } from '$lib/utils/stores';
 	let grandTotal: number = 0;
-	let totalItems: number = 0;
+	$: grandTotal = $subTotalStore;
+	let totalItems = 0;
 </script>
 
 <div class="card p-3 h-fit space-y-8">
@@ -14,7 +13,7 @@
 		<span class="flex-none">Total Price (item)</span>
 		<div class="flex-1" />
 		<span>
-			{rupiahCurrency(totalPrice)}
+			{rupiahCurrency($subTotalStore)}
 		</span>
 	</h6>
 	<hr class="!border-t-2 !border-current" />

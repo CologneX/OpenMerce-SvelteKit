@@ -53,6 +53,7 @@ declare interface CartProducts {
 	quantity: number;
 	image: string;
 	checked: boolean;
+	curr_stock:number
 }
 
 declare interface LoginUser {
