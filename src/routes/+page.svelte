@@ -6,6 +6,7 @@
 	import ProductCard from '$lib/TempProductCard.svelte';
 	import BannerCarousel from '$lib/Main/BannerCarousel.svelte';
 	import { getProductsMain } from '$lib/utils/products';
+	import { screenWidthStore } from '$lib/utils/stores';
 </script>
 
 <svelte:head>
@@ -29,27 +30,32 @@
 					<h4 class="font-semibold flex-1">{items.category_name}</h4>
 					<a href="/see-all" class=" decoration-transparent">See All</a>
 				</div>
-
-				<div class="grid grid-flow-col gap-1 overflow-x-auto hide-scrollbar card md:hidden">
-					<!-- <ProductCarousel /> -->
-				</div>
-
-				<div class="w-full hidden md:block h-96">
-					<swiper-container
-						slides-per-view={6}
-						space-between={10}
-						navigation="true"
-						slides-per-group={6}
-						pagination={false}
-						grab-cursor="true"
+				{#if $screenWidthStore < 1024}
+					<div
+						class="w-full h-88 grid grid-flow-col overflow-x-auto gap-x-2 hide-scrollbar"
 					>
 						{#each items.products as products}
-							<swiper-slide class="card card-hover w-40 md:w-44 lg:w-48 h-full max-h-96">
-								<ProductCard {products} /></swiper-slide
-							>
+							<ProductCard {products} />
 						{/each}
-					</swiper-container>
-				</div>
+					</div>
+				{:else}
+					<div class="w-full h-96">
+						<swiper-container
+							slides-per-view={6}
+							space-between={10}
+							navigation="true"
+							slides-per-group={6}
+							pagination={false}
+							grab-cursor="true"
+						>
+							{#each items.products as products}
+								<swiper-slide class="card card-hover w-40 md:w-44 lg:w-48 h-full max-h-96">
+									<ProductCard {products} /></swiper-slide
+								>
+							{/each}
+						</swiper-container>
+					</div>
+				{/if}
 			</div>
 		{/each}
 	{/await}

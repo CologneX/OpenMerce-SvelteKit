@@ -6,12 +6,12 @@
 </script>
 
 <a
-	class="unstyled"
+	class="unstyled w-44 card"
 	href="/product/{products.id}"
 	aria-label="Go to {products.name}'s page"
 	title={products.name}
 >
-	<picture class="aspect-square shadow-lg flex justify-center items-center">
+	<picture class="aspect-square shadow-lg flex justify-center items-center ">
 		{#if products.image}
 			<img
 				src="/usercontent/{products.image}"
