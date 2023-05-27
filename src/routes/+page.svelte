@@ -43,7 +43,7 @@
 						pagination={false}
 						grab-cursor="true"
 					>
-						{#each productsData[0].products as products}
+						{#each items.products as products}
 							<swiper-slide class="card card-hover w-40 md:w-44 lg:w-48 h-full max-h-96">
 								<ProductCard {products} /></swiper-slide
 							>
