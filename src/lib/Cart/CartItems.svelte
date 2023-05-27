@@ -9,9 +9,11 @@
 	import { rupiahCurrency } from '$lib/utils/units';
 	import type { CartProducts } from '../../app';
 	let cartContent: CartProducts[] = [];
-	getCart().then((res) => {
-		cartContent = res;
-	});
+	const loadProduct = async () => {
+		cartContent = await getCart();
+		return cartContent;
+	};
+
 
 	const handleItem = async (id: string, quantity: number) => {
 		await handleEditItem(id, quantity);
@@ -46,7 +48,7 @@
 </script>
 
 <div class="grid grid-flow-row gap-y-2">
-	{#await cartContent}
+	{#await loadProduct()}
 		<div class="card flex flex-row gap-x-2 p-3">
 			<div class="flex items-center space-x-2">
 				<div class="placeholder aspect-square animate-pulse" />
