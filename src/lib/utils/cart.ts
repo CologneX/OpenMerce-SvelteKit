@@ -1,10 +1,15 @@
+import { goto } from "$app/navigation";
+import { writable } from "svelte/store";
 import type { CartProducts } from "../../app";
 import { refreshTokenUser } from "./refreshToken";
 import { isLoggedInStore } from "./stores";
 import { triggerToast } from "./toast";
-let $isLoggedInStore = isLoggedInStore;
+let isLoggedIn: boolean;
+isLoggedInStore.subscribe((value) => {
+    isLoggedIn = value;
+});
 export const getCart = async () => {
-    if ($isLoggedInStore) {
+    if (isLoggedIn) {
         const response = await fetch('/api/v1/customer/cart', {
             method: 'GET',
             headers: {
@@ -69,23 +74,7 @@ export const handleDeleteItem = async (itemID: string) => {
 
 
 export const handleEditItem = async (itemID: string, quantity: number) => {
-
-    const response = await fetch(`/api/v1/customer/cart`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            id: itemID,
-            quantity: quantity
-        })
-    });
-    if (response.status === 409) {
-        const res = await response.json();
-        triggerToast(res.error, 'variant-filled-error')
-    }
-    else if (response.status === 401) {
-        await refreshTokenUser();
+    if (isLoggedIn) {
         const response = await fetch(`/api/v1/customer/cart`, {
             method: 'POST',
             headers: {
@@ -100,8 +89,30 @@ export const handleEditItem = async (itemID: string, quantity: number) => {
             const res = await response.json();
             triggerToast(res.error, 'variant-filled-error')
         }
+        else if (response.status === 401) {
+            await refreshTokenUser();
+            const response = await fetch(`/api/v1/customer/cart`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    id: itemID,
+                    quantity: quantity
+                })
+            });
+            if (response.status === 409) {
+                const res = await response.json();
+                triggerToast(res.error, 'variant-filled-error')
+            }
 
+        }
     }
+    else {
+        triggerToast('Please Login to Continue', 'variant-filled-error')
+        goto('/login');
+    }
+
 
 }
 

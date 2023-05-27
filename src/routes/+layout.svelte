@@ -341,27 +341,28 @@
 			<svelte:fragment slot="trail">
 				{#if $screenWidthStore > 1024}
 					<div class="flex gap-2">
-						<button
-							type="button"
-							class="btn-sm"
-							on:click={handleShoppingCartClick}
-							use:popup={cartHover}
-							aria-label="your cart"
-						>
-							<ShoppingCartCount />
-						</button>
-						{#if $isLoggedInStore || $isStaffLoggedInStore}
+						{#if $isLoggedInStore}
 							<button
 								type="button"
-								class="btn-icon btn-icon-sm"
-								aria-label="notification"
-								on:click={handleBellClick}
+								class="btn-sm"
+								on:click={handleShoppingCartClick}
+								use:popup={cartHover}
+								aria-label="your cart"
 							>
-								<span>
-									<Bell />
-								</span>
+								<ShoppingCartCount />
 							</button>
 						{/if}
+						<button
+							type="button"
+							class="btn-icon btn-icon-sm"
+							aria-label="notification"
+							on:click={handleBellClick}
+						>
+							<span>
+								<Bell />
+							</span>
+						</button>
+
 						<span class="divider-vertical !border-current" />
 						<div class="card p-4 w-full max-w-md h-fit max-h-96" data-popup="cartHover">
 							<CartDropdown />
