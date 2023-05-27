@@ -19,7 +19,7 @@ export const logoutUser = async () => {
     }
 }
 export const logoutStaff = async () => {
-    const response = await fetch('/api/v1/auth/logout', {
+    const response = await fetch('/api/v1/staff/auth/logout', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
