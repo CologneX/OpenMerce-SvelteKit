@@ -85,7 +85,7 @@ export const handleEditItem = async (itemID: string, quantity: number) => {
                 quantity: quantity
             })
         });
-        if (response.status === 409) {
+        if (response.status === 400) {
             const res = await response.json();
             triggerToast(res.error, 'variant-filled-error')
         }

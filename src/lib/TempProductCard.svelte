@@ -6,12 +6,12 @@
 </script>
 
 <a
-	class="unstyled w-44 card"
+	class="unstyled w-48 card"
 	href="/product/{products.id}"
 	aria-label="Go to {products.name}'s page"
 	title={products.name}
 >
-	<picture class="aspect-square shadow-lg flex justify-center items-center ">
+	<picture class="aspect-square shadow-lg flex justify-center items-center">
 		{#if products.image}
 			<img
 				src="/usercontent/{products.image}"
@@ -21,6 +21,7 @@
 				width="100%"
 				height="100%"
 			/>
+			<!-- <div class="swiper-lazy-preloader -z-50" /> -->
 		{:else}
 			<div>
 				<Logo />

@@ -1,12 +1,18 @@
 <script lang="ts">
 	import { register } from 'swiper/element/bundle';
 	register();
-
-	let isLoading: boolean = true;
 	import ProductCard from '$lib/TempProductCard.svelte';
 	import BannerCarousel from '$lib/Main/BannerCarousel.svelte';
 	import { getProductsMain } from '$lib/utils/products';
 	import { screenWidthStore } from '$lib/utils/stores';
+	import type { Products } from '../app';
+	import { fade } from 'svelte/transition';
+	let allProducts: Products[] = [];
+	getProductsMain().then((data) => {
+		data.forEach((category) => {
+			allProducts = [...allProducts, ...category.products];
+		});
+	});
 </script>
 
 <svelte:head>
@@ -25,26 +31,41 @@
 		<div class="h-96 w-full placeholder animate-pulse" />
 	{:then productsData}
 		{#each productsData as items}
-			<div class="w-full">
+			<div class="w-full" transition:fade>
 				<div class="flex">
 					<h4 class="font-semibold flex-1">{items.category_name}</h4>
 					<a href="/see-all" class=" decoration-transparent">See All</a>
 				</div>
 				{#if $screenWidthStore < 1024}
-					<div class="w-full h-88 grid grid-flow-col overflow-x-auto gap-x-2 hide-scrollbar">
-						{#each items.products as products}
-							<ProductCard {products} />
-						{/each}
+					<div class="w-full h-full">
+						<swiper-container
+							pagination={false}
+							slides-per-view={$screenWidthStore < 640
+								? 2
+								: $screenWidthStore < 768
+								? 4
+								: $screenWidthStore < 1024
+								? 5
+								: 6}
+							space-between={10}
+							free-mode={true}
+						>
+							{#each items.products as products}
+								<swiper-slide class="card card-hover shadow-xl">
+									<ProductCard {products} /></swiper-slide
+								>
+							{/each}
+						</swiper-container>
 					</div>
 				{:else}
-					<div class="w-full h-96">
+					<div class="w-full h-full">
 						<swiper-container
 							slides-per-view={6}
 							space-between={10}
-							navigation="true"
+							navigation={true}
 							slides-per-group={6}
 							pagination={false}
-							grab-cursor="true"
+							grab-cursor={true}
 						>
 							{#each items.products as products}
 								<swiper-slide class="card card-hover w-40 md:w-44 lg:w-48 h-full max-h-96">
@@ -60,20 +81,19 @@
 
 	<hr class="!border-t-8" />
 
-	<div
+	<!-- <div
 		class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-6 gap-5 justify-items-center h-96"
 	>
-		{#if !isLoading}
-			<!-- {#each products as item}
-				<ProductCard products={item} />
-			{/each} -->
-		{:else}
-			<div class="w-full animate-pulse text-center placeholder h-full" />
-			<div class="w-full animate-pulse text-center placeholder h-full" />
-			<div class="w-full animate-pulse text-center placeholder h-full" />
-			<div class="w-full animate-pulse text-center placeholder h-full" />
-			<div class="w-full animate-pulse text-center placeholder h-full" />
-			<div class="w-full animate-pulse text-center placeholder h-full" />
-		{/if}
-	</div>
+		<div class="w-full animate-pulse text-center placeholder h-full" />
+	</div> -->
+	{#await allProducts}
+		<div class="h-96 w-full placeholder animate-pulse" />
+	{:then productsData}
+		<h4 class="font-semibold">All Products</h4>
+		<div class="w-full grid-cols-4 grid-rows-3 grid-flow-row grid gap-x-2">
+			{#each allProducts as products}
+				<ProductCard {products} />
+			{/each}
+		</div>
+	{/await}
 </div>

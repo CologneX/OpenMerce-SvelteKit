@@ -40,7 +40,7 @@ export const isLoggedIn = () => {
     if (localStorage.getItem('first_name') !== null) {
         isLoggedInStore.set(true)
     }
-    else if (localStorage.getItem('username') !== null) {
+    if (localStorage.getItem('username') !== null) {
         isStaffLoggedInStore.set(true)
     }
 

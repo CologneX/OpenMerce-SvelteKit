@@ -143,6 +143,7 @@
 													alt="{image}'s image"
 													class="object-contain aspect-square"
 												/>
+												<!-- <div class="swiper-lazy-preloader" /> -->
 											{:else}
 												<div>
 													<Logo />

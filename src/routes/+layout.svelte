@@ -71,10 +71,9 @@
 	let first_name: string | null;
 	let selectedLanguage: string | null;
 
-	onMount(() => {
-		isLoggedIn();
-		selectedLanguage = localStorage.getItem('prefLang');
-	});
+	isLoggedIn();
+	selectedLanguage = localStorage.getItem('prefLang');
+
 	// end for isLoggedin
 
 	$: if ($isLoggedInStore) {
@@ -153,6 +152,8 @@
 
 	// import favicon
 	import favicon from '$lib/favicon.ico';
+	import AdminSettings from '$lib/icons/AdminSettings.svelte';
+	import { fade } from 'svelte/transition';
 	// end import favicon
 </script>
 
@@ -192,7 +193,7 @@
 				<section class="gap-2 grid w-full h-full overflow-y-auto hide-scrollbar">
 					<div class="h-fit space-y-2">
 						{#if $isLoggedInStore}
-							<div class="card p-4 grid place-items-center w-full">
+							<div class="card p-4 grid place-items-center w-full" transition:fade>
 								<span>
 									<Avatar
 										initials="{first_name}{last_name}"
@@ -203,7 +204,7 @@
 								<span>{first_name} {last_name}</span>
 							</div>
 						{:else if $isStaffLoggedInStore}
-							<div class="card p-4 grid place-items-center w-full">
+							<div class="card p-4 grid place-items-center w-full" transition:fade>
 								<span>
 									<Avatar initials?={username} background="bg-primary-500" width="w-12" />
 								</span>
@@ -211,15 +212,18 @@
 								<span class="badge variant-ghost">Admin</span>
 							</div>
 						{:else}
-							<a
-								href="/login"
-								class="btn h-fit variant-ringed-primary w-full"
-								on:click={() => drawerStore.close()}><span class="font-semibold">Login</span></a
-							>
-							<a
-								href="/register"
-								class="btn h-fit variant-glass-primary w-full"
-								on:click={() => drawerStore.close()}><span class="font-semibold">Register</span></a
+							<span transition:fade
+								><a
+									href="/login"
+									class="btn h-fit variant-ringed-primary w-full"
+									on:click={() => drawerStore.close()}><span class="font-semibold">Login</span></a
+								>
+								<a
+									href="/register"
+									class="btn h-fit variant-glass-primary w-full"
+									on:click={() => drawerStore.close()}
+									><span class="font-semibold">Register</span></a
+								></span
 							>
 						{/if}
 						<div class="space-y-6">
@@ -339,81 +343,35 @@
 				<SearchDropdown searchQuery={search} />
 			</div>
 			<svelte:fragment slot="trail">
-				{#if $screenWidthStore > 1024}
-					<div class="flex gap-2">
-						{#if $isLoggedInStore}
-							<button
-								type="button"
-								class="btn-sm"
-								on:click={handleShoppingCartClick}
-								use:popup={cartHover}
-								aria-label="your cart"
-							>
-								<ShoppingCartCount />
-							</button>
-						{/if}
+				<div class="flex gap-x-1">
+					{#if $isLoggedInStore}
 						<button
 							type="button"
 							class="btn-icon btn-icon-sm"
-							aria-label="notification"
-							on:click={handleBellClick}
+							on:click={handleShoppingCartClick}
+							use:popup={cartHover}
+							aria-label="your cart"
+							transition:fade
 						>
-							<span>
-								<Bell />
-							</span>
-						</button>
-
-						<span class="divider-vertical !border-current" />
-						<div class="card p-4 w-full max-w-md h-fit max-h-96" data-popup="cartHover">
-							<CartDropdown />
-						</div>
-
-						{#if !$isLoggedInStore && !$isStaffLoggedInStore}
-							<a href="/login" class="btn btn-sm"><span class="font-semibold">Login</span></a>
-							<a href="/register" class="btn btn-sm variant-ringed"
-								><span class="font-semibold">Register</span></a
-							>
-						{/if}
-						<button
-							type="button"
-							class="btn btn-sm"
-							aria-label="setting button"
-							use:popup={popupSettings}
-							aria-labelledby="setting button"
-						>
-							{#if $isLoggedInStore}
-								<div>
-									<Avatar initials="{first_name?.charAt(0)}{last_name?.charAt(0)}" width="w-6" />
-								</div>
-								<div>{first_name}</div>
-							{:else if $isStaffLoggedInStore}
-								<div>
-									<Avatar initials={username?.charAt(0)} width="w-6" />
-								</div>
-								<div>{username}</div>
-								<span class="badge variant-ghost">Admin</span>
-							{:else}
-								<span>
-									<Settings />
-								</span>
-							{/if}
-						</button>
-					</div>
-				{:else}
-					<div class="flex">
-						<button type="button" class="btn-icon btn-icon-sm" on:click={handleShoppingCartClick}>
 							<ShoppingCartCount />
 						</button>
-						<button
-							type="button"
-							class="btn-icon btn-icon-sm"
-							on:click={handleBellClick}
-							aria-label="notification"
-						>
-							<span>
-								<Bell />
-							</span>
-						</button>
+					{/if}
+					{#if $isStaffLoggedInStore}
+						<a href="/staff" class="btn-icon btn-icon-sm" transition:fade>
+							<span><AdminSettings /></span>
+						</a>
+					{/if}
+					<button
+						type="button"
+						class="btn-icon btn-icon-sm"
+						on:click={handleBellClick}
+						aria-label="notification"
+					>
+						<span>
+							<Bell />
+						</span>
+					</button>
+					{#if $screenWidthStore < 1024}
 						<button
 							class="btn-icon btn-icon-sm"
 							type="button"
@@ -424,13 +382,68 @@
 								<Hamburger />
 							</span>
 						</button>
+					{/if}
+					<span class="divider-vertical !border-current" />
+					<div class="card p-4 w-full max-w-md h-fit max-h-96" data-popup="cartHover">
+						<CartDropdown />
 					</div>
-				{/if}
+
+					{#if !$isLoggedInStore && !$isStaffLoggedInStore}
+						<a href="/login" class="btn btn-sm"><span class="font-semibold">Login</span></a>
+						<a href="/register" class="btn btn-sm variant-ringed"
+							><span class="font-semibold">Register</span></a
+						>
+					{/if}
+					<button
+						type="button"
+						class="btn btn-sm"
+						aria-label="setting button"
+						use:popup={popupSettings}
+						aria-labelledby="setting button"
+					>
+						{#if $isLoggedInStore}
+							<div>
+								<Avatar initials="{first_name?.charAt(0)}{last_name?.charAt(0)}" width="w-6" />
+							</div>
+							<div>{first_name}</div>
+						{:else if $isStaffLoggedInStore}
+							<div>
+								<Avatar initials={username?.charAt(0)} width="w-6" />
+							</div>
+							<div>{username}</div>
+							<span class="badge variant-ghost">Admin</span>
+						{:else}
+							<span>
+								<Settings />
+							</span>
+						{/if}
+					</button>
+				</div>
+
 				<div class="card variant-primary p-4 w-72 z-30" data-popup="settingPopup">
 					<div class="card-body space-y-3">
 						<h4>Settings</h4>
 						<LightSwitch />
-
+						{#if $isLoggedInStore}
+							<div class="card p-4 grid place-items-center w-full">
+								<span>
+									<Avatar
+										initials="{first_name}{last_name}"
+										background="bg-primary-500"
+										width="w-12"
+									/>
+								</span>
+								<span>{first_name} {last_name}</span>
+							</div>
+						{:else if $isStaffLoggedInStore}
+							<div class="card p-4 grid place-items-center w-full">
+								<span>
+									<Avatar initials?={username} background="bg-primary-500" width="w-12" />
+								</span>
+								<span>{username}</span>
+								<span class="badge variant-ghost">Admin</span>
+							</div>
+						{/if}
 						<div class="w-full shadow-xl py-2 flex">
 							{#each ['Indonesia', 'English'] as c}
 								<span

@@ -11,13 +11,14 @@
 	let cartContent: CartProducts[] = [];
 	const loadProduct = async () => {
 		cartContent = await getCart();
+
 		return cartContent;
 	};
-
-
+	loadProduct();
 	const handleItem = async (id: string, quantity: number) => {
 		await handleEditItem(id, quantity);
 		cartContent = await getCart();
+
 		$subTotalStore = cartContent.reduce((acc, cur) => {
 			if (cur.checked) {
 				return acc + cur.price * cur.quantity;
@@ -48,7 +49,7 @@
 </script>
 
 <div class="grid grid-flow-row gap-y-2">
-	{#await loadProduct()}
+	{#await cartContent}
 		<div class="card flex flex-row gap-x-2 p-3">
 			<div class="flex items-center space-x-2">
 				<div class="placeholder aspect-square animate-pulse" />
