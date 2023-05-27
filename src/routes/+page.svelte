@@ -31,9 +31,7 @@
 					<a href="/see-all" class=" decoration-transparent">See All</a>
 				</div>
 				{#if $screenWidthStore < 1024}
-					<div
-						class="w-full h-88 grid grid-flow-col overflow-x-auto gap-x-2 hide-scrollbar"
-					>
+					<div class="w-full h-88 grid grid-flow-col overflow-x-auto gap-x-2 hide-scrollbar">
 						{#each items.products as products}
 							<ProductCard {products} />
 						{/each}

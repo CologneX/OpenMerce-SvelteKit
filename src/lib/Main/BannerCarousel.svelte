@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Logo from '$lib/icons/Logo.svelte';
 	import { getBannerMain } from '$lib/utils/banner';
+	import { screenWidthStore } from '$lib/utils/stores';
 </script>
 
 <div class="w-full space-y-2 shadow-lg">
@@ -8,7 +9,7 @@
 		<div class="placeholder h-full w-full animate-pulse" />
 	{:then banner}
 		<swiper-container
-			navigation={true}
+			navigation={$screenWidthStore > 1024 ? true : false}
 			slides-per-group={1}
 			autoplay={true}
 			delay={3000}
