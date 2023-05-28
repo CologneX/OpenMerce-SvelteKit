@@ -55,7 +55,7 @@
 
 	// for isLoggedin
 	import { goto } from '$app/navigation';
-	import { isLoggedInStore, screenWidthStore } from '$lib/utils/stores';
+	import { isLoggedInStore, screenWidthStore, scrollYStore } from '$lib/utils/stores';
 	import SearchDropdown from '$lib/Navbar/SearchDropdown.svelte';
 	import CartDropdown from '$lib/Cart/CartDropdown.svelte';
 
@@ -135,7 +135,7 @@
 
 	// import favicon
 	import favicon from '$lib/favicon.ico';
-	import AdminSettings from '$lib/icons/AdminSettings.svelte';
+	import AdminSettings from '$lib/icons/Truck.svelte';
 	import { fade } from 'svelte/transition';
 	// end import favicon
 </script>
@@ -186,6 +186,7 @@
 								</span>
 								<span>{first_name} {last_name}</span>
 							</div>
+						{:else}
 							<span transition:fade
 								><a
 									href="/login"
@@ -294,6 +295,7 @@
 					</div>
 				{/if}
 			</svelte:fragment>
+
 			<svelte:fragment slot="lead">
 				{#if $screenWidthStore < 1024 && $page.url.pathname !== '/'}
 					<button class="btn-icon btn-icon-sm" aria-label="back" on:click={() => history.back()}>
@@ -342,7 +344,38 @@
 							<Bell />
 						</span>
 					</button>
-					{#if $screenWidthStore < 1024}
+
+					<span class="divider-vertical !border-current" />
+					<div class="card p-4 w-full max-w-md h-fit max-h-96" data-popup="cartHover">
+						<CartDropdown />
+					</div>
+
+					{#if !$isLoggedInStore && $screenWidthStore > 1024}
+						<a href="/login" class="btn btn-sm"><span class="font-semibold">Login</span></a>
+						<a href="/register" class="btn btn-sm variant-ringed"
+							><span class="font-semibold">Register</span></a
+						>
+					{/if}
+					{#if $screenWidthStore > 1024}
+						<button
+							type="button"
+							class="btn btn-sm"
+							aria-label="setting button"
+							use:popup={popupSettings}
+							aria-labelledby="setting button"
+						>
+							{#if $isLoggedInStore}
+								<div>
+									<Avatar initials="{first_name?.charAt(0)}{last_name?.charAt(0)}" width="w-6" />
+								</div>
+								<div>{first_name}</div>
+							{:else}
+								<span>
+									<Settings />
+								</span>
+							{/if}
+						</button>
+					{:else}
 						<button
 							class="btn-icon btn-icon-sm"
 							type="button"
@@ -354,35 +387,6 @@
 							</span>
 						</button>
 					{/if}
-					<span class="divider-vertical !border-current" />
-					<div class="card p-4 w-full max-w-md h-fit max-h-96" data-popup="cartHover">
-						<CartDropdown />
-					</div>
-
-					{#if !$isLoggedInStore}
-						<a href="/login" class="btn btn-sm"><span class="font-semibold">Login</span></a>
-						<a href="/register" class="btn btn-sm variant-ringed"
-							><span class="font-semibold">Register</span></a
-						>
-					{/if}
-					<button
-						type="button"
-						class="btn btn-sm"
-						aria-label="setting button"
-						use:popup={popupSettings}
-						aria-labelledby="setting button"
-					>
-						{#if $isLoggedInStore}
-							<div>
-								<Avatar initials="{first_name?.charAt(0)}{last_name?.charAt(0)}" width="w-6" />
-							</div>
-							<div>{first_name}</div>
-						{:else}
-							<span>
-								<Settings />
-							</span>
-						{/if}
-					</button>
 				</div>
 
 				<div class="card variant-primary p-4 w-72 z-30" data-popup="settingPopup">

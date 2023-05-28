@@ -1,9 +1,9 @@
 import { goto } from "$app/navigation";
-import { writable } from "svelte/store";
 import type { CartProducts } from "../../app";
 import { refreshTokenUser } from "./refreshToken";
 import { isLoggedInStore } from "./stores";
 import { triggerToast } from "./toast";
+import { getCartCount } from "./navbar";
 let isLoggedIn: boolean;
 isLoggedInStore.subscribe((value) => {
     isLoggedIn = value;
@@ -42,7 +42,7 @@ export const getCart = async () => {
 
 
 export const handleCheckItem = async (itemID: string, state: boolean) => {
-    const checkItem = await fetch('/api/v1/customer/cart-checked', {
+    const response = await fetch('/api/v1/customer/cart-checked', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -52,6 +52,19 @@ export const handleCheckItem = async (itemID: string, state: boolean) => {
             state: state
         })
     });
+    if (response.status === 401) {
+        await refreshTokenUser();
+        const response = await fetch('/api/v1/customer/cart-checked', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: itemID,
+                state: state
+            })
+        });
+    }
 };
 
 export const handleDeleteItem = async (itemID: string) => {
@@ -61,6 +74,9 @@ export const handleDeleteItem = async (itemID: string) => {
             'Content-Type': 'application/json'
         }
     });
+    if (response.status === 200) {
+        getCartCount();
+    }
     if (response.status === 401) {
         await refreshTokenUser();
         const response = await fetch(`/api/v1/customer/cart?id=${itemID}`, {
@@ -69,8 +85,11 @@ export const handleDeleteItem = async (itemID: string) => {
                 'Content-Type': 'application/json'
             }
         });
+    } else if (response.status === 200) {
+        getCartCount();
     }
 };
+
 
 
 export const handleEditItem = async (itemID: string, quantity: number) => {
@@ -89,6 +108,9 @@ export const handleEditItem = async (itemID: string, quantity: number) => {
             const res = await response.json();
             triggerToast(res.error, 'variant-filled-error')
         }
+        else if (response.status === 200) {
+            getCartCount();
+        }
         else if (response.status === 401) {
             await refreshTokenUser();
             const response = await fetch(`/api/v1/customer/cart`, {
@@ -101,9 +123,11 @@ export const handleEditItem = async (itemID: string, quantity: number) => {
                     quantity: quantity
                 })
             });
-            if (response.status === 409) {
+            if (response.status === 400) {
                 const res = await response.json();
                 triggerToast(res.error, 'variant-filled-error')
+            } else if (response.status === 200) {
+                getCartCount();
             }
 
         }
