@@ -17,7 +17,7 @@
 			<input class="checkbox" type="checkbox" bind:checked={checkAll} />
 			<p>Select All</p>
 		</label>
-		<CartItems checkAll={checkAll} />
+		<CartItems />
 	</div>
 	{#if $screenWidthStore > 1024}
 		<CartSummary />

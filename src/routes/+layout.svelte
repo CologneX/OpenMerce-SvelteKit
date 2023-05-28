@@ -286,7 +286,7 @@
 							<button
 								type="button"
 								class="btn btn-sm py-0"
-								on:click={() => triggerModal({ type: 'prompt' })}
+								on:click={() => triggerModal()}
 							>
 								<span><MapPin /></span> <span> Location </span>
 								<span class="font-bold"> Universitas Ciputra</span>
