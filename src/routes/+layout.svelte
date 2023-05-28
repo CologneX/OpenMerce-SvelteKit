@@ -27,13 +27,7 @@
 	import Bell from '$lib/icons/Bell.svelte';
 	import Back from '$lib/icons/Back.svelte';
 	import { page } from '$app/stores';
-	import {
-		logoutStaff,
-		logoutUser,
-		isLoggedIn,
-		getUserNames,
-		getStaffUsername
-	} from '$lib/utils/auth';
+	import { logoutUser, isLoggedIn, getUserNames } from '$lib/utils/auth';
 	let isLoggingOut: boolean = false;
 	import MapPin from '$lib/icons/MapPin.svelte';
 	import { triggerModal } from '$lib/utils/modal';
@@ -60,9 +54,8 @@
 	// end for preloader
 
 	// for isLoggedin
-	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
-	import { isLoggedInStore, isStaffLoggedInStore, screenWidthStore } from '$lib/utils/stores';
+	import { isLoggedInStore, screenWidthStore } from '$lib/utils/stores';
 	import SearchDropdown from '$lib/Navbar/SearchDropdown.svelte';
 	import CartDropdown from '$lib/Cart/CartDropdown.svelte';
 
@@ -78,13 +71,11 @@
 
 	$: if ($isLoggedInStore) {
 		[first_name, last_name] = getUserNames();
-	} else if ($isStaffLoggedInStore) {
-		username = getStaffUsername();
 	}
 	// isLoading = false;
 	// for handling shopping cart click
 	function handleShoppingCartClick() {
-		if ($isLoggedInStore || $isStaffLoggedInStore) {
+		if ($isLoggedInStore) {
 			goto('/cart');
 		} else {
 			goto('/login');
@@ -94,7 +85,7 @@
 
 	//for handling bell click
 	function handleBellClick() {
-		if ($isLoggedInStore || $isStaffLoggedInStore) {
+		if ($isLoggedInStore) {
 			goto('/login');
 		}
 	}
@@ -114,15 +105,7 @@
 				isLoggingOut = false;
 			};
 			logout();
-		} else if ($isStaffLoggedInStore) {
-			const logout = async () => {
-				isLoggingOut = true;
-				await logoutStaff();
-				isLoggingOut = false;
-			};
-			logout();
 		}
-
 		if ($screenWidthStore < 1024) {
 			drawerStore.close();
 		}
@@ -203,15 +186,6 @@
 								</span>
 								<span>{first_name} {last_name}</span>
 							</div>
-						{:else if $isStaffLoggedInStore}
-							<div class="card p-4 grid place-items-center w-full" transition:fade>
-								<span>
-									<Avatar initials?={username} background="bg-primary-500" width="w-12" />
-								</span>
-								<span>{username}</span>
-								<span class="badge variant-ghost">Admin</span>
-							</div>
-						{:else}
 							<span transition:fade
 								><a
 									href="/login"
@@ -305,18 +279,20 @@
 			padding="p-2"
 		>
 			<svelte:fragment slot="headline">
-				<div class="text-end">
-					<small>
-						<button
-							type="button"
-							class="btn btn-sm py-0"
-							on:click={() => triggerModal({ type: 'prompt' })}
-						>
-							<span><MapPin /></span> <span> Location </span>
-							<span class="font-bold"> Universitas Ciputra</span>
-						</button>
-					</small>
-				</div>
+				{#if $isLoggedInStore}
+					<div class="text-end">
+						<small>
+							<button
+								type="button"
+								class="btn btn-sm py-0"
+								on:click={() => triggerModal({ type: 'prompt' })}
+							>
+								<span><MapPin /></span> <span> Location </span>
+								<span class="font-bold"> Universitas Ciputra</span>
+							</button>
+						</small>
+					</div>
+				{/if}
 			</svelte:fragment>
 			<svelte:fragment slot="lead">
 				{#if $screenWidthStore < 1024 && $page.url.pathname !== '/'}
@@ -356,11 +332,6 @@
 							<ShoppingCartCount />
 						</button>
 					{/if}
-					{#if $isStaffLoggedInStore}
-						<a href="/staff" class="btn-icon btn-icon-sm" transition:fade>
-							<span><AdminSettings /></span>
-						</a>
-					{/if}
 					<button
 						type="button"
 						class="btn-icon btn-icon-sm"
@@ -388,7 +359,7 @@
 						<CartDropdown />
 					</div>
 
-					{#if !$isLoggedInStore && !$isStaffLoggedInStore}
+					{#if !$isLoggedInStore}
 						<a href="/login" class="btn btn-sm"><span class="font-semibold">Login</span></a>
 						<a href="/register" class="btn btn-sm variant-ringed"
 							><span class="font-semibold">Register</span></a
@@ -406,12 +377,6 @@
 								<Avatar initials="{first_name?.charAt(0)}{last_name?.charAt(0)}" width="w-6" />
 							</div>
 							<div>{first_name}</div>
-						{:else if $isStaffLoggedInStore}
-							<div>
-								<Avatar initials={username?.charAt(0)} width="w-6" />
-							</div>
-							<div>{username}</div>
-							<span class="badge variant-ghost">Admin</span>
 						{:else}
 							<span>
 								<Settings />
@@ -435,14 +400,6 @@
 								</span>
 								<span>{first_name} {last_name}</span>
 							</div>
-						{:else if $isStaffLoggedInStore}
-							<div class="card p-4 grid place-items-center w-full">
-								<span>
-									<Avatar initials?={username} background="bg-primary-500" width="w-12" />
-								</span>
-								<span>{username}</span>
-								<span class="badge variant-ghost">Admin</span>
-							</div>
 						{/if}
 						<div class="w-full shadow-xl py-2 flex">
 							{#each ['Indonesia', 'English'] as c}
@@ -455,7 +412,7 @@
 								</span>
 							{/each}
 						</div>
-						{#if $isLoggedInStore || $isStaffLoggedInStore}
+						{#if $isLoggedInStore}
 							<button
 								class="btn btn-sm variant-filled w-full"
 								disabled={isLoggingOut}

@@ -129,10 +129,10 @@
 					<div class=" w-full p-0 sticky top-0 aspect-square grid place-content-center">
 						{#if productDetail.image_urls}
 							<swiper-container
-								navigation={'true'}
+								navigation={true}
 								slides-per-group={1}
-								pagination={'true'}
-								grab-cursor={'true'}
+								pagination={true}
+								grab-cursor={true}
 							>
 								{#each productDetail.image_urls as image}
 									<swiper-slide class=" shadow-xl card flex justify-center items-center">
