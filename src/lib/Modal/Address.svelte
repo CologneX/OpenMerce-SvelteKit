@@ -80,27 +80,23 @@
 		</div>
 	{/await}
 	<hr class="!border-t-2" />
-	<div class="space-y-2">
-		<h6 class="font-bold">Want to add another destination?</h6>
-		<input type="search" class="input" bind:value={searchLocation} />
-		{#if searchLocation}
-			<div class="card p-3">
-				<div class="flex flex-col gap-y-1 overflow-y-auto">
-					{#await handleSearchLocation(searchLocation)}
-						<div class="placeholder animate-pulse p-8" />
-						<div class="placeholder animate-pulse p-8" />
-						<div class="placeholder animate-pulse p-8" />
-						<div class="placeholder animate-pulse p-8" />
-						<div class="placeholder animate-pulse p-8" />
-					{:then address}
-						{#each address as items}
-							<div class="card p-5"><p>{items.name}</p></div>
-						{/each}
-					{:catch error}
-						<p class="text-center">No address found</p>
-					{/await}
-				</div>
-			</div>
-		{/if}
-	</div>
+	<h6 class="font-bold">Want to add another destination?</h6>
+	<input type="search" class="input" bind:value={searchLocation} />
+	{#if searchLocation}
+		<div class="space-y-1 overflow-y-auto">
+			{#await handleSearchLocation(searchLocation)}
+				<div class="placeholder animate-pulse p-8" />
+				<div class="placeholder animate-pulse p-8" />
+				<div class="placeholder animate-pulse p-8" />
+				<div class="placeholder animate-pulse p-8" />
+				<div class="placeholder animate-pulse p-8" />
+			{:then address}
+				{#each address as items}
+					<div class="card p-5"><p>{items.name}</p></div>
+				{/each}
+			{:catch error}
+				<p class="text-center">No address found</p>
+			{/await}
+		</div>
+	{/if}
 </div>
