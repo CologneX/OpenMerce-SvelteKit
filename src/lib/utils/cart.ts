@@ -140,7 +140,8 @@ export const handleEditItem = async (itemID: string, quantity: number) => {
 
 }
 
-
-
-
-
+// export const handleCheckAllItems = async () => {
+//     if (isLoggedIn) {
+//         const response = (``)
+//     }
+// }

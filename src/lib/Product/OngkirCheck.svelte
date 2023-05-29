@@ -1,22 +1,46 @@
 <script lang="ts">
+	import DeliverySimulation from '$lib/Modal/DeliverySimulation.svelte';
 	import Truck from '$lib/icons/Truck.svelte';
 	import { checkDeliveryRate } from '$lib/utils/freight';
-	import { isLoggedInStore } from '$lib/utils/stores';
+	import { triggerDeliveryDetailsModal } from '$lib/utils/modal';
+	import { rupiahCurrency } from '$lib/utils/units';
 	export let productId: string;
+	export let weight: number;
 </script>
 
 <div class="border-b-2 pb-3 border-surface-900-50-token">
 	<h4 class="font-semibold">Delivery</h4>
-	<div class="flex flex-row">
-		<div class=""><Truck /></div>
-		<div class="">
-			<!-- {#await checkDeliveryRate(productId, 49101) then data} -->
-			<div>Regular Rate:</div>
-			<div>
-				Other couriers:
-				<span class="badge variant-ghost-primary">Badge</span>
-			</div>
-			<!-- {/await} -->
+	<div class="flex flex-row space-x-2">
+		<div><Truck /></div>
+		<div class="flex flex-col gap-y-1">
+			{#await checkDeliveryRate(productId, 49101)}
+				<div class="placeholder animate-pulse" />
+				<div class="placeholder animate-pulse" />
+				<div class="placeholder animate-pulse" />
+			{:then [data, maxRate, minRate]}
+				<div class="text-sm">
+					Regular Rate <span class="font-semibold">
+						{rupiahCurrency(minRate)} - {rupiahCurrency(maxRate)}</span
+					>
+				</div>
+				<div class="text-sm">
+					Other couriers
+					<span class="space-x-1">
+						{#each Object.keys(data) as courier}
+							<span class="badge variant-ghost-primary">{courier}</span>
+						{/each}
+					</span>
+				</div>
+				<button
+					class="text-primary-500 text-sm font-semibold btn bg-initial w-fit h-fit p-0 m-0"
+					on:click={() => triggerDeliveryDetailsModal(data, weight)}
+					type="button"
+				>
+					See other couriers
+				</button>
+			{:catch error}
+				<div class="text-red-500">Error: {error.message}</div>
+			{/await}
 		</div>
 	</div>
 </div>

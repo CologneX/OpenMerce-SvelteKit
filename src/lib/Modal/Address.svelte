@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { refreshTokenUser } from '$lib/utils/refreshToken';
+	import { isLoggedInStore } from '$lib/utils/stores';
 
 	const handleLoadAddress = async () => {
 		const response = await fetch('/api/v1/customer/address', {
@@ -58,27 +59,29 @@
 		>
 	</span>
 
-	{#await handleLoadAddress() then data}
-		<span class="overflow-y-auto space-y-2">
-			{#each data as address}
-				<div class="card shadow-lg py-2">
-					<p class="font-semibold text-lg border-l-4 pl-4">{address.label}</p>
-					<div class="pl-5">
-						<p class="font-semibold text-xl">{address.recipient_name}</p>
-						<p class="text-sm">{address.phone_number}</p>
-						<p class="text-sm">{address.full_address}</p>
+	{#if $isLoggedInStore}
+		{#await handleLoadAddress() then data}
+			<span class="overflow-y-auto space-y-2">
+				{#each data as address}
+					<div class="card shadow-lg py-2">
+						<p class="font-semibold text-lg border-l-4 pl-4">{address.label}</p>
+						<div class="pl-5">
+							<p class="font-semibold text-xl">{address.recipient_name}</p>
+							<p class="text-sm">{address.phone_number}</p>
+							<p class="text-sm">{address.full_address}</p>
+						</div>
 					</div>
+				{/each}
+			</span>
+		{:catch error}
+			<div class="card">
+				<div class="flex flex-col items-center justify-center">
+					<p class="text-center">You don't have any address yet</p>
+					<!-- <button class="btn btn-primary">Add Address</button> -->
 				</div>
-			{/each}
-		</span>
-	{:catch error}
-		<div class="card">
-			<div class="flex flex-col items-center justify-center">
-				<p class="text-center">You don't have any address yet</p>
-				<!-- <button class="btn btn-primary">Add Address</button> -->
 			</div>
-		</div>
-	{/await}
+		{/await}
+	{/if}
 	<hr class="!border-t-2" />
 	<h6 class="font-bold">Want to add another destination?</h6>
 	<input type="search" class="input" bind:value={searchLocation} />

@@ -120,14 +120,13 @@ declare interface CategoryMain {
 	homepage_visibility: boolean;
 }
 
-declare interface Freight {
-	courier_name: string;
-	details: FreightDetail[];
-}
-
 declare interface FreightDetail {
 	product_code: string;
 	product_name: string;
 	etd: string;
 	rates: number;
+}
+
+declare interface Freight {
+	[key: string]: FreightDetail[]
 }

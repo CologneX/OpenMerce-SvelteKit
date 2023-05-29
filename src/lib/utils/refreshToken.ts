@@ -7,6 +7,6 @@ export const refreshTokenUser = async () => {
         }
     });
     if (response.status == 401) {
-        logoutUser();
+        await logoutUser();
     }
 };

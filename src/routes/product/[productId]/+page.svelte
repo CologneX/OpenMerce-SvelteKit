@@ -313,7 +313,7 @@
 							</div>
 						</div>
 						<div class="border-b-2 border-surface-900-50-token" />
-						<OngkirCheck productId={$page.params.productId} />
+						<OngkirCheck productId={$page.params.productId} weight={productDetail.weight}/>
 						<div id="description">
 							<h4 class="font-semibold">Description</h4>
 							<div class="h-6" />

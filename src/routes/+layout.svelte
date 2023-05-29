@@ -30,7 +30,7 @@
 	import { logoutUser, isLoggedIn, getUserNames } from '$lib/utils/auth';
 	let isLoggingOut: boolean = false;
 	import MapPin from '$lib/icons/MapPin.svelte';
-	import { triggerModal } from '$lib/utils/modal';
+	import { AddressModal, triggerModal } from '$lib/utils/modal';
 	import ShoppingCartCount from '$lib/Navbar/ShoppingCart.svelte';
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
@@ -280,20 +280,14 @@
 			padding="p-2"
 		>
 			<svelte:fragment slot="headline">
-				{#if $isLoggedInStore}
-					<div class="text-end">
-						<small>
-							<button
-								type="button"
-								class="btn btn-sm py-0"
-								on:click={() => triggerModal()}
-							>
-								<span><MapPin /></span> <span> Location </span>
-								<span class="font-bold"> Universitas Ciputra</span>
-							</button>
-						</small>
-					</div>
-				{/if}
+				<div class="text-end">
+					<small>
+						<button type="button" class="btn btn-sm py-0" on:click={() => triggerModal(AddressModal)}>
+							<span><MapPin /></span> <span> Location </span>
+							<span class="font-bold"> Universitas Ciputra</span>
+						</button>
+					</small>
+				</div>
 			</svelte:fragment>
 
 			<svelte:fragment slot="lead">
