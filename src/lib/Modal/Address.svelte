@@ -45,7 +45,7 @@
 				} catch (error) {
 					reject(error);
 				}
-			}, 800);
+			}, 500);
 		});
 	};
 </script>
