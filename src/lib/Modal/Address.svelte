@@ -60,7 +60,16 @@
 	</span>
 
 	{#if $isLoggedInStore}
-		{#await handleLoadAddress() then data}
+		{#await handleLoadAddress()}
+			<div class=" card space-y-2 h-fit">
+				<p class="font-semibold text-lg border-l-4 pl-4 placeholder animate-pulse" />
+				<div class="p-5 space-y-1">
+					<p class="font-semibold text-xl placeholder animate-pulse" />
+					<p class="text-sm placeholder animate-pulse" />
+					<p class="text-sm placeholder animate-pulse" />
+				</div>
+			</div>
+		{:then data}
 			<span class="overflow-y-auto space-y-2">
 				{#each data as address}
 					<div class="card shadow-lg py-2">
