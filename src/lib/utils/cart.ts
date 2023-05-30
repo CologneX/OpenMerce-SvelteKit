@@ -109,6 +109,7 @@ export const handleEditItem = async (itemID: string, quantity: number) => {
             triggerToast(res.error, 'variant-filled-error')
         }
         else if (response.status === 200) {
+            triggerToast('Product added to cart!', 'variant-filled-success');
             getCartCount();
         }
         else if (response.status === 401) {
@@ -127,6 +128,7 @@ export const handleEditItem = async (itemID: string, quantity: number) => {
                 const res = await response.json();
                 triggerToast(res.error, 'variant-filled-error')
             } else if (response.status === 200) {
+                triggerToast('Product added to cart!', 'variant-filled-success');
                 getCartCount();
             }
 
