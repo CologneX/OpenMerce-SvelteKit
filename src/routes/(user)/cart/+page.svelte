@@ -3,16 +3,16 @@
 	import CartSummary from '$lib/Cart/CartSummary.svelte';
 	import { screenWidthStore } from '$lib/utils/stores';
 	let checkAll: boolean = false;
-	
 </script>
 
 <svelte:head>
 	<title>Cart | OpenMerce</title>
 	<meta name="description" content="OpenMerce | Cart page" />
 </svelte:head>
-<div class="grid grid-cols-{$screenWidthStore > 1024 ? 3 : 2}  gap-x-2 mt-6">
-	<div class="col-span-2 overflow-auto">
-		<header><h3 class="font-bold">Cart</h3></header>
+<div class="grid grid-cols-3 gap-8 mt-6">
+	<div class="col-span-2 overflow-auto space-y-4">
+		<h3 class="font-bold">Cart</h3>
+		<hr class="!border-t-2">
 		<label class="flex items-center space-x-2 px-2">
 			<input class="checkbox" type="checkbox" bind:checked={checkAll} />
 			<p>Select All</p>

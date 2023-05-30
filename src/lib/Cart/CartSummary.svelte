@@ -6,7 +6,7 @@
 	let totalItems = 0;
 </script>
 
-<div class="card p-3 h-fit space-y-8">
+<div class="card p-3 h-fit space-y-8 ">
 	<h5 class="font-bold flex-none">Shopping Summary</h5>
 
 	<h6 class="flex">
