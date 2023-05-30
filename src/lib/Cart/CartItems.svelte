@@ -38,7 +38,7 @@
 		timeoutId = setTimeout(async () => {
 			await handleEditItem(id, quantity);
 			cartContent = await getCart();
-		}, 1500);
+		}, 1000);
 	};
 
 	const handleItemDelete = async (id: string) => {
