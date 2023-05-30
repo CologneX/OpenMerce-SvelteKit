@@ -153,7 +153,7 @@
 {:then productDetail}
 	{#if productDetail}
 		<div id="product">
-			<div class="grid px-3 md:px-0 md:grid-cols-2 sm:grid-cols-1 gap-x-2">
+			<div class="grid px-3 md:px-0 md:grid-cols-2 sm:grid-cols-1 gap-x-8">
 				<div class="h-full w-full">
 					<div class=" w-full p-0 sticky top-0 aspect-square grid place-content-center">
 						{#if productDetail.image_urls}
