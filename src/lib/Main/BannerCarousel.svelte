@@ -20,7 +20,7 @@
 			transition:fade
 		>
 			{#each banner as item}
-				<swiper-slide class=" flex justify-center items-center object-cover aspect-[21/5]">
+				<swiper-slide class=" flex justify-center items-center">
 					<picture>
 						{#if item}
 							<img
@@ -29,7 +29,7 @@
 								width="100%"
 								src="/usercontent/{item.image_url}"
 								loading="eager"
-								class="object-cover"
+								class="object-cover aspect-[21/5] rounded-lg w-full h-full"
 							/>
 						{:else}
 							<div>

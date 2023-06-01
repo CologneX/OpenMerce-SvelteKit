@@ -16,8 +16,5 @@ export default ({ mode }) => {
 				}
 			}
 		},
-		optimizeDeps: {
-			include: ['lodash.get', 'lodash.isequal', 'lodash.clonedeep']
-		}
 	});
 };

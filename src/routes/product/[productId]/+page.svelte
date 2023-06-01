@@ -135,8 +135,15 @@
 					</p>
 
 					<div class="h-2" />
+					<span class="space-y-2">
+						<p class="placeholder animate-pulse" />
+						<p class="placeholder animate-pulse" />
+						<p class="placeholder animate-pulse" />
+						<p class="placeholder animate-pulse" />
 
-					<p class="placeholder animate-pulse" />
+						<p class="placeholder animate-pulse" /></span
+					>
+
 					<div class="h-3" />
 					<p class="placeholder animate-pulse" />
 				</div>
@@ -240,10 +247,7 @@
 							</small>
 						</div>
 
-						<h3
-							class="font-bold"
-							data-toc-ignore
-						>
+						<h3 class="font-bold" data-toc-ignore>
 							{rupiahCurrency(productDetail.price)}
 						</h3>
 
@@ -313,7 +317,7 @@
 							</div>
 						</div>
 						<div class="border-b-2 border-surface-900-50-token" />
-						<OngkirCheck productId={$page.params.productId} weight={productDetail.weight}/>
+						<OngkirCheck productId={$page.params.productId} weight={productDetail.weight} />
 						<div id="description">
 							<h4 class="font-semibold">Description</h4>
 							<div class="h-6" />
