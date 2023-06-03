@@ -9,23 +9,16 @@
 	import ShareMini from '$lib/icons/ShareMini.svelte';
 	import Wishlist from '$lib/Product/Wishlist.svelte';
 	import Reviews from '$lib/Product/Reviews.svelte';
-	import {
-		productLoadingStore,
-		screenWidthStore,
-		scrollYStore,
-		urlFromStore
-	} from '$lib/utils/stores';
+	import { productLoadingStore, screenWidthStore } from '$lib/utils/stores';
 	import HeartMini from '$lib/icons/HeartMini.svelte';
 	import AddToCart from '$lib/Product/AddToCart.svelte';
 	import { formatNumber, rupiahCurrency } from '$lib/utils/units';
-	import { TableOfContents } from '@skeletonlabs/skeleton';
 	import OngkirCheck from '$lib/Product/OngkirCheck.svelte';
-	import { space } from 'postcss/lib/list';
+
 	register();
 	let productDetails: any = {};
 	let isLoading: boolean = true;
 	const loadProducts = async (param: string) => {
-		// productLoadingStore.set(true);
 		productDetails = await getProductDetails(param);
 		setTimeout(() => {
 			isLoading = false;
@@ -34,7 +27,6 @@
 		return productDetails;
 	};
 	let quantity: number = 1;
-	urlFromStore.set(`/product/${$page.params.productId}`);
 </script>
 
 <svelte:head>
@@ -56,21 +48,6 @@
 		<title>{$page.params.productId} - {error.message}</title>
 	{/await}
 </svelte:head>
-<!-- {#if !isLoading}
-	<div class="hidden md:flex sticky top-0 variant-glass card w-full z-10">
-		<TableOfContents
-			scrollParent="#product"
-	
-			allowedHeadings="h1,h2,h3,h4,h5,h6"
-			active="border-b-2"
-			regionList="grid grid-cols-2"
-			regionLabel="hidden"
-			rounded="rounded-none"
-			class="w-full"
-		/>
-	</div>
-{/if} -->
-
 {#await loadProducts($page.params.productId)}
 	<div class="grid md:grid-cols-2 sm:grid-cols-1 w-full h-full gap-x-2 gap-y-2">
 		<div class="h-full w-full">
@@ -160,24 +137,27 @@
 {:then productDetail}
 	{#if productDetail}
 		<div id="product">
-			<div class="grid px-3 md:px-0 md:grid-cols-2 sm:grid-cols-1 gap-x-8">
-				<div class="h-full w-full">
-					<div class=" w-full p-0 sticky top-0 aspect-square grid place-content-center">
+			<div class="grid px-3  md:grid-cols-2 grid-cols-1 gap-x-12">
+				<div>
+					<div class="sticky top-0 rounded-lg">
 						{#if productDetail.image_urls}
 							<swiper-container
 								navigation={true}
+								slides-per-view={1}
 								slides-per-group={1}
 								pagination={true}
 								grab-cursor={true}
 							>
 								{#each productDetail.image_urls as image}
-									<swiper-slide class=" shadow-xl card flex justify-center items-center">
+									<swiper-slide
+										class="shadow-xl object-cover aspect-square w-full h-full rounded-lg"
+									>
 										<picture>
 											{#if image}
 												<img
 													src="/usercontent/{image}"
 													alt="{image}'s image"
-													class="object-contain aspect-square"
+													class=" w-full h-full"
 												/>
 											{:else}
 												<div>
@@ -185,14 +165,15 @@
 													<p class="text-center">No Image Found</p>
 												</div>
 											{/if}
-										</picture></swiper-slide
-									>
+										</picture>
+									</swiper-slide>
 								{/each}
 							</swiper-container>
 						{:else}
 							<Logo height="10" />
 							<p class="text-center">No Image Found</p>
 						{/if}
+						<div class="h-6" />
 						{#if $screenWidthStore > 768}
 							<div class="flex gap-2">
 								{#if productDetail.image_urls}
@@ -211,8 +192,8 @@
 														<p class="text-center">No Image Found</p>
 													</div>
 												{/if}
-											</picture></button
-										>
+											</picture>
+										</button>
 									{/each}
 								{/if}
 							</div>
@@ -392,6 +373,7 @@
 					</div>
 				</div>
 			</div>
+			<div class="h-12"></div>
 			<div id="reviews">
 				<div class="logo-cloud grid-cols-1 lg:!grid-cols-3 gap-1">
 					<div class="logo-item"><h3 id="Reviews">Reviews</h3></div>

@@ -2,7 +2,6 @@
 	import Logo from '$lib/icons/Logo.svelte';
 	import { getBannerMain } from '$lib/utils/banner';
 	import { screenWidthStore } from '$lib/utils/stores';
-	import { fade } from 'svelte/transition';
 </script>
 
 <div class="w-full space-y-2 shadow-lg">
@@ -17,7 +16,6 @@
 			grab-cursor={true}
 			class="h-full w-full"
 			loop={true}
-			transition:fade
 		>
 			{#each banner as item}
 				<swiper-slide class=" flex justify-center items-center">

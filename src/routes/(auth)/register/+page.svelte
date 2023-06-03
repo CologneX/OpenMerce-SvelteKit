@@ -3,7 +3,6 @@
 	import Google from '$lib/icons/Google.svelte';
 	import Facebook from '$lib/icons/Facebook.svelte';
 	import { Stepper, Step, ProgressRadial } from '@skeletonlabs/skeleton';
-	import { fade } from 'svelte/transition';
 	import { writable } from 'svelte/store';
 
 	import { triggerToast } from '$lib/utils/toast';
@@ -161,7 +160,7 @@
 							on:input={validateEmail}
 						/>
 
-						{#if errors.email}<small class="text-error-500" transition:fade={{ duration: 500 }}
+						{#if errors.email}<small class="text-error-500"
 								>{errors.email}</small
 							>{/if}
 						<hr class="!border-t-2 !border-current" />

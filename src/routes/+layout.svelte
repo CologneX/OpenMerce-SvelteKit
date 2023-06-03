@@ -55,16 +55,17 @@
 
 	// for isLoggedin
 	import { goto } from '$app/navigation';
-	import { isLoggedInStore, screenWidthStore, scrollYStore } from '$lib/utils/stores';
+	import { isLoggedInStore, screenWidthStore } from '$lib/utils/stores';
 	import SearchDropdown from '$lib/Navbar/SearchDropdown.svelte';
 	import CartDropdown from '$lib/Cart/CartDropdown.svelte';
 
 	let last_name: string | null;
-	let username: string | null;
 	let first_name: string | null;
 	let selectedLanguage: string | null;
+	onMount(async () => {
+		isLoggedIn();
+	});
 
-	isLoggedIn();
 	selectedLanguage = localStorage.getItem('prefLang');
 
 	// end for isLoggedin
@@ -135,8 +136,7 @@
 
 	// import favicon
 	import favicon from '$lib/favicon.ico';
-	import AdminSettings from '$lib/icons/Truck.svelte';
-	import { fade } from 'svelte/transition';
+	import { onMount } from 'svelte';
 	// end import favicon
 </script>
 
@@ -176,7 +176,7 @@
 				<section class="gap-2 grid w-full h-full overflow-y-auto hide-scrollbar">
 					<div class="h-fit space-y-2">
 						{#if $isLoggedInStore}
-							<div class="card p-4 grid place-items-center w-full" transition:fade>
+							<div class="card p-4 grid place-items-center w-full">
 								<span>
 									<Avatar
 										initials="{first_name}{last_name}"
@@ -187,7 +187,7 @@
 								<span>{first_name} {last_name}</span>
 							</div>
 						{:else}
-							<span transition:fade
+							<span
 								><a
 									href="/login"
 									class="btn h-fit variant-ringed-primary w-full"
@@ -282,7 +282,11 @@
 			<svelte:fragment slot="headline">
 				<div class="text-end">
 					<small>
-						<button type="button" class="btn btn-sm py-0" on:click={() => triggerModal(AddressModal)}>
+						<button
+							type="button"
+							class="btn btn-sm py-0"
+							on:click={() => triggerModal(AddressModal)}
+						>
 							<span><MapPin /></span> <span> Location </span>
 							<span class="font-bold"> Universitas Ciputra</span>
 						</button>
@@ -323,7 +327,6 @@
 							on:click={handleShoppingCartClick}
 							use:popup={cartHover}
 							aria-label="your cart"
-							transition:fade
 						>
 							<ShoppingCartCount />
 						</button>

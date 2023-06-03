@@ -6,13 +6,21 @@
 	import { getProductsMain } from '$lib/utils/products';
 	import { screenWidthStore } from '$lib/utils/stores';
 	import type { Products } from '../app';
-	import { fade } from 'svelte/transition';
 	let allProducts: Products[] = [];
-	getProductsMain().then((data) => {
-		data.forEach((category) => {
-			allProducts = [...allProducts, ...category.products];
-		});
-	});
+	let isLoading: boolean = true;
+	const MainMenuLoad = async () => {
+		// await getProductsMain();
+		const products = await getProductsMain();
+		allProducts = products.reduce((acc: any[], category: any) => {
+			isLoading = false;
+			if (category.products) {
+				return [...acc, ...category.products];
+			} else {
+				return acc;
+			}
+		}, []);
+		return products;
+	};
 </script>
 
 <svelte:head>
@@ -27,11 +35,11 @@
 <!-- <Toast position='br' /> -->
 <div class="space-y-10 w-full h-full mt-6">
 	<BannerCarousel />
-	{#await getProductsMain()}
+	{#await MainMenuLoad()}
 		<div class="h-96 w-full placeholder animate-pulse" />
-	{:then productsData}
-		{#each productsData as items}
-			<div class="w-full" transition:fade>
+	{:then allProducts}
+		{#each allProducts as items}
+			<div class="w-full">
 				<div class="flex">
 					<h4 class="font-semibold flex-1">{items.category_name}</h4>
 					<a href="/see-all" class=" decoration-transparent">See All</a>
@@ -81,19 +89,14 @@
 
 	<hr class="!border-t-8" />
 
-	<!-- <div
-		class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-6 gap-5 justify-items-center h-96"
-	>
-		<div class="w-full animate-pulse text-center placeholder h-full" />
-	</div> -->
-	{#await allProducts}
+	{#if isLoading}
 		<div class="h-96 w-full placeholder animate-pulse" />
-	{:then productsData}
+	{:else}
 		<h4 class="font-semibold">All Products</h4>
-		<div class="w-full grid-cols-4 grid-rows-3 grid-flow-row grid gap-x-2">
+		<div class="flex flex-row flex-wrap grow gap-3">
 			{#each allProducts as products}
 				<ProductCard {products} />
 			{/each}
 		</div>
-	{/await}
+	{/if}
 </div>
