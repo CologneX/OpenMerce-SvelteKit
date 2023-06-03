@@ -1,7 +1,13 @@
 <script lang="ts">
-	import { screenWidthStore } from '$lib/utils/stores';
+	import ChevronDown from '$lib/icons/ChevronDown.svelte';
+	import { AddressModal, DeliveryDetailsModal, triggerModal } from '$lib/utils/modal';
+	import { defaultLocationStore } from '$lib/utils/stores';
 	import { rupiahCurrency } from '$lib/utils/units';
 	import { modalStore } from '@skeletonlabs/skeleton';
+	const handleClickDeliverySimulation = async () => {
+		modalStore.clear();
+		triggerModal(AddressModal);
+	};
 </script>
 
 {#if $modalStore[0]}
@@ -12,11 +18,20 @@
 		</span>
 
 		<div class=" card p-3 h-fit shadow-lg">
-			<small>Product weight </small>
-			<span class="font-bold">{$modalStore[0].meta.weight} kg</span>
-			<div class="text-sm">Delivery to</div>
+			<div>
+				<small>Product weight </small>
+				<span class="font-bold">{$modalStore[0].meta.weight} kg</span>
+			</div>
+			<button
+				class="text-sm w-full btn flex justify-start p-0"
+				type="button"
+				on:click={handleClickDeliverySimulation}
+			>
+				<span> Delivery to <span class="font-semibold"> {$defaultLocationStore.name} </span></span>
+				<span><ChevronDown /></span>
+			</button>
 		</div>
-		<div class="h-4"></div>
+		<div class="h-4" />
 		<div class="overflow-y-auto space-y-8 h-full max-h-[75%] pr-2">
 			{#each Object.entries($modalStore[0].meta.deliveryDetails) as [key, value]}
 				<div class="text-lg font-bold">{key}</div>

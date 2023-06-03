@@ -60,44 +60,53 @@
 	<meta name="author" content="OpenMerce" />
 </svelte:head>
 
-<div class="flex items-center justify-center h-full w-full">
-	<form on:submit|preventDefault={handleLoginSubmit} class="w-full h-full md:h-fit max-w-3xl">
-		<div class="card p-4 gap-y-12 h-full w-full grid">
-			<header class="card-header">
-				<span class="flex justify-center"><Logo height="10" /></span>
-			</header>
+<div class="flex justify-center h-full w-full">
+	<form on:submit|preventDefault={handleLoginSubmit} class="w-full h-fit max-w-xs">
+		<div class="h-14" />
+		<span class="flex justify-center"><Logo height="8" /></span>
+		<div class="h-14" />
+		<div class="card p-4 gap-y-12 h-full w-full grid shadow-xl">
 			<section>
 				<label class="label">
-					<label for="email">E-Mail</label>
+					<span class="font-bold">E-mail</span>
 					<input
-						class="input variant-form-material {error ? 'input-error' : ''}"
+						class="input {error ? 'input-error' : ''}"
 						type="text"
-						name="email"
 						bind:value={form.email}
 						disabled={loggingIn}
 						on:keypress={() => (error = false)}
 					/>
-					<label for="password">Password</label>
+					<div class="h-4" />
+					<span class="font-bold">Password</span>
 					<input
-						class="input variant-form-material {error ? 'input-error' : ''}"
+						class="input {error ? 'input-error' : ''}"
 						type="password"
 						name="password"
 						bind:value={form.password}
 						disabled={loggingIn}
 						on:keypress={() => (error = false)}
 					/>
+					<div class="h-4" />
 					<label class="flex items-center space-x-2">
 						<input class="checkbox" type="checkbox" bind:checked={form.remember_me} />
 						<p>Remember Me</p>
 					</label>
 				</label>
 			</section>
-			<footer class="grid content-end">
+			<footer class="grid content-end gap-y-4">
 				<button class="btn variant-ghost-primary w-full" type="submit" disabled={loggingIn}
 					><span
 						>{#if loggingIn}<ProgressRadial class="w-6" />{/if}</span
 					>
 					<span>{loggingIn ? 'Logging In ...' : 'Log In'}</span></button
+				>
+				<hr class="!border-t-2" />
+				<small class="text-center"
+					>Need help? <a
+						href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+						target="_blank"
+						class="font-semibold no-underline">Contact OpenMerce Help!</a
+					></small
 				>
 			</footer>
 		</div>

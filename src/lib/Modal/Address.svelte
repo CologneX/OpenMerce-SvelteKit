@@ -1,6 +1,9 @@
 <script lang="ts">
+	import Search from '$lib/icons/Search.svelte';
 	import { refreshTokenUser } from '$lib/utils/refreshToken';
-	import { isLoggedInStore } from '$lib/utils/stores';
+	import { defaultLocationStore, isLoggedInStore } from '$lib/utils/stores';
+	import { triggerToast } from '$lib/utils/toast';
+	import { modalStore } from '@skeletonlabs/skeleton';
 
 	const handleLoadAddress = async () => {
 		const response = await fetch('/api/v1/customer/address', {
@@ -51,7 +54,7 @@
 	};
 </script>
 
-<div class="flex flex-col card p-10 w-full max-w-3xl gap-y-6 h-fit max-h-[90%]">
+<div class="flex flex-col card p-10 w-full max-w-3xl gap-y-6 h-fit max-h-[98%]">
 	<span>
 		<h3 class="font-bold">Your Addresses</h3>
 		<small class="text-surface-600-300-token"
@@ -92,19 +95,36 @@
 		{/await}
 	{:else}
 		<div class="card shadow-lg p-6">
-			<div class="flex justify-between flex-row">
+			<div class="flex justify-between flex-row items-center">
 				<span class="basis-3/4">
 					<p class="font-bold text-lg">Login</p>
 					<p class="text-sm">Log in first before choosing your address :)</p>
 				</span>
 
-				<a href="/login" class="btn btn-sm variant-soft-primary font-bold basis-2/5">Login</a>
+				<a
+					href="/login"
+					class="btn btn-sm variant-soft-primary font-bold basis-2/5 h-fit"
+					on:click={() => {
+						modalStore.close();
+					}}>Login</a
+				>
 			</div>
 		</div>
 	{/if}
 	<hr class="!border-t-2" />
 	<h6 class="font-bold">Want to add another destination?</h6>
-	<input type="search" class="input" bind:value={searchLocation} />
+	<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
+		<div class="input-group-shim">
+			<Search />
+		</div>
+		<input
+			type="search"
+			class="input placeholder:text-xs md:placeholder:text-base"
+			bind:value={searchLocation}
+			placeholder="Choose city, district or subdistrict"
+		/>
+	</div>
+
 	{#if searchLocation}
 		<div class="space-y-1 overflow-y-auto">
 			{#await handleSearchLocation(searchLocation)}
@@ -115,7 +135,15 @@
 				<div class="placeholder animate-pulse p-8" />
 			{:then address}
 				{#each address as items}
-					<div class="card p-5"><p>{items.name}</p></div>
+					<button
+						class="card p-5 w-full text-start"
+						type="button"
+						on:click={() => {
+							defaultLocationStore.set({ id: items.id, name: items.name });
+							triggerToast('Address has been set', 'variant-filled-success');
+							modalStore.close();
+						}}><p>{items.name}</p></button
+					>
 				{/each}
 			{:catch error}
 				<p class="text-center">No address found</p>

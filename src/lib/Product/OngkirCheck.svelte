@@ -3,9 +3,13 @@
 	import Truck from '$lib/icons/Truck.svelte';
 	import { checkDeliveryRate } from '$lib/utils/freight';
 	import { triggerDeliveryDetailsModal } from '$lib/utils/modal';
+	import { defaultLocationStore } from '$lib/utils/stores';
 	import { rupiahCurrency } from '$lib/utils/units';
 	export let productId: string;
 	export let weight: number;
+	// $: {
+	// 	checkDeliveryRate(productId, $defaultLocationStore.id);
+	// }
 </script>
 
 <div class="border-b-2 pb-3 border-surface-900-50-token">
@@ -13,7 +17,7 @@
 	<div class="flex flex-row space-x-2">
 		<div><Truck /></div>
 		<div class="flex flex-col gap-y-1">
-			{#await checkDeliveryRate(productId, 49101)}
+			{#await checkDeliveryRate(productId, $defaultLocationStore.id)}
 				<div class="placeholder animate-pulse" />
 				<div class="placeholder animate-pulse" />
 				<div class="placeholder animate-pulse" />

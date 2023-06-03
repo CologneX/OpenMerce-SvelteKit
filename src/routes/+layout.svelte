@@ -57,7 +57,7 @@
 
 	// for isLoggedin
 	import { goto } from '$app/navigation';
-	import { isLoggedInStore, screenWidthStore } from '$lib/utils/stores';
+	import { defaultLocationStore, isLoggedInStore, screenWidthStore } from '$lib/utils/stores';
 	import SearchDropdown from '$lib/Navbar/SearchDropdown.svelte';
 	import CartDropdown from '$lib/Cart/CartDropdown.svelte';
 
@@ -174,7 +174,7 @@
 						</span>
 					</button>
 				</header>
-				<hr class="!border !border-current" />
+				<hr class="!border-t" />
 				<section class="gap-2 grid w-full h-full overflow-y-auto hide-scrollbar">
 					<div class="h-fit space-y-2">
 						{#if $isLoggedInStore}
@@ -189,20 +189,21 @@
 								<span>{first_name} {last_name}</span>
 							</div>
 						{:else}
-							<span
-								><a
+							<div class="flex gap-x-2 py-2">
+								<a
 									href="/login"
-									class="btn h-fit variant-ringed-primary w-full"
-									on:click={() => drawerStore.close()}><span class="font-semibold">Login</span></a
+									class="btn btn-sm h-fit variant-ringed-primary w-full text-primary-500"
+									on:click={() => drawerStore.close()}><span class="font-bold">Login</span></a
 								>
 								<a
 									href="/register"
-									class="btn h-fit variant-glass-primary w-full"
+									class="btn btn-sm h-fit variant-filled-primary w-full"
 									on:click={() => drawerStore.close()}
-									><span class="font-semibold">Register</span></a
-								></span
-							>
+									><span class="font-bold text-white">Register</span></a
+								>
+							</div>
 						{/if}
+						<hr class="!border-t" />
 						<div class="space-y-6">
 							<h4 class="font-semibold">My Activity</h4>
 							<div>
@@ -290,7 +291,7 @@
 							on:click={() => triggerModal(AddressModal)}
 						>
 							<span><MapPin /></span> <span> Location </span>
-							<span class="font-bold"> Universitas Ciputra</span>
+							<p class="font-bold text-ellipsis">{$defaultLocationStore.name}</p>
 						</button>
 					</small>
 				</div>

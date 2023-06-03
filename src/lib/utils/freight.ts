@@ -1,7 +1,7 @@
 import type { Freight } from "../../app";
 
 export const checkDeliveryRate = async (productId: string, areaId: number) => {
-    const response = await fetch(`/api/v1/freight-rates?product_id=${productId}&area_id=49100`, {
+    const response = await fetch(`/api/v1/freight-rates?product_id=${productId}&area_id=${areaId}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'

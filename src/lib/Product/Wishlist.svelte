@@ -64,28 +64,13 @@
 
 	const handleCheckWishlist = async (productId: string) => {
 		if ($isLoggedInStore) {
+			await refreshTokenUser();
 			const response = await fetch(`/api/v1/customer/wishlist?id=${productId}`, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json'
 				}
 			});
-			if (response.status === 401) {
-				await refreshTokenUser();
-				const responseAgain = await fetch(`/api/v1/customer/wishlist?id=${productId}`, {
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json'
-					}
-				});
-
-				if (responseAgain.ok) {
-					const responseJson = await responseAgain.json();
-					if (responseJson.state === true) {
-						isWishlistedStore.set(true);
-					}
-				}
-			}
 			if (response.ok) {
 				const responseJson = await response.json();
 				if (responseJson.state === true) {
