@@ -32,6 +32,8 @@
 	import MapPin from '$lib/icons/MapPin.svelte';
 	import { AddressModal, triggerModal } from '$lib/utils/modal';
 	import ShoppingCartCount from '$lib/Navbar/ShoppingCart.svelte';
+	import { register } from 'swiper/element/bundle';
+	register();
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	let popupSettings: PopupSettings = {

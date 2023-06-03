@@ -3,7 +3,6 @@
 	import { getProductDetails } from '$lib/utils/products';
 	import Logo from '$lib/icons/Logo.svelte';
 	import Star from '$lib/icons/Star.svelte';
-	import { register } from 'swiper/element/bundle';
 	import PlusSmall from '$lib/icons/PlusSmall.svelte';
 	import MinusSmall from '$lib/icons/MinusSmall.svelte';
 	import ShareMini from '$lib/icons/ShareMini.svelte';
@@ -14,8 +13,6 @@
 	import AddToCart from '$lib/Product/AddToCart.svelte';
 	import { formatNumber, rupiahCurrency } from '$lib/utils/units';
 	import OngkirCheck from '$lib/Product/OngkirCheck.svelte';
-
-	register();
 	let productDetails: any = {};
 	let isLoading: boolean = true;
 	const loadProducts = async (param: string) => {
@@ -137,7 +134,7 @@
 {:then productDetail}
 	{#if productDetail}
 		<div id="product">
-			<div class="grid px-3  md:grid-cols-2 grid-cols-1 gap-x-12">
+			<div class="grid px-3 md:grid-cols-2 grid-cols-1 gap-x-12">
 				<div>
 					<div class="sticky top-0 rounded-lg">
 						{#if productDetail.image_urls}

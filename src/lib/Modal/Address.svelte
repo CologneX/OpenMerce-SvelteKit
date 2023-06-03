@@ -53,7 +53,7 @@
 
 <div class="flex flex-col card p-10 w-full max-w-3xl gap-y-6 h-fit max-h-[90%]">
 	<span>
-		<h4 class="font-bold">Your Addresses</h4>
+		<h3 class="font-bold">Your Addresses</h3>
 		<small class="text-surface-600-300-token"
 			>Please choose where your product will be send :)</small
 		>
@@ -90,6 +90,17 @@
 				</div>
 			</div>
 		{/await}
+	{:else}
+		<div class="card shadow-lg p-6">
+			<div class="flex justify-between flex-row">
+				<span class="basis-3/4">
+					<p class="font-bold text-lg">Login</p>
+					<p class="text-sm">Log in first before choosing your address :)</p>
+				</span>
+
+				<a href="/login" class="btn btn-sm variant-soft-primary font-bold basis-2/5">Login</a>
+			</div>
+		</div>
 	{/if}
 	<hr class="!border-t-2" />
 	<h6 class="font-bold">Want to add another destination?</h6>

@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { register } from 'swiper/element/bundle';
-	register();
 	import ProductCard from '$lib/TempProductCard.svelte';
 	import BannerCarousel from '$lib/Main/BannerCarousel.svelte';
 	import { getProductsMain } from '$lib/utils/products';
@@ -34,8 +32,7 @@
 	/>
 	<meta name="author" content="OpenMerce" />
 </svelte:head>
-<!-- <Toast position='br' /> -->
-<div class="space-y-10 w-full h-full mt-6 px-4">
+<div class="space-y-10 w-full h-full mt-6 px-6">
 	<BannerCarousel />
 	{#await MainMenuLoad()}
 		<div class="h-96 w-full placeholder animate-pulse" />
