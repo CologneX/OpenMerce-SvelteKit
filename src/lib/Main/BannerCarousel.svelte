@@ -4,17 +4,17 @@
 	import { screenWidthStore } from '$lib/utils/stores';
 </script>
 
-<div class="w-full space-y-2 shadow-lg">
+<div class="shadow-lg">
 	{#await getBannerMain()}
 		<div class="placeholder h-full w-full animate-pulse" />
 	{:then banner}
 		<swiper-container
 			navigation={$screenWidthStore > 1024 ? true : false}
 			slides-per-group={1}
+			slides-per-view={1}
 			autoplay={true}
 			delay={3000}
-			grab-cursor={true}
-			class="h-full w-full"
+			class="rounded-md"
 			loop={true}
 		>
 			{#each banner as item}
@@ -27,7 +27,7 @@
 								width="100%"
 								src="/usercontent/{item.image_url}"
 								loading="eager"
-								class="object-cover aspect-[21/5] rounded-lg w-full h-full"
+								class="object-cover aspect-[21/5] rounded-md w-full h-full"
 							/>
 						{:else}
 							<div>

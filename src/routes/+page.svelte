@@ -10,8 +10,9 @@
 	let isLoading: boolean = true;
 	const MainMenuLoad = async () => {
 		// await getProductsMain();
-		const products = await getProductsMain();
-		allProducts = products.reduce((acc: any[], category: any) => {
+		let data = await getProductsMain();
+		data = data.filter((category) => category.products !== null);
+		allProducts = data.reduce((acc: any[], category: any) => {
 			isLoading = false;
 			if (category.products) {
 				return [...acc, ...category.products];
@@ -19,7 +20,8 @@
 				return acc;
 			}
 		}, []);
-		return products;
+
+		return data;
 	};
 </script>
 
@@ -33,7 +35,7 @@
 	<meta name="author" content="OpenMerce" />
 </svelte:head>
 <!-- <Toast position='br' /> -->
-<div class="space-y-10 w-full h-full mt-6">
+<div class="space-y-10 w-full h-full mt-6 px-4">
 	<BannerCarousel />
 	{#await MainMenuLoad()}
 		<div class="h-96 w-full placeholder animate-pulse" />
