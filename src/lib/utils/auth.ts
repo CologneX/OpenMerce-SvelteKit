@@ -1,5 +1,5 @@
 import { goto } from "$app/navigation";
-import { isLoggedInStore } from "./stores";
+import { defaultLocationStore, isLoggedInStore } from "./stores";
 
 export const logoutUser = async () => {
     const response = await fetch('/api/v1/auth/logout', {
@@ -11,6 +11,8 @@ export const logoutUser = async () => {
     if (response.ok) {
         localStorage.removeItem('first_name');
         localStorage.removeItem('last_name');
+        localStorage.removeItem('loc')
+        defaultLocationStore.set({ id: 25410, name: 'Jakarta Pusat' })
         isLoggedInStore.set(false)
         goto('/login');
     }

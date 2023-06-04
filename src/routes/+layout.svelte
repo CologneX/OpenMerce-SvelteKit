@@ -74,6 +74,7 @@
 
 	$: if ($isLoggedInStore) {
 		[first_name, last_name] = getUserNames();
+		get(defaultLocationStore);
 	}
 	// isLoading = false;
 	// for handling shopping cart click
@@ -88,7 +89,7 @@
 
 	//for handling bell click
 	function handleBellClick() {
-		if ($isLoggedInStore) {
+		if (!$isLoggedInStore) {
 			goto('/login');
 		}
 	}
@@ -139,6 +140,8 @@
 	// import favicon
 	import favicon from '$lib/favicon.ico';
 	import { onMount } from 'svelte';
+	import { get } from 'svelte/store';
+	import Heart from '$lib/icons/Heart.svelte';
 	// end import favicon
 </script>
 
@@ -332,6 +335,16 @@
 							aria-label="your cart"
 						>
 							<ShoppingCartCount />
+						</button>
+						<button
+							type="button"
+							class="btn-icon btn-icon-sm"
+							on:click={() => goto('/wishlist')}
+							aria-label="wishlist"
+						>
+							<span>
+								<Heart />
+							</span>
 						</button>
 					{/if}
 					<button

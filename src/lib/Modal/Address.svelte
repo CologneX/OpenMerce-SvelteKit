@@ -4,7 +4,7 @@
 	import { defaultLocationStore, isLoggedInStore } from '$lib/utils/stores';
 	import { triggerToast } from '$lib/utils/toast';
 	import { modalStore } from '@skeletonlabs/skeleton';
-
+	import type { Address, AddressDetail } from '../../app';
 	const handleLoadAddress = async () => {
 		const response = await fetch('/api/v1/customer/address', {
 			method: 'GET',
@@ -17,11 +17,11 @@
 				headers: { 'Content-Type': 'application/json' }
 			});
 			if (response.status == 200) {
-				const data = await response.json();
+				const data: Address[] = await response.json();
 				return data;
 			}
 		} else if (response.status == 200) {
-			const data = await response.json();
+			const data: Address[] = await response.json();
 			return data;
 		}
 		return [];
@@ -52,6 +52,35 @@
 			}, 500);
 		});
 	};
+
+	let isSettingDefaultLocation: boolean = false;
+	const handleLoginSetLocation = async (id: string) => {
+		isSettingDefaultLocation = true;
+		const responseDetail = await fetch(`/api/v1/customer/address?id=${id}`, {
+			method: 'GET',
+			headers: { 'Content-Type': 'application/json' }
+		});
+		if (responseDetail.ok) {
+			const data: AddressDetail = await responseDetail.json();
+			defaultLocationStore.set({ id: data.area_id, name: data.shipping_area });
+
+			modalStore.clear();
+			triggerToast('Address has been set', 'variant-filled-success');
+		} else if (responseDetail.status === 401) {
+			await refreshTokenUser();
+			const responseDetail = await fetch(`/api/v1/customer/address?id=${id}`, {
+				method: 'GET',
+				headers: { 'Content-Type': 'application/json' }
+			});
+			if (responseDetail.ok) {
+				const data: AddressDetail = await responseDetail.json();
+				defaultLocationStore.set({ id: data.area_id, name: data.shipping_area });
+				modalStore.clear();
+				triggerToast('Address has been set', 'variant-filled-success');
+			}
+		}
+		isSettingDefaultLocation = false;
+	};
 </script>
 
 <div class="flex flex-col card p-10 w-full max-w-3xl gap-y-6 h-fit max-h-[98%]">
@@ -75,13 +104,20 @@
 		{:then data}
 			<span class="overflow-y-auto space-y-2">
 				{#each data as address}
-					<div class="card shadow-lg py-2">
-						<p class="font-semibold text-lg border-l-4 pl-4">{address.label}</p>
-						<div class="pl-5">
-							<p class="font-semibold text-xl">{address.recipient_name}</p>
-							<p class="text-sm">{address.phone_number}</p>
-							<p class="text-sm">{address.full_address}</p>
+					<div class="card shadow-md py-2 flex flex-row items-center">
+						<div class="basis-3/4">
+							<p class="font-semibold text-lg border-l-4 pl-4">{address.label}</p>
+							<div class="pl-5">
+								<p class="font-semibold text-xl">{address.recipient_name}</p>
+								<p class="text-sm">{address.phone_number}</p>
+								<p class="text-sm">{address.full_address}</p>
+							</div>
 						</div>
+						<button
+							type="button"
+							class="btn btn-sm variant-soft-primary basis-1/4 h-fit w-full mr-5 font-bold"
+							on:click={() => handleLoginSetLocation(address.id)}>Select</button
+						>
 					</div>
 				{/each}
 			</span>
@@ -112,19 +148,7 @@
 		</div>
 	{/if}
 	<hr class="!border-t-2" />
-	<h6 class="font-bold">Want to add another destination?</h6>
-	<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
-		<div class="input-group-shim">
-			<Search />
-		</div>
-		<input
-			type="search"
-			class="input placeholder:text-xs md:placeholder:text-base"
-			bind:value={searchLocation}
-			placeholder="Choose city, district or subdistrict"
-		/>
-	</div>
-
+	<p class="font-bold">Want to add another destination?</p>
 	{#if searchLocation}
 		<div class="space-y-1 overflow-y-auto">
 			{#await handleSearchLocation(searchLocation)}
@@ -150,4 +174,18 @@
 			{/await}
 		</div>
 	{/if}
+	<label class="label">
+		<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
+			<div class="input-group-shim">
+				<Search />
+			</div>
+			<input
+				type="search"
+				class="input placeholder:text-xs md:placeholder:text-base"
+				bind:value={searchLocation}
+				placeholder="Choose city, district or subdistrict"
+			/>
+		</div>
+		<span class="text-xs">Press on the address to change your current address</span>
+	</label>
 </div>

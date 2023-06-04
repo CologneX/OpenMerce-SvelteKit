@@ -130,3 +130,25 @@ declare interface FreightDetail {
 declare interface Freight {
 	[key: string]: FreightDetail[]
 }
+
+
+declare interface AddressDetail {
+	id: string;
+	label: string;
+	full_address: string;
+	note: string;
+	recipient_name: string;
+	phone_number: string;
+	shipping_area: string;
+	area_id: number;
+	postal_code: string;
+}
+
+declare interface Address {
+	id: string;
+	label: string;
+	full_address: string;
+	note: string;
+	recipient_name: string;
+	phone_number: string;
+}

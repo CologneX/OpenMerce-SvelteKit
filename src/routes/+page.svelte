@@ -41,7 +41,7 @@
 			<div class="w-full">
 				<div class="flex">
 					<h4 class="font-semibold flex-1">{items.category_name}</h4>
-					<a href="/see-all" class=" decoration-transparent">See All</a>
+					<a href="/category/{items.category_id}" class=" decoration-transparent">See All</a>
 				</div>
 				{#if $screenWidthStore < 1024}
 					<div class="w-full h-full">
