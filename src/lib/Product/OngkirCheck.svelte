@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Truck from '$lib/icons/Truck.svelte';
 	import { checkDeliveryRate } from '$lib/utils/freight';
-	import { DeliverySimulationModal } from '$lib/utils/modal';
+	import { AddressModal, DeliverySimulationModal } from '$lib/utils/modal';
 	import { defaultLocationStore } from '$lib/utils/stores';
 	import { rupiahCurrency } from '$lib/utils/units';
 	import { modalStore } from '@skeletonlabs/skeleton';
@@ -48,6 +48,13 @@
 				</button>
 			{:catch error}
 				<div class="text-red-500">Error: {error.message}</div>
+				<button
+					class="text-primary-500 text-sm font-semibold btn bg-initial w-fit h-fit p-0 m-0"
+					on:click={() => modalStore.trigger(AddressModal)}
+					type="button"
+				>
+					Change Address
+				</button>
 			{/await}
 		</div>
 	</div>
