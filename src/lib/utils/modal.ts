@@ -1,38 +1,24 @@
-import { modalStore } from '@skeletonlabs/skeleton';
-import type { ModalSettings, ModalComponent, Modal } from '@skeletonlabs/skeleton';
+import type { ModalSettings, ModalComponent } from '@skeletonlabs/skeleton';
 import Address from '$lib/Modal/Address.svelte';
 import DeliverySimulation from '$lib/Modal/DeliverySimulation.svelte';
-import type { Freight, FreightDetail } from '../../app';
-const AddressComponent: ModalComponent = {
-	ref: Address,
+
+
+export const modalComponentRegistry: Record<string, ModalComponent> = {
+	AddressComponent: {
+		ref: Address,
+	},
+
+	DeliverySimulationComponent: {
+		ref: DeliverySimulation,
+	}
 }
-
-const DeliverySimulationComponent: ModalComponent = {
-	ref: DeliverySimulation,
-
-
-}
-
-
 
 export const AddressModal: ModalSettings = {
 	type: 'component',
-	component: AddressComponent,
-}
-export const DeliveryDetailsModal: ModalSettings = {
+	component: 'AddressComponent',
+};
+
+export const DeliverySimulationModal: ModalSettings = {
 	type: 'component',
-	component: DeliverySimulationComponent,
-
-}
-
-export const triggerDeliveryDetailsModal = (deliveryDetails: Freight[], weight: number) => {
-	DeliveryDetailsModal.meta = {
-		deliveryDetails: deliveryDetails,
-		weight: weight
-	}
-	modalStore.trigger(DeliveryDetailsModal);
-}
-
-export const triggerModal = (modal: ModalSettings) => {
-	modalStore.trigger(modal);
-}
+	component: 'DeliverySimulationComponent',
+};

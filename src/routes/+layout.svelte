@@ -14,7 +14,8 @@
 		Drawer,
 		drawerStore,
 		Modal,
-		Avatar
+		Avatar,
+		modalStore
 	} from '@skeletonlabs/skeleton';
 	import Logo from '$lib/icons/Logo.svelte';
 	import type { PopupSettings, DrawerSettings } from '@skeletonlabs/skeleton';
@@ -30,7 +31,6 @@
 	import { logoutUser, isLoggedIn, getUserNames } from '$lib/utils/auth';
 	let isLoggingOut: boolean = false;
 	import MapPin from '$lib/icons/MapPin.svelte';
-	import { AddressModal, triggerModal } from '$lib/utils/modal';
 	import ShoppingCartCount from '$lib/Navbar/ShoppingCart.svelte';
 	import { register } from 'swiper/element/bundle';
 	register();
@@ -139,9 +139,11 @@
 	// import favicon
 	import favicon from '$lib/favicon.ico';
 	import { onMount } from 'svelte';
-	import { get } from 'svelte/store';
 	import Heart from '$lib/icons/Heart.svelte';
+	import { AddressModal, modalComponentRegistry } from '$lib/utils/modal';
 	// end import favicon
+
+	// modal settings
 </script>
 
 <svelte:head>
@@ -153,7 +155,11 @@
 {/if} -->
 
 <AppShell slotHeader="z-20" slotPageContent="flex justify-center">
-	<Modal class="w-full h-full" shadow="shadow-xl" />
+	<Modal
+		class="w-full h-full"
+		shadow="shadow-xl"
+		components={modalComponentRegistry}
+	/>
 
 	<Toast
 		position="t"
@@ -290,7 +296,7 @@
 						<button
 							type="button"
 							class="btn btn-sm py-0"
-							on:click={() => triggerModal(AddressModal)}
+							on:click={() => modalStore.trigger(AddressModal)}
 						>
 							<span><MapPin /></span> <span> Location </span>
 							<p class="font-bold text-ellipsis">{$defaultLocationStore.name}</p>

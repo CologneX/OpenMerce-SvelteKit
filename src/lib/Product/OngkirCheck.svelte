@@ -1,15 +1,19 @@
 <script lang="ts">
-	import DeliverySimulation from '$lib/Modal/DeliverySimulation.svelte';
 	import Truck from '$lib/icons/Truck.svelte';
 	import { checkDeliveryRate } from '$lib/utils/freight';
-	import { triggerDeliveryDetailsModal } from '$lib/utils/modal';
+	import { DeliverySimulationModal } from '$lib/utils/modal';
 	import { defaultLocationStore } from '$lib/utils/stores';
 	import { rupiahCurrency } from '$lib/utils/units';
+	import { modalStore } from '@skeletonlabs/skeleton';
 	export let productId: string;
-	export let weight: number;
-	// $: {
-	// 	checkDeliveryRate(productId, $defaultLocationStore.id);
-	// }
+	export let weight2: number;
+	const triggerDeliveryDetailsModal = (deliveryDetails: any, weight: number) => {
+		DeliverySimulationModal.meta = {
+			deliveryDetails: deliveryDetails,
+			weight: weight
+		};
+		modalStore.trigger(DeliverySimulationModal);
+	};
 </script>
 
 <div class="border-b-2 pb-3 border-surface-900-50-token">
@@ -37,7 +41,7 @@
 				</div>
 				<button
 					class="text-primary-500 text-sm font-semibold btn bg-initial w-fit h-fit p-0 m-0"
-					on:click={() => triggerDeliveryDetailsModal(data, weight)}
+					on:click={() => triggerDeliveryDetailsModal(data, weight2)}
 					type="button"
 				>
 					See other couriers
