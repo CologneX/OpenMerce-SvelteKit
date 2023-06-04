@@ -142,8 +142,37 @@ export const handleEditItem = async (itemID: string, quantity: number) => {
 
 }
 
-// export const handleCheckAllItems = async () => {
-//     if (isLoggedIn) {
-//         const response = (``)
-//     }
-// }
+export const handleEditItemStock = async (itemID: string, quantity: number) => {
+    const response = await fetch(`/api/v1/customer/cart`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id: itemID,
+            quantity: quantity
+        })
+    });
+    if (response.status === 400) {
+        const res = await response.json();
+        triggerToast(res.error, 'variant-filled-error')
+    }
+    else if (response.status === 401) {
+        await refreshTokenUser();
+        const response = await fetch(`/api/v1/customer/cart`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: itemID,
+                quantity: quantity
+            })
+        });
+        if (response.status === 400) {
+            const res = await response.json();
+            triggerToast(res.error, 'variant-filled-error')
+        }
+    }
+}
+

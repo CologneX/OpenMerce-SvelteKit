@@ -3,17 +3,18 @@
 	import MinusSmall from '$lib/icons/MinusSmall.svelte';
 	import PlusSmall from '$lib/icons/PlusSmall.svelte';
 	import Trash from '$lib/icons/Trash.svelte';
-	import { getCart, handleCheckItem, handleDeleteItem, handleEditItem } from '$lib/utils/cart';
+	import { getCart, handleCheckItem, handleDeleteItem, handleEditItemStock } from '$lib/utils/cart';
 	import { lazyLoad } from '$lib/utils/lazyLoad';
 	import { screenWidthStore, subTotalStore } from '$lib/utils/stores';
 	import { rupiahCurrency } from '$lib/utils/units';
 	import type { CartProducts } from '../../app';
-	// export let checkAll: boolean;
+
 	let cartContent: CartProducts[];
 	let timeoutId: ReturnType<typeof setTimeout>;
 
 	const loadProducts = async () => {
 		cartContent = await getCart();
+		updateSubTotal();
 		return cartContent;
 	};
 	const updateSubTotal = () => {
@@ -32,13 +33,16 @@
 		}
 	};
 
-	const handleItem = async (id: string, quantity: number) => {
-		updateCartContent(id, quantity);
-		clearTimeout(timeoutId);
-		timeoutId = setTimeout(async () => {
-			await handleEditItem(id, quantity);
-			cartContent = await getCart();
-		}, 1000);
+	const handleItemStock = async (id: string, quantity: number) => {
+		if (quantity > 0) {
+			updateCartContent(id, quantity);
+			clearTimeout(timeoutId);
+			timeoutId = setTimeout(async () => {
+				await handleEditItemStock(id, quantity);
+				cartContent = await getCart();
+				updateSubTotal();
+			}, 500);
+		}
 	};
 
 	const handleItemDelete = async (id: string) => {
@@ -75,7 +79,7 @@
 	{:then}
 		{#if cartContent}
 			{#each cartContent as item}
-				<div class="card flex flex-row gap-x-2 p-3">
+				<div class="flex flex-row gap-x-2 p-3">
 					<label class="flex items-center space-x-2">
 						<input
 							class="checkbox"
@@ -85,7 +89,9 @@
 							on:click={() => handleItemCheck(item.id, !item.checked)}
 						/>
 					</label>
-					<picture class="aspect-square shadow-xl flex justify-center items-center h-32 rounded">
+					<picture
+						class="aspect-square shadow-xl flex justify-center items-center h-full max-h-32 rounded"
+					>
 						{#if item.image}
 							<a href="/product/{item.id}" class="unstyled"
 								><img
@@ -96,8 +102,8 @@
 									width="100%"
 									height="100%"
 									title={item.name}
-								/></a
-							>
+								/>
+							</a>
 						{:else}
 							<div>
 								<Logo />
@@ -106,7 +112,9 @@
 						{/if}
 					</picture>
 					<div class="w-full grid grid-rows-3">
-						<a href="/product/{item.id}" class="unstyled"><h5>{item.name}</h5></a>
+						<a href="/product/{item.id}" class="unstyled truncate"
+							><h5 class="truncate">{item.name}</h5></a
+						>
 						<h6 class="font-semibold">
 							{rupiahCurrency(item.price)}
 						</h6>
@@ -120,13 +128,13 @@
 								<Trash />
 							</button>
 							{#if $screenWidthStore > 1024}
-								<div><span class=" divider-vertical h-full !border-2" /></div>
+								<div><span class=" divider-vertical h-full !border" /></div>
 							{/if}
 							<div class="input-group grid-cols-[auto_1fr_auto] w-fit">
 								<button
-									class="btn btn-sm text-primary-500"
+									class="btn btn-sm text-primary-500 p-0"
 									disabled={item.quantity < 1}
-									on:click|preventDefault={() => handleItem(item.id, item.quantity - 1)}
+									on:click|preventDefault={() => handleItemStock(item.id, item.quantity - 1)}
 								>
 									<span><MinusSmall /></span>
 								</button>
@@ -134,7 +142,7 @@
 									type="number"
 									class="input w-8 p-0 text-center"
 									bind:value={item.quantity}
-									on:change|preventDefault={() => handleItem(item.id, item.quantity)}
+									on:change|preventDefault={() => handleItemStock(item.id, item.quantity)}
 									on:input|preventDefault={() => {
 										if (item.quantity < 0) {
 											item.quantity = 0;
@@ -149,8 +157,8 @@
 									}}
 								/>
 								<button
-									class="btn btn-sm text-primary-500"
-									on:click|preventDefault={() => handleItem(item.id, item.quantity + 1)}
+									class="btn btn-sm text-primary-500 p-0"
+									on:click|preventDefault={() => handleItemStock(item.id, item.quantity + 1)}
 									disabled={item.quantity >= item.curr_stock}
 								>
 									<span><PlusSmall /></span>
@@ -159,6 +167,7 @@
 						</div>
 					</div>
 				</div>
+				<hr class="!border-t-4" />
 			{/each}{/if}
 	{:catch error}
 		<h2 class="text-center">{error.message}</h2>

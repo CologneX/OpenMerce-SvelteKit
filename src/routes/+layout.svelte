@@ -155,11 +155,7 @@
 {/if} -->
 
 <AppShell slotHeader="z-20" slotPageContent="flex justify-center">
-	<Modal
-		class="w-full h-full"
-		shadow="shadow-xl"
-		components={modalComponentRegistry}
-	/>
+	<Modal class="w-full h-full" shadow="shadow-xl" components={modalComponentRegistry} />
 
 	<Toast
 		position="t"
@@ -198,16 +194,19 @@
 							</div>
 						{:else}
 							<div class="flex gap-x-2 py-2">
-								<a
-									href="/login"
+								<button
 									class="btn btn-sm h-fit variant-ringed-primary w-full text-primary-500"
-									on:click={() => drawerStore.close()}><span class="font-bold">Login</span></a
+									on:click={() => {
+										drawerStore.close();
+										goto('/login');
+									}}><span class="font-bold">Login</span></button
 								>
-								<a
-									href="/register"
+								<button
 									class="btn btn-sm h-fit variant-filled-primary w-full"
-									on:click={() => drawerStore.close()}
-									><span class="font-bold text-white">Register</span></a
+									on:click={() => {
+										drawerStore.close();
+										goto('/register');
+									}}><span class="font-bold text-white">Register</span></button
 								>
 							</div>
 						{/if}
@@ -287,8 +286,8 @@
 			slotDefault="place-self-center w-full max-w-4xl"
 			slotTrail="place-content-end"
 			gap="gap-4"
-			background="bg-primary-500 drop-shadow-xl"
 			padding="p-2"
+			shadow="shadow-xl"
 		>
 			<svelte:fragment slot="headline">
 				<div class="text-end">
@@ -363,18 +362,26 @@
 						</span>
 					</button>
 
-					<span class="divider-vertical !border-current" />
-					<div class="card p-4 w-full max-w-md h-fit max-h-96" data-popup="cartHover">
-						<CartDropdown />
+					<div data-popup="cartHover">
+						<div class="card p-4 w-full max-w-md h-fit max-h-96">
+							{#if $screenWidthStore > 1024 && $isLoggedInStore}
+								<CartDropdown />
+							{/if}
+						</div>
 					</div>
 
 					{#if !$isLoggedInStore && $screenWidthStore > 1024}
-						<a href="/login" class="btn btn-sm"><span class="font-semibold">Login</span></a>
-						<a href="/register" class="btn btn-sm variant-ringed"
-							><span class="font-semibold">Register</span></a
+						<button
+							class="btn btn-sm variant-ringed-primary w-full text-primary-500 h-fit"
+							on:click={() => goto('/login')}><span class="font-semibold">Login</span></button
+						>
+						<button
+							class="btn btn-sm variant-filled-primary w-full h-fit"
+							on:click={() => goto('/register')}><span class="font-semibold">Register</span></button
 						>
 					{/if}
 					{#if $screenWidthStore > 1024}
+						<span class="divider-vertical" />
 						<button
 							type="button"
 							class="btn btn-sm"
