@@ -74,7 +74,6 @@
 
 	$: if ($isLoggedInStore) {
 		[first_name, last_name] = getUserNames();
-		get(defaultLocationStore);
 	}
 	// isLoading = false;
 	// for handling shopping cart click
