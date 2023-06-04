@@ -152,3 +152,9 @@ declare interface Address {
 	recipient_name: string;
 	phone_number: string;
 }
+
+declare interface AddressDefault {
+	id: number;
+	name: string;
+	address_id: string | null;
+}

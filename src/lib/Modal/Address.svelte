@@ -1,31 +1,10 @@
 <script lang="ts">
 	import Search from '$lib/icons/Search.svelte';
-	import { refreshTokenUser } from '$lib/utils/refreshToken';
 	import { defaultLocationStore, isLoggedInStore } from '$lib/utils/stores';
 	import { triggerToast } from '$lib/utils/toast';
 	import { modalStore } from '@skeletonlabs/skeleton';
-	import type { Address, AddressDetail } from '../../app';
-	const handleLoadAddress = async () => {
-		const response = await fetch('/api/v1/customer/address', {
-			method: 'GET',
-			headers: { 'Content-Type': 'application/json' }
-		});
-		if (response.status == 401) {
-			await refreshTokenUser();
-			const response = await fetch('/api/v1/customer/address', {
-				method: 'GET',
-				headers: { 'Content-Type': 'application/json' }
-			});
-			if (response.status == 200) {
-				const data: Address[] = await response.json();
-				return data;
-			}
-		} else if (response.status == 200) {
-			const data: Address[] = await response.json();
-			return data;
-		}
-		return [];
-	};
+	import { ProgressRadial } from '@skeletonlabs/skeleton';
+	import { handleLoadAddress, handleLoginSetLocation } from '$lib/utils/address';
 
 	let searchLocation: string;
 	let timeoutId: ReturnType<typeof setTimeout>;
@@ -53,33 +32,6 @@
 	};
 
 	let isSettingDefaultLocation: boolean = false;
-	const handleLoginSetLocation = async (id: string) => {
-		isSettingDefaultLocation = true;
-		const responseDetail = await fetch(`/api/v1/customer/address?id=${id}`, {
-			method: 'GET',
-			headers: { 'Content-Type': 'application/json' }
-		});
-		if (responseDetail.ok) {
-			const data: AddressDetail = await responseDetail.json();
-			defaultLocationStore.set({ id: data.area_id, name: data.shipping_area });
-
-			modalStore.clear();
-			triggerToast('Address has been set', 'variant-filled-success');
-		} else if (responseDetail.status === 401) {
-			await refreshTokenUser();
-			const responseDetail = await fetch(`/api/v1/customer/address?id=${id}`, {
-				method: 'GET',
-				headers: { 'Content-Type': 'application/json' }
-			});
-			if (responseDetail.ok) {
-				const data: AddressDetail = await responseDetail.json();
-				defaultLocationStore.set({ id: data.area_id, name: data.shipping_area });
-				modalStore.clear();
-				triggerToast('Address has been set', 'variant-filled-success');
-			}
-		}
-		isSettingDefaultLocation = false;
-	};
 </script>
 
 {#if $modalStore[0]}
@@ -117,8 +69,17 @@
 								type="button"
 								class="btn btn-sm variant-soft-primary basis-1/4 h-fit w-full mr-5 font-bold"
 								disabled={isSettingDefaultLocation}
-								on:click={() => handleLoginSetLocation(address.id)}>Select</button
+								on:click={async () => {
+									isSettingDefaultLocation = true;
+									await handleLoginSetLocation(address.id);
+									isSettingDefaultLocation = false;
+								}}
 							>
+								{#if isSettingDefaultLocation}
+									<span><ProgressRadial width="w-5" /></span>
+								{/if}
+								<span>Select</span>
+							</button>
 						</div>
 					{/each}
 				</span>
@@ -164,7 +125,7 @@
 							class="card p-5 w-full text-start"
 							type="button"
 							on:click={() => {
-								defaultLocationStore.set({ id: items.id, name: items.name });
+								defaultLocationStore.set({ id: items.id, name: items.name, address_id: '' });
 								triggerToast('Address has been set', 'variant-filled-success');
 								modalStore.close();
 							}}><p>{items.name}</p></button

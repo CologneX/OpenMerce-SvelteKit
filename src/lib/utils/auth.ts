@@ -12,7 +12,7 @@ export const logoutUser = async () => {
         localStorage.removeItem('first_name');
         localStorage.removeItem('last_name');
         localStorage.removeItem('loc')
-        defaultLocationStore.set({ id: 25410, name: 'Jakarta Pusat' })
+        defaultLocationStore.set({ id: 25410, name: 'Jakarta Pusat', address_id: '' })
         isLoggedInStore.set(false)
         goto('/login');
     }

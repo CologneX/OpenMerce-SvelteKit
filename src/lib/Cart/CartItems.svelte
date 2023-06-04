@@ -5,7 +5,7 @@
 	import Trash from '$lib/icons/Trash.svelte';
 	import { getCart, handleCheckItem, handleDeleteItem, handleEditItemStock } from '$lib/utils/cart';
 	import { lazyLoad } from '$lib/utils/lazyLoad';
-	import { screenWidthStore, subTotalStore } from '$lib/utils/stores';
+	import { screenWidthStore, subTotalStore, totalItemsStore } from '$lib/utils/stores';
 	import { rupiahCurrency } from '$lib/utils/units';
 	import type { CartProducts } from '../../app';
 
@@ -21,6 +21,12 @@
 		$subTotalStore = cartContent.reduce((acc, cur) => {
 			if (cur.checked) {
 				return acc + cur.price * cur.quantity;
+			}
+			return acc;
+		}, 0);
+		$totalItemsStore = cartContent.reduce((acc, cur) => {
+			if (cur.checked) {
+				return acc + cur.quantity;
 			}
 			return acc;
 		}, 0);

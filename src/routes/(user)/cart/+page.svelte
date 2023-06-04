@@ -1,7 +1,8 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import CartItems from '$lib/Cart/CartItems.svelte';
 	import CartSummary from '$lib/Cart/CartSummary.svelte';
-	import { screenWidthStore, subTotalStore } from '$lib/utils/stores';
+	import { screenWidthStore, subTotalStore, totalItemsStore } from '$lib/utils/stores';
 	import { rupiahCurrency } from '$lib/utils/units';
 	let checkAll: boolean = false;
 </script>
@@ -30,8 +31,13 @@
 			<small>Total Price</small>
 			<div class="font-bold text-lg">{rupiahCurrency($subTotalStore)}</div>
 		</div>
-		<button type="button" class="btn btn-sm font-bold variant-filled-primary flex-1"
-			><span class="text-white text-base">Checkout</span>
+		<button
+			type="button"
+			class="btn btn-sm font-bold variant-filled-primary flex-1"
+			on:click={() => {
+				goto('/cart/checkout');
+			}}
+			><span class="text-white text-base">Checkout ({$totalItemsStore})</span>
 		</button>
 	</div>
 {/if}
