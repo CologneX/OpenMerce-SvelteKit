@@ -8,7 +8,7 @@
 	import ShareMini from '$lib/icons/ShareMini.svelte';
 	import Wishlist from '$lib/Product/Wishlist.svelte';
 	import Reviews from '$lib/Product/Reviews.svelte';
-	import { productLoadingStore, screenWidthStore } from '$lib/utils/stores';
+	import {screenWidthStore } from '$lib/utils/stores';
 	import HeartMini from '$lib/icons/HeartMini.svelte';
 	import AddToCart from '$lib/Product/AddToCart.svelte';
 	import { formatNumber, rupiahCurrency } from '$lib/utils/units';
@@ -20,7 +20,6 @@
 		setTimeout(() => {
 			isLoading = false;
 		}, 500);
-		productLoadingStore.set(false);
 		return productDetails;
 	};
 	let quantity: number = 1;
