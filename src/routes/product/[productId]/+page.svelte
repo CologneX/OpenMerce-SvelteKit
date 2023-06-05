@@ -8,7 +8,7 @@
 	import ShareMini from '$lib/icons/ShareMini.svelte';
 	import Wishlist from '$lib/Product/Wishlist.svelte';
 	import Reviews from '$lib/Product/Reviews.svelte';
-	import {screenWidthStore } from '$lib/utils/stores';
+	import { screenWidthStore } from '$lib/utils/stores';
 	import HeartMini from '$lib/icons/HeartMini.svelte';
 	import AddToCart from '$lib/Product/AddToCart.svelte';
 	import { formatNumber, rupiahCurrency } from '$lib/utils/units';
@@ -322,54 +322,11 @@
 							<p>{productDetail.name}</p>
 							<div class="h-3" />
 							<p>{productDetail.description}</p>
-							<!-- <p>{$scrollYStore}</p> -->
-							Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur quisquam adipisci
-							esse doloremque cum nostrum, non ratione sit molestiae, natus suscipit laboriosam? Accusamus
-							dolorem tempora veritatis illum odit, voluptatum animi id, vero quas dignissimos labore
-							sunt, impedit molestias in vel voluptas voluptate iure? Ratione quas eos aliquam animi
-							quod ut, quasi fugiat ea sit, ipsa, dolores nemo! Vero ratione nostrum maxime? Temporibus
-							quisquam reiciendis ullam, ut ipsa officiis repudiandae quia voluptatibus et. A vero provident
-							porro dignissimos blanditiis molestias sit voluptate tenetur eveniet. Quam perferendis
-							dolores qui natus placeat officiis nam porro dolore ipsum maiores voluptas quo alias, eveniet
-							consequuntur fugiat non, eos, aspernatur sit! Voluptates dignissimos corrupti dolorum esse
-							quae culpa sunt ad adipisci, iusto ducimus nesciunt consequatur cumque rerum, possimus
-							at numquam laudantium nobis quidem molestias? Dolore debitis alias omnis, magnam dicta
-							magni harum sint quisquam aperiam hic exercitationem animi quam illo, obcaecati consectetur
-							ab! Sint repellat, aut eos dolores, dicta dolorem voluptates vel inventore doloribus tenetur
-							qui ipsum saepe eligendi, vero totam itaque atque esse eveniet ea harum voluptatum deleniti
-							quae! Praesentium tempore recusandae voluptatem? Eos earum natus eius, tempore iusto magni
-							blanditiis eveniet beatae voluptatem fugit voluptates minima voluptas atque quas numquam
-							ab explicabo repellendus omnis nostrum placeat? Beatae corrupti impedit excepturi perferendis
-							corporis reiciendis libero, suscipit cumque saepe voluptatum! Ullam voluptatum, molestias
-							incidunt fugit sequi dolores quam odit. Omnis et tempore fugiat voluptates facilis odio
-							harum, quisquam corporis, necessitatibus pariatur eius unde repudiandae iusto asperiores
-							debitis ipsa dolore aperiam molestias, maxime ipsum earum quo soluta. Aliquid quae impedit
-							dolorum a fugiat maiores voluptatibus commodi repellat placeat explicabo enim accusamus
-							eaque sunt voluptatum quibusdam laborum perspiciatis velit qui sit beatae ex, culpa cum
-							quas! Vel impedit officia, ullam, possimus earum culpa fuga consequatur ratione laudantium
-							fugit fugiat odio animi molestias aliquid aut perspiciatis. Placeat voluptatem, voluptate
-							sunt fugit maiores minima excepturi pariatur blanditiis officia laudantium accusamus magnam
-							iusto eum asperiores et laboriosam nemo facilis voluptates tempora nam eius. Velit, eius
-							ex accusantium veniam dignissimos rem at. Facilis aut perspiciatis illo consectetur alias,
-							possimus debitis at saepe ad ex nobis et minus, est sunt ea impedit inventore hic? Veritatis
-							voluptate similique temporibus, saepe ratione ipsam accusantium beatae, nemo sint est in
-							pariatur alias esse expedita voluptatum dolore quasi. Minima vel repudiandae dignissimos
-							repellat, omnis quasi, laudantium id nisi laborum in esse! Sint, inventore. Nemo provident
-							expedita tenetur natus, eius blanditiis voluptatibus ducimus cumque dolor recusandae consequatur
-							inventore iure nesciunt fuga quia quibusdam ipsa deleniti quisquam. Magnam sunt provident
-							hic maiores earum veniam quae dolores adipisci exercitationem ea possimus illo enim, officia
-							atque maxime, nulla incidunt asperiores eum molestias ipsa aspernatur? Quas, excepturi.
-							Nihil possimus quia molestias fugiat ad inventore, recusandae animi architecto quo aliquam,
-							laboriosam voluptates molestiae odio necessitatibus quam eligendi ratione deleniti distinctio
-							non, debitis pariatur iste accusantium explicabo ipsum? Quae, et. Adipisci, facilis iste
-							excepturi minima tempore omnis, aspernatur ratione eius incidunt ipsam perferendis tenetur
-							at nulla! Culpa delectus dolorum veritatis unde. Officiis reiciendis explicabo exercitationem
-							recusandae quod. Labore, ipsa beatae? Itaque aperiam ipsam nihil.
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="h-12"></div>
+			<div class="h-12" />
 			<div id="reviews">
 				<div class="logo-cloud grid-cols-1 lg:!grid-cols-3 gap-1">
 					<div class="logo-item"><h3 id="Reviews">Reviews</h3></div>
