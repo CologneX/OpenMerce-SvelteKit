@@ -45,7 +45,7 @@
 	{/await}
 </svelte:head>
 {#await loadProducts($page.params.productId)}
-	<div class="grid md:grid-cols-2 sm:grid-cols-1 w-full h-full gap-x-2 gap-y-2">
+	<div class="grid md:grid-cols-2 sm:grid-cols-1 w-full h-full gap-2">
 		<div class="h-full w-full">
 			<div class=" w-full p-0 sticky top-0 space-y-2 placeholder aspect-square h-full" />
 		</div>
@@ -143,21 +143,20 @@
 								slides-per-group={1}
 								pagination={true}
 								grab-cursor={true}
+								class=" drop-shadow-2xl -mx-3"
 							>
 								{#each productDetail.image_urls as image}
-									<swiper-slide
-										class="shadow-xl object-cover aspect-square w-full h-full rounded-lg"
-									>
+									<swiper-slide class="shadow-xl rounded">
 										<picture>
 											{#if image}
 												<img
 													src="/usercontent/{image}"
 													alt="{image}'s image"
-													class=" w-full h-full"
+													class=" w-full h-full aspect-square"
 												/>
 											{:else}
-												<div>
-													<Logo />
+												<div class="h-full aspect-square grid place-content-center">
+													<Logo height="10" />
 													<p class="text-center">No Image Found</p>
 												</div>
 											{/if}
@@ -166,8 +165,10 @@
 								{/each}
 							</swiper-container>
 						{:else}
-							<Logo height="10" />
-							<p class="text-center">No Image Found</p>
+							<div class="h-full aspect-square grid place-content-center shadow-xl">
+								<Logo height="10" />
+								<p class="text-center">No Image Found</p>
+							</div>
 						{/if}
 						<div class="h-6" />
 						{#if $screenWidthStore > 768}
@@ -180,7 +181,7 @@
 													<img
 														src="/usercontent/{image}"
 														alt="{image}'s image"
-														class="aspect-square object-contain"
+														class="aspect-square object-cover"
 													/>
 												{:else}
 													<div>
@@ -199,13 +200,13 @@
 				<div class="flex h-full w-full" id="detail">
 					<div class="space-y-4 w-full">
 						<div class="space-y-2">
-							<h4 class="font-semibold" data-toc-ignore>
+							<h4 class="font-semibold">
 								{productDetail.name}
 							</h4>
 							<small class="flex gap-x-2">
 								{#if $screenWidthStore > 1024}
 									<div class="flex items-center">
-										Terjual &nbsp; <span class=" text-surface-900-50-token"> 0</span>
+										Sold &nbsp; <span class=" text-surface-900-50-token"> 0</span>
 									</div>
 									<span>•</span>
 									<div class="flex items-center">
@@ -214,7 +215,7 @@
 										<span class="text-surface-900-50-token">(0 rating)</span>
 									</div>
 								{:else}
-									<span class="badge variant-ghost-surface">Terjual 0</span>
+									<span class="badge variant-ghost-surface">Sold 0</span>
 									<span class="badge variant-ghost-surface"
 										><Star />
 										{productDetail.cumulative_review}
@@ -224,11 +225,11 @@
 							</small>
 						</div>
 
-						<h3 class="font-bold" data-toc-ignore>
+						<h3 class="font-bold">
 							{rupiahCurrency(productDetail.price)}
 						</h3>
-
-						<div class="border-t-2 border-surface-900-50-token py-3 space-y-2">
+						<hr class="!border-t-4" />
+						<div class="border-surface-900-50-token py-3 space-y-2">
 							<div class="flex items-center gap-x-2">
 								<div class="input-group grid-cols-[auto_1fr_auto] w-fit">
 									<button
@@ -293,8 +294,9 @@
 								>
 							</div>
 						</div>
-						<div class="border-b-2 border-surface-900-50-token" />
+						<hr class="!border-t-4" />
 						<OngkirCheck productId={$page.params.productId} weight2={productDetail.weight} />
+						<hr class="!border-t-4" />
 						<div id="description">
 							<h4 class="font-semibold">Description</h4>
 							<div class="h-6" />

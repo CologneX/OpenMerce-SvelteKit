@@ -34,6 +34,7 @@
 	import ShoppingCartCount from '$lib/Navbar/ShoppingCart.svelte';
 	import { register } from 'swiper/element/bundle';
 	register();
+	isLoggedIn();
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	let popupSettings: PopupSettings = {
@@ -64,9 +65,9 @@
 	let last_name: string | null;
 	let first_name: string | null;
 	let selectedLanguage: string | null;
-	onMount(async () => {
-		isLoggedIn();
-	});
+
+	// onMount(async () => {
+	// });
 
 	selectedLanguage = localStorage.getItem('prefLang');
 
@@ -141,6 +142,7 @@
 	import { onMount } from 'svelte';
 	import Heart from '$lib/icons/Heart.svelte';
 	import { AddressModal, modalComponentRegistry } from '$lib/utils/modal';
+	import { get } from 'svelte/store';
 	// end import favicon
 
 	// modal settings

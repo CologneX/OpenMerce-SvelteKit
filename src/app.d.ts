@@ -159,3 +159,14 @@ declare interface AddressDefault {
 	name: string;
 	address_id: string | null;
 }
+
+
+declare interface AddAddress {
+	label: string;
+	full_address: string;
+	note: string;
+	recipient_name: string;
+	phone_number: string;
+	shipping_area: number;
+	postal_code: string;
+}

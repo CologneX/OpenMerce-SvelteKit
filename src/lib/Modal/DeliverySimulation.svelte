@@ -13,20 +13,20 @@
 			<small class="text-surface-600-300-token">Details of the delivery</small>
 		</span>
 
-		<div class=" card p-3 h-fit shadow-lg">
+		<div class=" card p-3 h-fit w-full shadow-lg">
 			<div>
 				<small>Product weight </small>
 				<span class="font-bold">{$modalStore[0].meta?.weight} kg</span>
 			</div>
 			<button
-				class="text-sm w-full btn flex justify-start p-0"
+				class="text-sm w-full btn flex justify-start p-0 text-ellipsis"
 				type="button"
 				on:click={() => {
 					modalStore.close();
 					modalStore.trigger(AddressModal);
 				}}
 			>
-				<span> Delivery to <span class="font-semibold"> {$defaultLocationStore.name} </span></span>
+				<span class="border-2 text-ellipsis"> Delivery to <span class="font-semibold "> {$defaultLocationStore.name} </span></span>
 				<span><ChevronDown /></span>
 			</button>
 		</div>

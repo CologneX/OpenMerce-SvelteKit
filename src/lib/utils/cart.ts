@@ -4,39 +4,33 @@ import { refreshTokenUser } from "./refreshToken";
 import { isLoggedInStore } from "./stores";
 import { triggerToast } from "./toast";
 import { getCartCount } from "./navbar";
-let isLoggedIn: boolean;
-isLoggedInStore.subscribe((value) => {
-    isLoggedIn = value;
-});
+import { get } from "svelte/store";
 export const getCart = async () => {
-    if (isLoggedIn) {
+    const response = await fetch('/api/v1/customer/cart', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    if (response.status === 401) {
+        await refreshTokenUser();
         const response = await fetch('/api/v1/customer/cart', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             }
         });
-        if (response.status === 401) {
-            await refreshTokenUser();
-            const response = await fetch('/api/v1/customer/cart', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            if (response.status === 404) {
-                throw new Error('Start Shopping Now!');
-            }
-            const cartData: CartProducts[] = await response.json();
-            return cartData;
-        }
-        else if (response.status === 404) {
+        if (response.status === 404) {
             throw new Error('Start Shopping Now!');
         }
         const cartData: CartProducts[] = await response.json();
         return cartData;
     }
-    return [];
+    else if (response.status === 404) {
+        throw new Error('Start Shopping Now!');
+    }
+    const cartData: CartProducts[] = await response.json();
+    return cartData;
 }
 
 
@@ -77,7 +71,7 @@ export const handleDeleteItem = async (itemID: string) => {
     if (response.status === 200) {
         getCartCount();
     }
-    if (response.status === 401) {
+    else if (response.status === 401) {
         await refreshTokenUser();
         const response = await fetch(`/api/v1/customer/cart?id=${itemID}`, {
             method: 'DELETE',
@@ -93,7 +87,7 @@ export const handleDeleteItem = async (itemID: string) => {
 
 
 export const handleEditItem = async (itemID: string, quantity: number) => {
-    if (isLoggedIn) {
+    if (get(isLoggedInStore)) {
         const response = await fetch(`/api/v1/customer/cart`, {
             method: 'POST',
             headers: {
@@ -104,17 +98,20 @@ export const handleEditItem = async (itemID: string, quantity: number) => {
                 quantity: quantity
             })
         });
+        const res = await response.json();
         if (response.status === 400) {
-            const res = await response.json();
             triggerToast(res.error, 'variant-filled-error')
         }
         else if (response.status === 200) {
             triggerToast('Product added to cart!', 'variant-filled-success');
             getCartCount();
         }
+        else if (!response.ok) {
+            triggerToast((response.statusText), 'variant-filled-error');
+        }
         else if (response.status === 401) {
             await refreshTokenUser();
-            const response = await fetch(`/api/v1/customer/cart`, {
+            const responseAgain = await fetch(`/api/v1/customer/cart`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -124,12 +121,15 @@ export const handleEditItem = async (itemID: string, quantity: number) => {
                     quantity: quantity
                 })
             });
-            if (response.status === 400) {
-                const res = await response.json();
+            const res = await response.json();
+            if (responseAgain.status === 400) {
                 triggerToast(res.error, 'variant-filled-error')
-            } else if (response.status === 200) {
+            } else if (responseAgain.status === 200) {
                 triggerToast('Product added to cart!', 'variant-filled-success');
                 getCartCount();
+            }
+            else if (!responseAgain.ok) {
+                triggerToast((response.statusText), 'variant-filled-error');
             }
 
         }
@@ -176,3 +176,20 @@ export const handleEditItemStock = async (itemID: string, quantity: number) => {
     }
 }
 
+export const handleSendToWishlist = async (itemID: string) => {
+    const response = await fetch(`/api/v1/customer/wishlist?id=${itemID}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    if (response.status === 401) {
+        await refreshTokenUser();
+        const response = await fetch(`/api/v1/customer/wishlist?id=${itemID}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    }
+}

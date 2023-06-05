@@ -1,17 +1,26 @@
 <script lang="ts">
 	import { refreshTokenUser } from '$lib/utils/refreshToken';
-	import { defaultLocationStore, screenWidthStore, subTotalStore } from '$lib/utils/stores';
+	import {
+		defaultLocationStore,
+		screenWidthStore,
+		subTotalStore,
+		totalItemsStore
+	} from '$lib/utils/stores';
 	import { ProgressRadial, modalStore } from '@skeletonlabs/skeleton';
-	import type { AddressDetail, FreightDetail, Products } from '../../../../app';
-	import { AddressModal, CheckoutFreightModal } from '$lib/utils/modal';
+	import type { AddressDetail, Products } from '../../../../app';
+	import { AddAddressModal, AddressListModal } from '$lib/utils/modal';
 	import Logo from '$lib/icons/Logo.svelte';
 	import { rupiahCurrency } from '$lib/utils/units';
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
-	import CartSummary from '$lib/Cart/CartSummary.svelte';
-	import { redirect } from '@sveltejs/kit';
 	import { goto } from '$app/navigation';
+	import { get } from 'svelte/store';
+	import { triggerToast } from '$lib/utils/toast';
 	if ($defaultLocationStore.address_id == '') {
-		modalStore.trigger(AddressModal);
+		modalStore.trigger(AddressListModal);
+	}
+	if (get(totalItemsStore) == 0) {
+		triggerToast('You do not have items to check out!', 'variant-filled-primary');
+		goto('/cart');
 	}
 	const handleGetDefaultAddress = async (id: string) => {
 		await refreshTokenUser();
@@ -61,7 +70,6 @@
 		);
 
 		const data = await response.json();
-		console.log(data);
 		courier_data = data;
 		return data;
 	};
@@ -105,6 +113,11 @@
 	<!-- meta -->
 	<meta name="description" content="OpenMerce Checkout" />
 	<meta name="keywords" content="OpenMerce, Ecommerce, Checkout" />
+	<!-- <script
+		type="text/javascript"
+		src="https://app.sandbox.midtrans.com/snap/snap.js"
+		data-client-key=""
+	></script> -->
 </svelte:head>
 
 <div class="grid grid-cols-3 gap-8 mx-5 my-5">
@@ -135,7 +148,10 @@
 		<button
 			type="button"
 			class="btn btn-sm variant-ringed-primary w-full max-w-xs"
-			on:click={() => modalStore.trigger(AddressModal)}
+			on:click={() => {
+				modalStore.close();
+				modalStore.trigger(AddressListModal);
+			}}
 		>
 			Change Address
 		</button>
@@ -187,8 +203,8 @@
 		{:catch error}
 			<p>{error.message}</p>
 		{/await}
-		<Accordion>
-			<AccordionItem regionControl="font-bold text-sm" padding="p-2">
+		<Accordion hover="hover:bg-transparent">
+			<AccordionItem regionControl="font-bold text-sm" padding="py-2">
 				<!-- <svelte:fragment slot="lead">(icon)</svelte:fragment> -->
 				<svelte:fragment slot="summary">Choose Shipping</svelte:fragment>
 				<svelte:fragment slot="content">
@@ -236,8 +252,32 @@
 				<p class="font-bold text-sm">{courier_data.product_name}</p>
 				<p class="text-xs">On-time Delivery Guaranteed</p>
 			</div>
+			<hr class="!border-t-2" />
+			{#if $screenWidthStore < 1024}
+				<Accordion hover="hover:bg-transparent">
+					<AccordionItem regionControl="font-bold text-sm" padding="py-2">
+						<svelte:fragment slot="summary">Shopping Summary</svelte:fragment>
+						<svelte:fragment slot="content">
+							<div class="flex">
+								<span class="flex-none">Total Price (item)</span>
+								<div class="flex-1" />
+								<span>
+									{rupiahCurrency($subTotalStore)}
+								</span>
+							</div>
+							<div class="flex">
+								<span class="flex-none">Delivery Fee</span>
+								<div class="flex-1" />
+								<span>
+									{rupiahCurrency(courier_data.rates)}
+								</span>
+							</div>
+						</svelte:fragment>
+					</AccordionItem>
+				</Accordion>
+				<hr class="!border-t-2" />
+			{/if}
 		{/if}
-		<hr class="!border-t-2" />
 		{#if $screenWidthStore < 1024}
 			<div class=" flex w-full mt-4 gap-x-4">
 				<div class="flex-1">
@@ -273,7 +313,14 @@
 					{rupiahCurrency($subTotalStore)}
 				</span>
 			</div>
-			<hr class="!border-t-2 !border-current" />
+			<div class="flex">
+				<span class="flex-none">Delivery Fee (item)</span>
+				<div class="flex-1" />
+				<span>
+					{rupiahCurrency(courier_data.rates)}
+				</span>
+			</div>
+			<hr class="!border-t-8" />
 			<div class="font-bold flex text-xl">
 				<span class="flex-none">Grand Total</span>
 				<div class="flex-1" />

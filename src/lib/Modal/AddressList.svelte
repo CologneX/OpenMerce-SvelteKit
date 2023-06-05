@@ -1,36 +1,9 @@
 <script lang="ts">
-	import Search from '$lib/icons/Search.svelte';
-	import { defaultLocationStore, isLoggedInStore } from '$lib/utils/stores';
-	import { triggerToast } from '$lib/utils/toast';
+	import { isLoggedInStore } from '$lib/utils/stores';
 	import { modalStore } from '@skeletonlabs/skeleton';
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
 	import { handleLoadAddress, handleLoginSetLocation } from '$lib/utils/address';
-
-	let searchLocation: string;
-	let timeoutId: ReturnType<typeof setTimeout>;
-	const handleSearchLocation = (searchLocation: string) => {
-		return new Promise((resolve, reject) => {
-			clearTimeout(timeoutId);
-			timeoutId = setTimeout(async () => {
-				try {
-					const response = await fetch(`/api/v1/area/suggest?search=${searchLocation}`, {
-						method: 'GET',
-						headers: {
-							'Content-Type': 'application/json'
-						}
-					});
-					if (!response.ok) {
-						throw new Error('An error occurred while fetching the data');
-					}
-					const data = await response.json();
-					resolve(data);
-				} catch (error) {
-					reject(error);
-				}
-			}, 500);
-		});
-	};
-
+	import { AddAddressModal } from '$lib/utils/modal';
 	let isSettingDefaultLocation: boolean = false;
 </script>
 
@@ -109,46 +82,12 @@
 				</div>
 			</div>
 		{/if}
-		<hr class="!border-t-2" />
-		<p class="font-bold">Want to add another destination?</p>
-		{#if searchLocation}
-			<div class="space-y-1 overflow-y-auto">
-				{#await handleSearchLocation(searchLocation)}
-					<div class="placeholder animate-pulse p-8" />
-					<div class="placeholder animate-pulse p-8" />
-					<div class="placeholder animate-pulse p-8" />
-					<div class="placeholder animate-pulse p-8" />
-					<div class="placeholder animate-pulse p-8" />
-				{:then address}
-					{#each address as items}
-						<button
-							class="card p-5 w-full text-start"
-							type="button"
-							on:click={() => {
-								defaultLocationStore.set({ id: items.id, name: items.name, address_id: '' });
-								triggerToast('Address has been set', 'variant-filled-success');
-								modalStore.close();
-							}}><p>{items.name}</p></button
-						>
-					{/each}
-				{:catch error}
-					<p class="text-center">No address found</p>
-				{/await}
-			</div>
-		{/if}
-		<label class="label">
-			<div class="input-group input-group-divider grid-cols-[auto_1fr_auto]">
-				<div class="input-group-shim">
-					<Search />
-				</div>
-				<input
-					type="search"
-					class="input placeholder:text-xs md:placeholder:text-base"
-					bind:value={searchLocation}
-					placeholder="Choose city, district or subdistrict"
-				/>
-			</div>
-			<span class="text-xs">Press on the address to change your current address</span>
-		</label>
+		<button
+			class="btn variant-soft-primary font-bold"
+			on:click={() => {
+				modalStore.close();
+				modalStore.trigger(AddAddressModal);
+			}}>Add new address</button
+		>
 	</div>
 {/if}

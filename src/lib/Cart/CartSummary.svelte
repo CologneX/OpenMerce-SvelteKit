@@ -26,6 +26,7 @@
 		<button
 			type="button"
 			class="btn w-full variant-filled-primary text-xl font-bold text-current"
+			disabled={!$totalItemsStore}
 			on:click={() => {
 				goto('/cart/checkout');
 			}}>Buy ({$totalItemsStore})</button

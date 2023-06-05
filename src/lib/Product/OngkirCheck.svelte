@@ -16,7 +16,7 @@
 	};
 </script>
 
-<div class="border-b-2 pb-3 border-surface-900-50-token">
+<div>
 	<h4 class="font-semibold">Delivery</h4>
 	<div class="flex flex-row space-x-2">
 		<div><Truck /></div>
