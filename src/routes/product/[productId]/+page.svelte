@@ -135,7 +135,7 @@
 		<div id="product">
 			<div class="grid px-3 md:grid-cols-2 grid-cols-1 gap-x-12">
 				<div>
-					<div class="sticky top-0 rounded-lg">
+					<div class="sticky top-12 rounded-lg">
 						{#if productDetail.image_urls}
 							<swiper-container
 								navigation={true}
@@ -171,7 +171,7 @@
 						{/if}
 						<div class="h-6" />
 						{#if $screenWidthStore > 768}
-							<div class="flex gap-2">
+							<div class="flex flex-wrap gap-2">
 								{#if productDetail.image_urls}
 									{#each productDetail.image_urls as image}
 										<button type="button" class="border-primary-500 border-2 rounded-md">
