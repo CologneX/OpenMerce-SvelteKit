@@ -10,4 +10,4 @@ export const scrollYStore = writable(0);
 export const cartCountStore = writable(0);
 export const defaultLocationStore: Writable<AddressDefault> = localStorageStore('loc', { id: 25410, name: 'Jakarta Pusat', address_id: null });
 export const totalItemsStore = writable(0);
-
+export const product_codeStore = writable('');

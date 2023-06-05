@@ -297,8 +297,10 @@
 							class="btn btn-sm py-0"
 							on:click={() => modalStore.trigger(AddressModal)}
 						>
-							<span><MapPin /></span> <span> Location </span>
-							<p class="font-bold text-ellipsis">{$defaultLocationStore.name}</p>
+							<span><MapPin /></span>
+							<span>
+								Location <span class="font-bold">{$defaultLocationStore.name}</span>
+							</span>
 						</button>
 					</small>
 				</div>

@@ -26,7 +26,7 @@
 	{/if}
 </div>
 {#if $screenWidthStore < 1024}
-	<div class="fixed bottom-0 flex w-full bg-dark p-4">
+	<div class="sticky bottom-0 flex w-full bg-dark p-4">
 		<div class="flex-1">
 			<small>Total Price</small>
 			<div class="font-bold text-lg">{rupiahCurrency($subTotalStore)}</div>

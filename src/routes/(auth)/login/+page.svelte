@@ -35,7 +35,13 @@
 			localStorage.setItem('last_name', data.last_name);
 			isLoggedInStore.set(true);
 			triggerToast(`Welcome back, ${data.first_name} ${data.last_name}!`, 'variant-filled-success');
-			goto('/');
+			// goto('/') or go back to previous page if exist
+
+			if (window.history.length > 1) {
+				window.history.back();
+			} else {
+				goto('/');
+			}
 		} else if (response.status === 401) {
 			triggerToast(`Invalid credentials`, 'variant-filled-error');
 			error = true;

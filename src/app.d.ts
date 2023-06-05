@@ -123,6 +123,7 @@ declare interface CategoryMain {
 declare interface FreightDetail {
 	product_code: string;
 	product_name: string;
+	courier_name: string;
 	etd: string;
 	rates: number;
 }
