@@ -6,7 +6,7 @@
 </script>
 
 <a
-	class="unstyled w-48 card"
+	class="unstyled w-48 card grow "
 	href="/product/{products.id}"
 	aria-label="Go to {products.name}'s page"
 	title={products.name}

@@ -13,6 +13,8 @@
 	import AddToCart from '$lib/Product/AddToCart.svelte';
 	import { formatNumber, rupiahCurrency } from '$lib/utils/units';
 	import OngkirCheck from '$lib/Product/OngkirCheck.svelte';
+	import { handleEditItem } from '$lib/utils/cart';
+	import { goto } from '$app/navigation';
 	let productDetails: any = {};
 	let isLoading: boolean = true;
 	const loadProducts = async (param: string) => {
@@ -280,8 +282,12 @@
 								>Max. purchased items {productDetail.stock}</small
 							>
 							<div class="md:flex gap-2 hidden">
-								<button class="btn variant-ringed-primary text-primary-500 font-bold flex-1"
-									>Buy Now</button
+								<button
+									class="btn variant-ringed-primary text-primary-500 font-bold flex-1"
+									on:click|preventDefault={async () => {
+										await handleEditItem(productDetail.id, quantity);
+										goto('/cart');
+									}}>Buy Now</button
 								>
 								<AddToCart productID={productDetail.id} {quantity} />
 							</div>
@@ -344,7 +350,13 @@
 		</div>
 	{/if}
 	<footer class="sticky sm:block md:hidden bottom-0 flex gap-2 justify-center w-screen card p-4">
-		<button class="btn variant-ringed-primary text-primary-500 font-bold flex-1">Buy Now</button>
+		<button
+			class="btn variant-ringed-primary text-primary-500 font-bold flex-1"
+			on:click|preventDefault={() => {
+				handleEditItem(productDetail.id, quantity);
+				goto('/cart');
+			}}>Buy Now</button
+		>
 		<AddToCart productID={productDetail.id} {quantity} />
 	</footer>
 {:catch error}
