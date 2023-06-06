@@ -101,14 +101,11 @@
 	}
 	// for setting lang
 	// for logout
-	const handleLogout = () => {
-		if ($isLoggedInStore) {
-			const logout = async () => {
-				isLoggingOut = true;
-				await logoutUser();
-				isLoggingOut = false;
-			};
-			logout();
+	const handleLogout = async () => {
+		if (get(isLoggedInStore)) {
+			isLoggingOut = true;
+			await logoutUser();
+			isLoggingOut = false;
 		}
 		if ($screenWidthStore < 1024) {
 			drawerStore.close();
@@ -139,7 +136,6 @@
 
 	// import favicon
 	import favicon from '$lib/favicon.ico';
-	import { onMount } from 'svelte';
 	import Heart from '$lib/icons/Heart.svelte';
 	import { AddressModal, modalComponentRegistry } from '$lib/utils/modal';
 	import { get } from 'svelte/store';
@@ -216,13 +212,21 @@
 						<div class="space-y-6">
 							<h4 class="font-semibold">My Activity</h4>
 							<div>
-								<a href="/blmada" class="btn btn-sm p-0"
-									><span> <ShoppingCart /> </span> <span>Transaction List</span></a
+								<button
+									class="btn btn-sm p-0"
+									on:click={() => {
+										goto('/wishlist');
+										drawerStore.close();
+									}}><span> <Heart /> </span> <span>Transaction List</span></button
 								>
 							</div>
 							<div>
-								<a href="/blmada" class="btn btn-sm p-0"
-									><span> <ShoppingCart /> </span> <span>Wish List</span></a
+								<button
+									class="btn btn-sm p-0"
+									on:click={() => {
+										goto('/wishlist');
+										drawerStore.close();
+									}}><span> <Heart /> </span> <span>Wishlist</span></button
 								>
 							</div>
 							<div>
@@ -347,7 +351,9 @@
 						<button
 							type="button"
 							class="btn-icon btn-icon-sm"
-							on:click={() => goto('/wishlist')}
+							on:click={() => {
+								goto('/wishlist');
+							}}
 							aria-label="wishlist"
 						>
 							<span>

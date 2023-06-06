@@ -1,36 +1,42 @@
 import { goto } from "$app/navigation";
 import type { CartProducts } from "../../app";
 import { refreshTokenUser } from "./refreshToken";
-import { isLoggedInStore } from "./stores";
+import { isLoggedInStore, isRefreshTokenStore } from "./stores";
 import { triggerToast } from "./toast";
 import { getCartCount } from "./navbar";
 import { get } from "svelte/store";
+
 export const getCart = async () => {
-    const response = await fetch('/api/v1/customer/cart', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-    if (response.status === 401) {
-        await refreshTokenUser();
+    if (get(isLoggedInStore)) {
         const response = await fetch('/api/v1/customer/cart', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             }
         });
-        if (response.status === 404) {
-            throw new Error('Start Shopping Now!');
+        if (response.status === 401) {
+            isRefreshTokenStore.set(true);
+            await refreshTokenUser();
+            isRefreshTokenStore.set(false);
+            const response = await fetch('/api/v1/customer/cart', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            if (response.status === 404) {
+                throw new Error('You dont have any items in your cart!');
+            }
+            const cartData: CartProducts[] = await response.json();
+            return cartData;
+        }
+        else if (response.status === 404) {
+            throw new Error('You dont have any items in your cart!');
         }
         const cartData: CartProducts[] = await response.json();
         return cartData;
     }
-    else if (response.status === 404) {
-        throw new Error('Start Shopping Now!');
-    }
-    const cartData: CartProducts[] = await response.json();
-    return cartData;
+    return [];
 }
 
 
@@ -68,10 +74,7 @@ export const handleDeleteItem = async (itemID: string) => {
             'Content-Type': 'application/json'
         }
     });
-    if (response.status === 200) {
-        getCartCount();
-    }
-    else if (response.status === 401) {
+    if (response.status === 401) {
         await refreshTokenUser();
         const response = await fetch(`/api/v1/customer/cart?id=${itemID}`, {
             method: 'DELETE',
@@ -79,7 +82,13 @@ export const handleDeleteItem = async (itemID: string) => {
                 'Content-Type': 'application/json'
             }
         });
-    } else if (response.status === 200) {
+        if (response.status === 200) {
+            getCart();
+            getCartCount();
+        }
+    }
+    if (response.status === 200) {
+        getCart();
         getCartCount();
     }
 };
@@ -98,16 +107,14 @@ export const handleEditItem = async (itemID: string, quantity: number) => {
                 quantity: quantity
             })
         });
-        const res = await response.json();
-        if (response.status === 400) {
-            triggerToast(res.error, 'variant-filled-error')
-        }
-        else if (response.status === 200) {
+
+        if (response.status === 200) {
             triggerToast('Product added to cart!', 'variant-filled-success');
             getCartCount();
         }
-        else if (!response.ok) {
-            triggerToast((response.statusText), 'variant-filled-error');
+        if (!response.ok) {
+            const res = await response.json();
+            triggerToast(res.error, 'variant-filled-error');
         }
         else if (response.status === 401) {
             await refreshTokenUser();

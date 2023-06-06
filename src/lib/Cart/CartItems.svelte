@@ -8,6 +8,8 @@
 	import { screenWidthStore, subTotalStore, totalItemsStore } from '$lib/utils/stores';
 	import { rupiahCurrency } from '$lib/utils/units';
 	import type { CartProducts } from '../../app';
+	import { refreshTokenUser } from '$lib/utils/refreshToken';
+	import { triggerToast } from '$lib/utils/toast';
 
 	let cartContent: CartProducts[];
 	let timeoutId: ReturnType<typeof setTimeout>;
@@ -59,6 +61,38 @@
 	const handleItemCheck = async (id: string, state: boolean) => {
 		await handleCheckItem(id, state);
 		updateSubTotal();
+	};
+	const handleAddToWishlist = async (productId: string) => {
+		const responseGet = await fetch(`/api/v1/customer/wishlist?id=${productId}`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		if (responseGet.status === 401) {
+			isRefreshTokenStore.set(true);
+			await refreshTokenUser();
+		}
+
+		const data = await responseGet.json();
+		if (!data.state) {
+			const response = await fetch(`/api/v1/customer/wishlist?id=${productId}`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+			if (response.status === 401) {
+				isRefreshTokenStore.set(true);
+				await refreshTokenUser();
+			}
+			if (response.ok) {
+				await handleDeleteItem(productId);
+				triggerToast('Product added to wishlist!', 'variant-filled-success');
+			}
+		} else {
+			triggerToast('Product already in wishlist!', 'variant-filled-secondary');
+		}
 	};
 </script>
 
@@ -122,7 +156,9 @@
 					</div>
 				</div>
 				<div class="flex">
-					<button class="text-sm flex-1 text-start">Move to Wishlist</button>
+					<button class="text-sm flex-1 text-start" on:click={() => handleAddToWishlist(item.id)}
+						>Move to Wishlist</button
+					>
 					<div class="justify-end flex {$screenWidthStore > 1024 ? 'gap-x-5' : 'gap-x-2'}">
 						<button
 							class="btn-icon btn-icon-sm {$screenWidthStore > 1024 ? 'w-8' : 'w-6'}"

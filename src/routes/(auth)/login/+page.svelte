@@ -29,8 +29,8 @@
 			})
 		});
 
+		const data = await response.json();
 		if (response.ok) {
-			const data = await response.json();
 			localStorage.setItem('first_name', data.first_name);
 			localStorage.setItem('last_name', data.last_name);
 			isLoggedInStore.set(true);

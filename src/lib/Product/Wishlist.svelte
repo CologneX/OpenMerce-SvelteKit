@@ -4,10 +4,12 @@
 	import { isLoggedInStore, isWishlistedStore } from '$lib/utils/stores';
 	import { goto } from '$app/navigation';
 	import HeartMini from '$lib/icons/HeartMini.svelte';
+	import { get } from 'svelte/store';
 	export let productId: string;
+	isWishlistedStore.set(false);
 	const handleWishlist = async (productId: string) => {
-		if ($isLoggedInStore) {
-			if (!$isWishlistedStore) {
+		if (get(isLoggedInStore)) {
+			if (!get(isWishlistedStore)) {
 				const response = await fetch(`/api/v1/customer/wishlist?id=${productId}`, {
 					method: 'POST',
 					headers: {
@@ -63,8 +65,7 @@
 	};
 
 	const handleCheckWishlist = async (productId: string) => {
-		if ($isLoggedInStore) {
-			await refreshTokenUser();
+		if (get(isLoggedInStore)) {
 			const response = await fetch(`/api/v1/customer/wishlist?id=${productId}`, {
 				method: 'GET',
 				headers: {
@@ -76,15 +77,32 @@
 				if (responseJson.state === true) {
 					isWishlistedStore.set(true);
 				}
+			} else if (response.status === 401) {
+				await refreshTokenUser();
+				const response = await fetch(`/api/v1/customer/wishlist?id=${productId}`, {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				});
+				if (response.ok) {
+					const responseJson = await response.json();
+					if (responseJson.state === true) {
+						isWishlistedStore.set(true);
+					}
+				}
 			}
 		}
 	};
-	handleCheckWishlist(productId);
 </script>
 
-<button
-	class="btn btn-sm flex-1 {$isWishlistedStore ? 'text-primary-500' : ''}"
-	on:click={() => {
-		handleWishlist(productId);
-	}}><span><HeartMini /></span><span>Wishlist</span></button
->
+{#await handleCheckWishlist(productId)}
+	<div class="animate-pulse placeholder flex-1 m-2" />
+{:then}
+	<button
+		class="btn btn-sm flex-1 {$isWishlistedStore ? 'text-primary-500' : ''}"
+		on:click={() => {
+			handleWishlist(productId);
+		}}><span><HeartMini /></span><span>Wishlist</span></button
+	>
+{/await}

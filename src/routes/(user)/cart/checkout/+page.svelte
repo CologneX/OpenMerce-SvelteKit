@@ -8,7 +8,7 @@
 	} from '$lib/utils/stores';
 	import { ProgressRadial, modalStore } from '@skeletonlabs/skeleton';
 	import type { AddressDetail, Products } from '../../../../app';
-	import { AddAddressModal, AddressListModal } from '$lib/utils/modal';
+	import { AddressListModal } from '$lib/utils/modal';
 	import Logo from '$lib/icons/Logo.svelte';
 	import { rupiahCurrency } from '$lib/utils/units';
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';

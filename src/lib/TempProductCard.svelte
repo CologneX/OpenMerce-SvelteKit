@@ -6,7 +6,7 @@
 </script>
 
 <a
-	class="unstyled w-48 card grow "
+	class="unstyled w-1/6 grow card"
 	href="/product/{products.id}"
 	aria-label="Go to {products.name}'s page"
 	title={products.name}
@@ -30,7 +30,7 @@
 		{/if}
 	</picture>
 
-	<section class="p-4">
+	<section class="p-2">
 		<p class="truncate">{products.name}</p>
 		<p class="font-semibold">
 			{products.price.toLocaleString('id-ID', {
@@ -41,11 +41,19 @@
 		</p>
 	</section>
 
-	<footer class="p-4">
+	<footer class="p-2">
 		<hr class="!border-t-2 border-current" />
-		<div class="flex items-center">
-			<Star />
-			<p>{products.rating}</p>
+		<div class="flex flex-row pt-2">
+			<div class="badge variant-ghost">
+				<span>
+					<Star/>
+				</span>
+				<p>{products.rating}</p>
+			</div>
+			<!-- <div class="badge">
+				<Star />
+				<p>{products}</p>
+			</div> -->
 		</div>
 	</footer>
 </a>

@@ -135,7 +135,7 @@
 {:then productDetail}
 	{#if productDetail}
 		<div id="product">
-			<div class="grid px-3 md:grid-cols-2 grid-cols-1 gap-x-12">
+			<div class="grid p-4 md:grid-cols-2 grid-cols-1 gap-x-12">
 				<div>
 					<div class="sticky top-12 rounded-lg">
 						{#if productDetail.image_urls}
