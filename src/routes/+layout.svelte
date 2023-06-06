@@ -293,22 +293,21 @@
 			slotTrail="place-content-end"
 			gap="gap-4"
 			padding="p-2"
+			regionRowHeadline="text-xs md:text-sm truncate"
 			shadow="shadow-xl"
 		>
 			<svelte:fragment slot="headline">
-				<div class="text-end">
-					<small>
-						<button
-							type="button"
-							class="btn btn-sm py-0"
-							on:click={() => modalStore.trigger(AddressModal)}
-						>
-							<span><MapPin /></span>
-							<span>
-								Location <span class="font-bold">{$defaultLocationStore.name}</span>
-							</span>
-						</button>
-					</small>
+				<div class="text-end truncate">
+					<button
+						type="button"
+						class="btn btn-sm py-0 truncate"
+						on:click={() => modalStore.trigger(AddressModal)}
+					>
+						<span><MapPin /></span>
+						<span class="truncate">
+							Location <span class="font-bold truncate">{$defaultLocationStore.name}</span>
+						</span>
+					</button>
 				</div>
 			</svelte:fragment>
 

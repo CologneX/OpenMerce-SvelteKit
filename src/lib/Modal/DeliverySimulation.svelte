@@ -7,7 +7,7 @@
 </script>
 
 {#if $modalStore[0]}
-	<div class="card shadow-2xl p-10 w-full max-w-screen-md gap-y-6 h-full max-h-[90%]">
+	<div class="card shadow-2xl p-10 w-full max-w-screen-md gap-y-6 h-full max-h-[90%] truncate">
 		<span>
 			<h4 class="font-bold">Delivery Simulation</h4>
 			<small class="text-surface-600-300-token">Details of the delivery</small>
@@ -19,14 +19,16 @@
 				<span class="font-bold">{$modalStore[0].meta?.weight} kg</span>
 			</div>
 			<button
-				class="text-sm w-full btn flex justify-start p-0 text-ellipsis"
+				class="text-sm w-full btn flex justify-start p-0"
 				type="button"
 				on:click={() => {
 					modalStore.close();
 					modalStore.trigger(AddressModal);
 				}}
 			>
-				<span class="border-2 text-ellipsis"> Delivery to <span class="font-semibold "> {$defaultLocationStore.name} </span></span>
+				<span class="border-2 truncate">
+					Delivery to <span class="font-semibold"> {$defaultLocationStore.name} </span></span
+				>
 				<span><ChevronDown /></span>
 			</button>
 		</div>
