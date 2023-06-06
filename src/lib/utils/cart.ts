@@ -1,7 +1,7 @@
 import { goto } from "$app/navigation";
 import type { CartProducts } from "../../app";
 import { refreshTokenUser } from "./refreshToken";
-import { isLoggedInStore, isRefreshTokenStore } from "./stores";
+import { isLoggedInStore} from "./stores";
 import { triggerToast } from "./toast";
 import { getCartCount } from "./navbar";
 import { get } from "svelte/store";
@@ -15,9 +15,9 @@ export const getCart = async () => {
             }
         });
         if (response.status === 401) {
-            isRefreshTokenStore.set(true);
+
             await refreshTokenUser();
-            isRefreshTokenStore.set(false);
+
             const response = await fetch('/api/v1/customer/cart', {
                 method: 'GET',
                 headers: {
