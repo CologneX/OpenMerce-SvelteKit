@@ -7,7 +7,7 @@
 
 <div class="shadow-lg">
 	{#await getBannerMain()}
-		<div class="placeholder h-full w-full animate-pulse" />
+		<div class="placeholder h-full w-full animate-pulse aspect-[21/5]" />
 	{:then banner}
 		<div class="relative group">
 			<button
@@ -40,7 +40,7 @@
 			>
 				{#each banner as item}
 					<swiper-slide class="flex justify-center items-center">
-						<picture>
+						<picture class="w-full">
 							{#if item}
 								<img
 									alt={item.image_url}
@@ -48,10 +48,10 @@
 									width="100%"
 									src="/usercontent/{item.image_url}"
 									loading="eager"
-									class="object-cover aspect-[21/5] rounded-md w-full h-full"
+									class="object-cover aspect-[21/5] rounded-md w-full"
 								/>
 							{:else}
-								<div>
+								<div class="grid place-items-center">
 									<Logo />
 									<p class="text-center">No Image Found</p>
 								</div>
