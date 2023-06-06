@@ -6,7 +6,7 @@
 </script>
 
 <a
-	class="unstyled w-1/6 grow card"
+	class="unstyled w-full max-w-[12rem] card card-hover"
 	href="/product/{products.id}"
 	aria-label="Go to {products.name}'s page"
 	title={products.name}

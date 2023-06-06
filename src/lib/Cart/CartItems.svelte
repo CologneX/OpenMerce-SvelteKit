@@ -70,7 +70,6 @@
 			}
 		});
 		if (responseGet.status === 401) {
-			isRefreshTokenStore.set(true);
 			await refreshTokenUser();
 		}
 
@@ -83,7 +82,6 @@
 				}
 			});
 			if (response.status === 401) {
-				isRefreshTokenStore.set(true);
 				await refreshTokenUser();
 			}
 			if (response.ok) {

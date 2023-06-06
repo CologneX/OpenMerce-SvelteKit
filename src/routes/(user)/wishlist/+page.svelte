@@ -75,7 +75,7 @@
 						on:click={() => {
 							goto(`/product/${item.id}`);
 						}}
-						class="aspect-square flex justify-center items-center rounded basis-3/12 shadow-md "
+						class="aspect-square flex justify-center items-center rounded basis-3/12 shadow-md"
 					>
 						<picture>
 							{#if item.image}
@@ -96,10 +96,12 @@
 							<!-- <img src="/usercontent/{item.image}" alt={item.name} /> -->
 						</picture>
 					</button>
-					<div class="text-sm text-start w-full truncate">
+					<div class="text-sm md:text-base text-start w-full truncate flex flex-col">
 						<p class="truncate">{item.name}</p>
 						<p class="font-bold">{rupiahCurrency(item.price)}</p>
-						<button type="button" class="btn btn-sm variant-ringed-primary text-primary-500 text-xs"
+						<button
+							type="button"
+							class="btn btn-sm variant-ringed-primary text-primary-500 text-xs mt-auto w-1/3"
 							>Add to Cart</button
 						>
 					</div>

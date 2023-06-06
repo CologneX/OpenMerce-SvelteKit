@@ -69,7 +69,7 @@
 			>
 		</swiper-container>
 	{:then allProducts}
-		{#each allProducts as items}
+		{#each allProducts as items, i}
 			<div class="flex">
 				<div class="font-semibold text-xl flex-1">{items.category_name}</div>
 				<a href="/category/{items.category_id}" class="decoration-transparent">See All</a>
@@ -83,7 +83,7 @@
 					type="button"
 					class="btn-icon absolute variant-filled top-1/2 transform -translate-y-1/2 z-10 -right-5 opacity-0 transition-opacity duration-500 group-hover:opacity-100 next"
 					on:click={() => {
-						const swiper = document.querySelector('.swiper-container')['swiper'];
+						const swiper = document.getElementById(i)['swiper'];
 						swiper.slideNext();
 					}}
 				>
@@ -93,7 +93,7 @@
 					type="button"
 					class="btn-icon variant-filled z-10 absolute top-1/2 transform -translate-y-1/2 -left-5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
 					on:click={() => {
-						const swiper = document.querySelector('.swiper-container')['swiper'];
+						const swiper = document.getElementById(i)['swiper'];
 						swiper.slidePrev();
 					}}
 				>
@@ -129,6 +129,7 @@
 							slides-per-group={6}
 							pagination={false}
 							grab-cursor={true}
+							id={i}
 						>
 							{#each items.products as products}
 								<swiper-slide class="card card-hover w-40 md:w-44 lg:w-48 h-full max-h-96">
@@ -227,7 +228,7 @@
 		</swiper-container>
 	{:else}
 		<div class="font-semibold text-xl">All Products</div>
-		<div class="flex flex-row flex-wrap gap-2">
+		<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-2">
 			{#each allProducts as products}
 				<ProductCard {products} />
 			{/each}
