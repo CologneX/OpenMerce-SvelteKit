@@ -6,7 +6,7 @@
 		subTotalStore,
 		totalItemsStore
 	} from '$lib/utils/stores';
-	import { ProgressRadial, modalStore } from '@skeletonlabs/skeleton';
+	import { ProgressRadial, dataTableHandler, modalStore } from '@skeletonlabs/skeleton';
 	import type { AddressDetail, Products } from '../../../../app';
 	import { AddressListModal } from '$lib/utils/modal';
 	import Logo from '$lib/icons/Logo.svelte';
@@ -23,7 +23,6 @@
 		goto('/cart');
 	}
 	const handleGetDefaultAddress = async (id: string) => {
-		await refreshTokenUser();
 		const response = await fetch(`/api/v1/customer/address?id=${id}`, {
 			method: 'GET',
 			headers: {
@@ -69,9 +68,26 @@
 			}
 		);
 
-		const data = await response.json();
-		courier_data = data;
-		return data;
+		if (response.ok) {
+			const data = await response.json();
+			courier_data = data;
+			return data;
+		} else if (response.status === 401) {
+			await refreshTokenUser();
+			const response = await fetch(
+				`/api/v1/customer/pre-freight?id=${$defaultLocationStore.address_id}`,
+				{
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				}
+			);
+			const data = await response.json();
+			courier_data = data;
+			return data;
+		}
+		return null;
 	};
 	let isCheckingOut: boolean = false;
 	const handlePostCheckout = async () => {
