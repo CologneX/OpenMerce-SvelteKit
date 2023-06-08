@@ -1,19 +1,19 @@
 <script lang="ts">
 	import { handleLoadAddress, handleLoginSetLocation } from '$lib/utils/address';
 	import { getUserNames } from '$lib/utils/auth';
-	import { Avatar, ProgressRadial, modalStore } from '@skeletonlabs/skeleton';
+	import { Avatar, ProgressRadial, modalStore, type ModalSettings } from '@skeletonlabs/skeleton';
 	import { TabGroup, Tab } from '@skeletonlabs/skeleton';
 	import { FileButton } from '@skeletonlabs/skeleton';
-	import type { Address } from '../../../app';
+	import type { AddressType, GetProfile } from '../../../app';
 	import PlusSmall from '$lib/icons/PlusSmall.svelte';
-	import { AddAddressModal } from '$lib/utils/modal';
+	import { AddAddressModal, ChangePasswordModal } from '$lib/utils/modal';
 	import Trash from '$lib/icons/Trash.svelte';
 	import { refreshTokenUser } from '$lib/utils/refreshToken';
 	import { triggerToast } from '$lib/utils/toast';
 	let tabSet: number = 0;
 	let isSettingDefaultLocation: boolean = false;
 	let searchAddress: string;
-	let addressList: Address[];
+	let addressList: AddressType[];
 	const handleGetAddressList = async () => {
 		addressList = await handleLoadAddress();
 	};
@@ -58,6 +58,93 @@
 			triggerToast('Failed to delete address', 'variant-filled-error');
 		}
 	};
+
+	// get an API req based on the structure above from /api/v1/customer/profile
+	// and then use the data to fill the form
+	let GetProfile: GetProfile;
+	const handleGetProfile = async () => {
+		const response = await fetch('/api/v1/customer/profile', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		if (response.status === 401) {
+			await refreshTokenUser();
+			const response = await fetch('/api/v1/customer/profile', {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+			if (response.ok) {
+				GetProfile = await response.json();
+				fullName = `${GetProfile.first_name} ${GetProfile.last_name}`;
+			} else {
+				triggerToast('Failed to get profile', 'variant-filled-error');
+			}
+		} else if (response.ok) {
+			GetProfile = await response.json();
+			fullName = `${GetProfile.first_name} ${GetProfile.last_name}`;
+		} else {
+			triggerToast('Failed to get profile', 'variant-filled-error');
+		}
+	};
+
+	let fullName: string;
+	const handlePatchProfile = async () => {
+		const [firstName, lastName] = fullName.split(' ');
+		const birthDateRFC3339 = new Date(GetProfile.birth_date).toISOString();
+
+		const response = await fetch('/api/v1/customer/profile', {
+			method: 'PATCH',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				first_name: firstName,
+				last_name: lastName,
+				email: GetProfile.email,
+				phone_number: GetProfile.phone_number,
+				birth_date: birthDateRFC3339,
+				gender: GetProfile.gender
+			})
+		});
+
+		if (response.status === 401) {
+			await refreshTokenUser();
+			const response = await fetch('/api/v1/customer/profile', {
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					first_name: firstName,
+					last_name: lastName,
+					email: GetProfile.email,
+					phone_number: GetProfile.phone_number,
+					birth_date: birthDateRFC3339,
+					gender: GetProfile.gender
+				})
+			});
+			if (response.ok) {
+				await handleGetProfile();
+				localStorage.setItem('first_name', GetProfile.first_name);
+				localStorage.setItem('last_name', GetProfile.last_name);
+				triggerToast('Successfully updated profile', 'variant-filled-success');
+			} else {
+				triggerToast('Failed to update profile', 'variant-filled-error');
+			}
+		} else if (response.ok) {
+			await handleGetProfile();
+			localStorage.setItem('first_name', GetProfile.first_name);
+			localStorage.setItem('last_name', GetProfile.last_name);
+			triggerToast('Successfully updated profile', 'variant-filled-success');
+		} else {
+			triggerToast('Failed to update profile', 'variant-filled-error');
+		}
+	};
+
 </script>
 
 <svelte:head>
@@ -90,7 +177,7 @@
 					<div class="p-4 md:p-6 flex flex-col md:flex-row gap-4">
 						<div class="space-y-4">
 							<div class="card p-4 drop-shadow-md w-full md:w-56 flex-initial space-y-2">
-								<img src="placeholder.png" alt="profile" title="profile photo" />
+								<img src="placeholder.png" alt="profile" title="profile photo" class="m-auto" />
 								<FileButton
 									name="files"
 									button=" variant-ringed-primary"
@@ -102,49 +189,63 @@
 									.JPEG .PNG
 								</p>
 							</div>
-							<button class="btn variant-filled-primary w-full font-semibold"
-								>Change Password</button
+							<button
+								class="btn variant-filled-primary w-full font-semibold"
+								on:click={() => {
+									modalStore.trigger(ChangePasswordModal);
+								}}>Change Password</button
 							>
 						</div>
 						<div class="w-full p-4 space-y-4">
 							<h5 class="font-semibold">Change Profile</h5>
-							<div class="flex flex-col gap-4">
-								<div class="flex flex-row w-full items-center">
-									<label for="first-name" class="text-sm w-1/4 flex-none">Full Name</label>
-									<input
-										type="text"
-										class="input w-fit shrink text-sm"
-										value="{getUserNames()[0]} {getUserNames()[1]}"
-									/>
-									<button type="button" class="btn btn-sm block">Change</button>
+							{#await handleGetProfile() then}
+								<div class="flex flex-col gap-4">
+									<div class="flex flex-row w-full items-center">
+										<label for="first-name" class="text-sm w-1/4 flex-none">Full Name</label>
+										<input type="text" class="input w-44 shrink text-sm" bind:value={fullName} />
+									</div>
+									<div class="flex flex-row w-full items-center">
+										<label for="first-name" class="text-sm w-1/4 flex-none">Date of Birth</label>
+										<input
+											type="date"
+											class="input w-44 text-sm"
+											bind:value={GetProfile.birth_date}
+										/>
+									</div>
+									<div class="flex flex-row w-full items-center">
+										<label for="first-name" class="text-sm w-1/4 flex-none">Gender</label>
+										<select class="select w-44 border-2 text-sm" bind:value={GetProfile.gender}>
+											<option value="male">Male</option>
+											<option value="female">Female</option>
+										</select>
+									</div>
 								</div>
-								<div class="flex flex-row w-full items-center">
-									<label for="first-name" class="text-sm w-1/4 flex-none">Date of Birth</label>
-									<input type="text" class="input w-fit shrink text-sm" />
-									<button type="button" class="btn btn-sm">Change</button>
+								<h5 class="font-semibold">Change Contact</h5>
+								<div class="flex flex-col gap-4">
+									<div class="flex flex-row w-full items-center">
+										<label for="first-name" class="text-sm w-1/4 flex-none">Email</label>
+										<input type="email" class="input w-44 text-sm" bind:value={GetProfile.email} />
+									</div>
+									<div class="flex flex-row w-full items-center">
+										<label for="first-name" class="text-sm w-1/4 flex-none"
+											>Phone Number
+											<!-- {#if !GetProfile.phone_number}
+												<span class="badge variant-ghost-warning">Not Verivied</span>
+											{/if
+											} -->
+										</label>
+										<input
+											type="text"
+											class="input w-44 shrink text-sm"
+											bind:value={GetProfile.phone_number}
+										/>
+									</div>
 								</div>
-								<div class="flex flex-row w-full items-center">
-									<label for="first-name" class="text-sm w-1/4 flex-none">Gender</label>
-									<select class="select w-48 border-2">
-										<option value="Males">Male</option>
-										<option value="Female">Female</option>
-										<option value="Walmart">Walmart</option>
-									</select>
-								</div>
-							</div>
-							<h5 class="font-semibold">Change Contact</h5>
-							<div class="flex flex-col gap-4">
-								<div class="flex flex-row w-full items-center">
-									<label for="first-name" class="text-sm w-1/4 flex-none">Email</label>
-									<input type="email" class="input w-fit shrink text-sm" />
-									<button type="button" class="btn btn-sm">Change</button>
-								</div>
-								<div class="flex flex-row w-full items-center">
-									<label for="first-name" class="text-sm w-1/4 flex-none">Phone Number</label>
-									<input type="text" class="input w-fit shrink text-sm" />
-									<button type="button" class="btn btn-sm">Change</button>
-								</div>
-							</div>
+								<button
+									class="btn variant-filled-primary w-full md:w-1/2 font-semibold"
+									on:click={handlePatchProfile}>Save Changes</button
+								>
+							{/await}
 						</div>
 					</div>
 				{:else if tabSet === 1}
@@ -218,7 +319,7 @@
 								on:click={() => modalStore.trigger(AddAddressModal)}
 							>
 								<span> <PlusSmall /></span>
-								<span> Add Address</span></button
+								<span>Add Address</span></button
 							>
 						</div>
 						{#await handleGetAddressList()}
@@ -272,9 +373,8 @@
 								{/each}
 							</span>
 							{#if filteredData.length == 0}
-								<div class="card h-full w-full">
+								<div class="border border-primary-500 h-full w-full p-4 rounded-md">
 									<h2 class="text-center">You don't have any address yet</h2>
-									<!-- <button class="btn btn-primary">Add Address</button> -->
 								</div>
 							{/if}
 						{/await}

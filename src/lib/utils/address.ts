@@ -1,8 +1,8 @@
-import type Address from "$lib/Modal/Address.svelte";
+
 import { modalStore } from "@skeletonlabs/skeleton";
 import { refreshTokenUser } from "./refreshToken";
 import { defaultLocationStore } from "./stores";
-import type { AddressDetail } from "../../app";
+import type { AddressDetail, AddressType } from "../../app";
 import { triggerToast } from "./toast";
 
 export const handleLoadAddress = async () => {
@@ -17,11 +17,11 @@ export const handleLoadAddress = async () => {
             headers: { 'Content-Type': 'application/json' }
         });
         if (response.status == 200) {
-            const data: Address[] = await response.json();
+            const data: AddressType[] = await response.json();
             return data;
         }
     } else if (response.status == 200) {
-        const data: Address[] = await response.json();
+        const data: AddressType[] = await response.json();
         return data;
     }
     return [];

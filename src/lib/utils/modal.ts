@@ -1,10 +1,11 @@
-import type { ModalSettings, ModalComponent } from '@skeletonlabs/skeleton';
+import type { ModalSettings, ModalComponent, Modal } from '@skeletonlabs/skeleton';
 import Address from '$lib/Modal/Address.svelte';
 import DeliverySimulation from '$lib/Modal/DeliverySimulation.svelte';
 import AddressList from '$lib/Modal/AddressList.svelte';
 import AddAddress from '$lib/Modal/AddAddress.svelte';
 import TransactionDetails from '$lib/Modal/TransactionDetails.svelte';
 import ReviewModal from '$lib/Modal/ReviewModal.svelte';
+import ChangePassword from '$lib/Modal/ChangePassword.svelte';
 
 
 export const modalComponentRegistry: Record<string, ModalComponent> = {
@@ -25,6 +26,9 @@ export const modalComponentRegistry: Record<string, ModalComponent> = {
 	},
 	Review: {
 		ref: ReviewModal,
+	},
+	ChangePassword: {
+		ref: ChangePassword
 	}
 }
 
@@ -52,3 +56,8 @@ export const TransactionDetailsModal: ModalSettings = {
 	type: 'component',
 	component: 'TransactionDetails'
 };
+
+export const ChangePasswordModal: ModalSettings = {
+	type: 'component',
+	component: 'ChangePassword'
+}

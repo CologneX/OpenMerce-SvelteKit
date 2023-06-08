@@ -146,7 +146,7 @@ declare interface AddressDetail {
 	postal_code: string;
 }
 
-declare interface Address {
+declare interface AddressType {
 	id: string;
 	label: string;
 	full_address: string;
@@ -209,4 +209,14 @@ declare interface OrderAddressDetail {
 	phone_number: string;
 	full_address: string;
 	shipping_area: string;
+}
+
+declare interface GetProfile {
+
+	email: string;
+	phone_number: string;
+	first_name: string;
+	last_name: string;
+	birth_date: string;
+	gender: string;
 }
