@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import AddToCartCard from '$lib/AddToCartCard.svelte';
 	import Logo from '$lib/icons/Logo.svelte';
 	import Star from '$lib/icons/Star.svelte';
 	import { getProductSearch } from '$lib/utils/products';
@@ -40,7 +41,7 @@
 	/>
 	<meta name="author" content="OpenMerce" />
 </svelte:head>
-
+<!-- 
 <div class="w-full h-full p-4">
 	<h3 class="font-bold">Your Wishlist</h3>
 	<div class="h-4" />
@@ -93,7 +94,6 @@
 									<p class="text-center text-sm">No Image Found</p>
 								</div>
 							{/if}
-							<!-- <img src="/usercontent/{item.image}" alt={item.name} /> -->
 						</picture>
 					</button>
 					<div class="text-sm md:text-base text-start w-full truncate flex flex-col">
@@ -117,4 +117,16 @@
 			</div>
 		{/await}
 	</div>
-</div>
+</div> -->
+
+<h3 class=" text-xl py-6 font-bold">Your Cart</h3>
+
+{#await handleGetWishlist()}
+	<div class="rounded-md placeholder animate-pulse w-full h-96" />
+{:then data}
+	<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-y-2 w-full">
+		{#each data as products}
+			<AddToCartCard {products} />
+		{/each}
+	</div>
+{/await}

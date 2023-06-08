@@ -185,6 +185,8 @@ declare interface OrderDetail {
 	shipping_cost: number;
 	total_cost: number;
 	payment_type: string;
+	payment_url: string | null;
+
 
 }
 
@@ -197,6 +199,7 @@ declare interface ItemListOrderDetail {
 	image: string;
 	quantity: number;
 	reviewed: boolean;
+
 
 
 }
