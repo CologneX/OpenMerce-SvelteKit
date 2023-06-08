@@ -144,7 +144,6 @@
 			triggerToast('Failed to update profile', 'variant-filled-error');
 		}
 	};
-
 </script>
 
 <svelte:head>
@@ -168,7 +167,7 @@
 		</div>
 	</div>
 	<div class="rounded-md card drop-shadow-lg w-full">
-		<TabGroup>
+		<TabGroup active="border-b-2 border-primary-500">
 			<Tab bind:group={tabSet} name="tab1" value={0}>Personal Profile</Tab>
 			<Tab bind:group={tabSet} name="tab2" value={1}>Address</Tab>
 
@@ -349,26 +348,28 @@
 												<p class="text-xs md:text-sm">{address.full_address}</p>
 											</div>
 										</div>
-										<button
-											type="button"
-											class="btn btn-sm variant-soft-primary w-fit mr-5 font-bold"
-											on:click={async () => {
-												isSettingDefaultLocation = true;
-												await handleLoginSetLocation(address.id);
-												isSettingDefaultLocation = false;
-											}}
-										>
-											{#if isSettingDefaultLocation}
-												<span><ProgressRadial width="w-5" /></span>
-											{/if}
-											<span>Select</span>
-										</button>
-										<button
-											class="btn btn-sm variant-soft-warning w-fit mr-4 md:mr-0 font-bold"
-											on:click|preventDefault={() => handleDeleteAddress(address.id)}
-										>
-											<span><Trash /></span>
-										</button>
+										<div>
+											<button
+												type="button"
+												class="btn btn-sm variant-soft-primary w-fit mr-5 font-bold"
+												on:click={async () => {
+													isSettingDefaultLocation = true;
+													await handleLoginSetLocation(address.id);
+													isSettingDefaultLocation = false;
+												}}
+											>
+												{#if isSettingDefaultLocation}
+													<span><ProgressRadial width="w-5" /></span>
+												{/if}
+												<span>Select</span>
+											</button>
+											<button
+												class="btn btn-sm variant-soft-warning w-fit mr-4 md:mr-0 font-bold"
+												on:click|preventDefault={() => handleDeleteAddress(address.id)}
+											>
+												<span><Trash /></span>
+											</button>
+										</div>
 									</div>
 								{/each}
 							</span>

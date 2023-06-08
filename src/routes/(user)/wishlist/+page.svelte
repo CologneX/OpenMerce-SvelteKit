@@ -1,12 +1,7 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
 	import AddToCartCard from '$lib/AddToCartCard.svelte';
-	import Logo from '$lib/icons/Logo.svelte';
-	import Star from '$lib/icons/Star.svelte';
-	import { getProductSearch } from '$lib/utils/products';
+	import TempProductCardSecondary from '$lib/TempProductCardSecondary.svelte';
 	import { refreshTokenUser } from '$lib/utils/refreshToken';
-	import { rupiahCurrency } from '$lib/utils/units';
 
 	const handleGetWishlist = async () => {
 		const getWishlist = await fetch(`/api/v1/customer/wishlist`, {
@@ -118,15 +113,18 @@
 		{/await}
 	</div>
 </div> -->
+<div class="p-4 md:p-6">
+	<h3 class=" text-xl font-bold">Your Wishlist</h3>
 
-<h3 class=" text-xl py-6 font-bold">Your Wishlist</h3>
-
-{#await handleGetWishlist()}
-	<div class="rounded-md placeholder animate-pulse w-full h-96" />
-{:then data}
-	<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-y-2 w-full">
+	{#await handleGetWishlist()}
+		<div class="rounded-md placeholder animate-pulse w-full h-96" />
+	{:then data}
+	<div class="grid grid-flow-row grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2 w-full">
 		{#each data as products}
-			<AddToCartCard {products} />
+			<TempProductCardSecondary {products} />
 		{/each}
 	</div>
-{/await}
+	
+		
+	{/await}
+</div>

@@ -1,22 +1,34 @@
 <script lang="ts">
 	export let productId: string;
-	import { Table, tableMapperValues } from '@skeletonlabs/skeleton';
-	import type { TableSource } from '@skeletonlabs/skeleton';
 
-	const sourceData = [
-		{ position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
-		{ position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
-		{ position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
-		{ position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
-		{ position: 5, name: 'Boron', weight: 10.811, symbol: 'B' }
-	];
-
-	const reviewTable: TableSource = {
-		// A list of heading labels.
-		head: ['Name', 'Symbol', 'Weight'],
-		// The data visibly shown in your table body UI.
-		body: tableMapperValues(sourceData, ['name', 'symbol', 'weight'])
+	const handleGetReviewProduct = async () => {
+		const response = await fetch(`/api/v1/product-review?id=${productId}`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		if (response.ok) {
+			const data = await response.json();
+			return data;
+		} else if (response.status === 404) {
+			return null;
+		} else {
+			throw new Error('Something went wrong');
+		}
 	};
 </script>
 
-<Table source={reviewTable} />
+{#await handleGetReviewProduct()}
+	<div class="p-4 rounded-md border border-primary-500 space-y-2">
+		<div class="placeholder animate-pulse" />
+		<div class="placeholder animate-pulse w-1/3" />
+		<div class="placeholder animate-pulse w-2/4" />
+	</div>
+{:then data}
+	{#each data as item}
+		<div class="p-4 rounded-md border border-primary-500 space-y-2">
+			<p class="font-semibold text-ellipsis">{item.name}</p>
+		</div>
+	{/each}
+{/await}

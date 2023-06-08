@@ -6,8 +6,8 @@
 		subTotalStore,
 		totalItemsStore
 	} from '$lib/utils/stores';
-	import { ProgressRadial, dataTableHandler, modalStore } from '@skeletonlabs/skeleton';
-	import type { AddressDetail, Products } from '../../../../app';
+	import { ProgressRadial, modalStore } from '@skeletonlabs/skeleton';
+	import type { AddressDetail, Products, ProductsCheckout } from '../../../../app';
 	import { AddressListModal } from '$lib/utils/modal';
 	import Logo from '$lib/icons/Logo.svelte';
 	import { rupiahCurrency } from '$lib/utils/units';
@@ -15,6 +15,7 @@
 	import { goto } from '$app/navigation';
 	import { get } from 'svelte/store';
 	import { triggerToast } from '$lib/utils/toast';
+	import { fade } from 'svelte/transition';
 	if ($defaultLocationStore.address_id == '') {
 		modalStore.trigger(AddressListModal);
 	}
@@ -22,7 +23,7 @@
 		triggerToast('You do not have items to check out!', 'variant-filled-primary');
 		goto('/cart');
 	}
-	const handleGetDefaultAddress = async (id: string) => {
+	const handleGetDefaultAddress = async (id: string | null) => {
 		const response = await fetch(`/api/v1/customer/address?id=${id}`, {
 			method: 'GET',
 			headers: {
@@ -46,7 +47,7 @@
 		if (!response.ok) {
 			throw new Error('An error occurred while fetching the data');
 		}
-		const data: Products = await response.json();
+		const data: ProductsCheckout[] = await response.json();
 		return data;
 	};
 	let courier_data: any = {
@@ -163,7 +164,7 @@
 
 		<button
 			type="button"
-			class="btn btn-sm variant-ringed-primary w-full max-w-xs"
+			class="btn btn-sm variant-filled-primary font-semibold w-full max-w-xs"
 			on:click={() => {
 				modalStore.close();
 				modalStore.trigger(AddressListModal);
@@ -185,13 +186,13 @@
 							{#if item.image}
 								<a href="/product/{item.id}" class="unstyled"
 									><img
-										loading="lazy"
 										src={`/usercontent/${item.image}`}
 										alt="{item.name}'s image"
 										class="rounded"
 										width="100%"
 										height="100%"
 										title={item.name}
+										loading="eager"
 									/>
 								</a>
 							{:else}
@@ -319,8 +320,16 @@
 		{/if}
 	</div>
 	{#if $screenWidthStore > 1024}
-		<div class="card p-3 h-fit space-y-8 sticky top-6">
+		<div class="card drop-shadow-md p-3 h-fit space-y-8 sticky top-6">
 			<h5 class="font-bold flex-none">Shopping Summary</h5>
+			{#if courier_data.courier_name}
+				<div class="rounded-md border border-primary-500 p-4" transition:fade>
+					<p class="font-bold">{courier_data.courier_name}</p>
+					<span class="font-semibold">
+						{rupiahCurrency(courier_data.rates)}
+					</span>
+				</div>
+			{/if}
 
 			<div class="flex">
 				<span class="flex-none">Total Price (item)</span>
@@ -349,7 +358,7 @@
 			<div>
 				<button
 					type="button"
-					class="btn w-full variant-filled-primary text-xl font-bold text-current"
+					class="btn w-full variant-filled-primary text-xl font-bold text-white"
 					disabled={courier_data.rates == null || isCheckingOut}
 					on:click={handlePostCheckout}
 				>

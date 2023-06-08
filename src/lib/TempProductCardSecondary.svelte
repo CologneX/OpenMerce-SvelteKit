@@ -2,7 +2,6 @@
 	import { goto } from '$app/navigation';
 	import type { Products } from '../app';
 	export let products: Products;
-	import Logo from './icons/Logo.svelte';
 	import Star from './icons/Star.svelte';
 </script>
 
@@ -58,5 +57,6 @@
 				<p>{products.sold}</p>
 			</div>
 		</div>
+		<button class="btn btn-sm variant-filled-primary w-full mt-2">Add to Cart </button>
 	</footer></button
 >

@@ -3,14 +3,20 @@
 	import { TabGroup, Tab } from '@skeletonlabs/skeleton';
 	// scroll to id
 	$: if (tabSet == 1) {
-		const element: HTMLElement = document.getElementById('detail');
-		element.scrollIntoView({ behavior: 'smooth' });
+		const element = document.getElementById('detail');
+		if (element) {
+			element.scrollIntoView({ behavior: 'smooth' });
+		}
 	} else if (tabSet == 2) {
-		const element: HTMLElement = document.getElementById('description');
-		element.scrollIntoView({ behavior: 'smooth' });
+		const element = document.getElementById('description');
+		if (element) {
+			element.scrollIntoView({ behavior: 'smooth' });
+		}
 	} else if (tabSet == 3) {
-		const element: HTMLElement = document.getElementById('reviews');
-		element.scrollIntoView({ behavior: 'smooth' });
+		const element = document.getElementById('reviews');
+		if (element) {
+			element.scrollIntoView({ behavior: 'smooth' });
+		}
 	}
 </script>
 

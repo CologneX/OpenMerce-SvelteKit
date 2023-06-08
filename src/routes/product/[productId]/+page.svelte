@@ -174,7 +174,7 @@
 						{/if}
 						<div class="h-6" />
 						{#if $screenWidthStore > 768}
-							<div class="flex flex-wrap gap-2">
+							<div class="flex flex-wrap gap-2 -m-2">
 								{#if productDetail.image_urls}
 									{#each productDetail.image_urls as image}
 										<button type="button" class="border-primary-500 border-2 rounded-md">
@@ -336,16 +336,17 @@
 			</div>
 			<div class="h-12" />
 			<div id="reviews">
-				<div class="logo-cloud grid-cols-1 lg:!grid-cols-3 gap-1">
-					<div class="logo-item"><h3 id="Reviews">Reviews</h3></div>
-					<div class="logo-item" />
-					<div class="logo-item">
-						<span class="flex"><Star /><Star /><Star /><Star /><Star /></span>
-						<span><h3 data-toc-ignore>{productDetail.cumulative_review}</h3></span>
+				<div class="flex flex-col md:flex-row gap-4">
+					<div class="card drop-shadow-md border border-primary-500 rounded-md p-4 basis-1/4">
+						<p class="font-semibold text-lg">BUYER REVIEWS</p>
+						<div class="text-6xl text-center">
+							{productDetails.cumulative_review}<span class="text-2xl">/5</span>
+						</div>
+					</div>
+					<div class="basis-3/4 flex flex-col gap-4">
+						<Reviews productId={$page.params.productId} />
 					</div>
 				</div>
-
-				<Reviews productId={$page.params.productId} />
 			</div>
 		</div>
 	{/if}
@@ -360,5 +361,5 @@
 		<AddToCart productID={productDetail.id} {quantity} />
 	</footer>
 {:catch error}
-	<h1>Oops Hehe, {error.message}</h1>
+	<h2>Oops Hehe, {error.message}</h2>
 {/await}

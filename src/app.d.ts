@@ -21,6 +21,15 @@ declare interface Products {
 	image: string;
 	sold: number;
 };
+declare interface ProductsCheckout {
+	id: string;
+	name: string;
+	price: number;
+	rating: number;
+	image: string;
+	sold: number;
+	quantity: number;
+};
 
 declare interface ProductsMain {
 	category_id: number;
