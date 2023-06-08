@@ -33,9 +33,12 @@
 	import MapPin from '$lib/icons/MapPin.svelte';
 	import ShoppingCartCount from '$lib/Navbar/ShoppingCart.svelte';
 	import { register } from 'swiper/element/bundle';
-	import { autoModeWatcher } from '@skeletonlabs/skeleton';
+	import { getModeAutoPrefers } from '@skeletonlabs/skeleton';
+	import { setModeCurrent } from '@skeletonlabs/skeleton';
+	import { setInitialClassState } from '@skeletonlabs/skeleton';
 	register();
 	isLoggedIn();
+	setModeCurrent(getModeAutoPrefers());
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	let popupSettings: PopupSettings = {
@@ -147,7 +150,7 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
-	{@html `<script>${autoModeWatcher.toString()} autoModeWatcher();</script>`}
+	{@html `<script>(${setInitialClassState.toString()})();</script>`}
 </svelte:head>
 <svelte:window bind:innerWidth={$screenWidthStore} />
 <!-- {#if $navigating}
@@ -155,7 +158,12 @@
 {/if} -->
 
 <AppShell slotHeader="z-20" slotPageContent="flex justify-center">
-	<Modal class="w-full h-full" shadow="shadow-xl" components={modalComponentRegistry} zIndex="z-40" />
+	<Modal
+		class="w-full h-full"
+		shadow="shadow-xl"
+		components={modalComponentRegistry}
+		zIndex="z-40"
+	/>
 
 	<Toast
 		position="t"
