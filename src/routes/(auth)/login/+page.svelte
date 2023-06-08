@@ -64,11 +64,11 @@
 </svelte:head>
 
 <div class="flex justify-center h-full w-full">
-	<form on:submit|preventDefault={handleLoginSubmit} class="w-full h-fit max-w-xs">
+	<form on:submit|preventDefault={handleLoginSubmit} class="w-full h-fit max-w-xs ">
 		<div class="h-14" />
 		<span class="flex justify-center"><Logo height="8" /></span>
 		<div class="h-14" />
-		<div class="card p-4 gap-y-12 h-full w-full grid shadow-xl">
+		<div class="card p-4 gap-y-12 h-full w-full grid shadow-xl border border-primary-500">
 			<section>
 				<label class="label">
 					<span class="font-bold">E-mail</span>

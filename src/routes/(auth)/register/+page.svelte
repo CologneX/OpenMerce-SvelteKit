@@ -1,14 +1,8 @@
 <script lang="ts">
 	import Logo from '$lib/icons/Logo.svelte';
-	import Google from '$lib/icons/Google.svelte';
-	import Facebook from '$lib/icons/Facebook.svelte';
 	import { Stepper, Step, ProgressRadial } from '@skeletonlabs/skeleton';
-	import { writable } from 'svelte/store';
-
 	import { triggerToast } from '$lib/utils/toast';
-
-	import { DateInput } from 'date-picker-svelte';
-	let date = new Date();
+	import { goto } from '$app/navigation';
 
 	interface FormValues {
 		email: string;
@@ -17,8 +11,9 @@
 		firstname: string;
 		lastname: string;
 		pin: string;
+		birth_date: string;
+		gender: string;
 	}
-
 	interface FormErrors {
 		email?: string;
 		password?: string;
@@ -26,57 +21,76 @@
 		name?: string;
 		pin?: string;
 	}
+	interface FormLock {
+		email: boolean;
+		password: boolean;
+		confirmPassword: boolean;
+		name: boolean;
+		pin: boolean;
+	}
 	const values: FormValues = {
 		email: '',
 		password: '',
 		confirmPassword: '',
 		firstname: '',
 		lastname: '',
-		pin: ''
+		pin: '',
+		birth_date: '',
+		gender: 'male' //default
 	};
-
 	const errors: FormErrors = {};
 
-	const isValid = writable(false);
+	const lock: FormLock = {
+		email: true,
+		password: true,
+		confirmPassword: true,
+		name: true,
+		pin: true
+	};
 
-	function handleSubmit() {
-		if ($isValid) {
-			console.log(values);
+	$: if (values.password !== values.confirmPassword) {
+		lock.password = true;
+		errors.password = 'Passwords do not match';
+	} else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*\W)[a-zA-Z\d\W]{8,}$/.test(values.password)) {
+		lock.password = true;
+		errors.password =
+			'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character';
+	} else {
+		lock.password = false;
+		delete errors.password;
+	}
+
+	function validatePin() {
+		if (values.pin === '') {
+			errors.pin = 'PIN is required';
 		} else {
+			delete errors.pin;
 		}
 	}
 
-	let lockPassword: boolean = true;
-	function validateConfirmPassword() {
-		if (values.confirmPassword !== values.password) {
-			errors.password = 'Passwords do not match';
-			lockPassword = true;
-		} else if (values.password.length < 8) {
-			errors.confirmPassword = '';
-			errors.password = 'Password must be at least 8 characters';
-			lockPassword = true;
-		} else {
-			delete errors.password;
-			lockPassword = false;
-		}
-	}
-
-	let lockEmail: boolean = true;
 	function validateEmail() {
 		if (values.email === '') {
 			errors.email = 'Email is required';
-			lockEmail = true;
 		} else if (!/\S+@\S+\.\S+/.test(values.email)) {
-			errors.email = 'Invalid email';
-			lockEmail = true;
+			errors.email = 'Enter invalid email!';
 		} else {
 			delete errors.email;
-			lockEmail = false;
 		}
 	}
-	let lockSubmit: boolean = false;
 
+	const validateName = () => {
+		if (values.firstname === '') {
+			errors.name = 'First Name is required';
+		} else if (values.lastname === '') {
+			errors.name = 'Last Name is required';
+		} else {
+			delete errors.name;
+		}
+	};
+
+	let lockSubmit: boolean = false;
 	async function sendEmail() {
+		processing = true;
 		const res = await fetch('/api/v1/auth/register-1', {
 			method: 'POST',
 			headers: {
@@ -85,44 +99,71 @@
 			body: JSON.stringify({ email: values.email })
 		});
 		if (res.ok) {
+			lock.email = false;
 			triggerToast('An verification E-Mail has been sent!', 'variant-filled-success');
-		} else {
-			triggerToast(res.statusText, 'variant-filled-error');
+		} else if (res.status === 409) {
+			const data = await res.json();
+			errors.email = data.error;
+			triggerToast(data.error, 'variant-filled-error');
 		}
+		processing = false;
 	}
+
 	async function sendPin() {
-		const res = await fetch('/api/v1/auth/register-1', {
+		processing = true;
+		const res = await fetch('/api/v1/auth/register-2', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ email: values.email, code: values.pin })
+			body: JSON.stringify({ email: values.email, code: Number(values.pin) })
 		});
 		if (res.ok) {
-			// Next step
+			lock.pin = false;
 		} else {
-			triggerToast(res.statusText, 'variant-filled-error');
+			const data = await res.json();
+			errors.pin = data.error;
+			triggerToast(data.error, 'variant-filled-error');
 		}
+		processing = false;
 	}
-	let emailSent: boolean = false;
-	let PINSent: boolean = false;
-	let passwordSent: boolean = false;
-	let nameSent: boolean = false;
 
+	const handlePostRegisterThird = async () => {
+		processing = true;
+		const response = await fetch('/api/v1/auth/register-3', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				email: values.email,
+				password: values.password,
+				first_name: values.firstname,
+				last_name: values.lastname,
+				birth_date: birthDateRFC3339,
+				gender: values.gender
+			})
+		});
+		if (response.ok) {
+			triggerToast('Successfully registered!', 'variant-filled-success');
+			goto('/login');
+		} else {
+			const data = await response.json();
+			triggerToast(data.error, 'variant-filled-error');
+		}
+		processing = false;
+	};
 	let processing: boolean = false;
-	function onNextHandler(e: {
-		detail: { step: number; state: { current: number; total: number } };
-	}): void {
-		console.log(e.detail.step);
-		if (e.detail.step === 0 && !emailSent) {
-			processing = true;
-			sendEmail();
-			emailSent = true;
-			processing = false;
+	let birthDateRFC3339 = '';
+
+	$: {
+		if (values.birth_date) {
+			const date = new Date(values.birth_date);
+			birthDateRFC3339 = date.toISOString();
+		} else {
+			birthDateRFC3339 = '';
 		}
 	}
-
-	let lockPIN: boolean = true;
 </script>
 
 <svelte:head>
@@ -134,140 +175,152 @@
 	/>
 	<meta name="author" content="OpenMerce" />
 </svelte:head>
-<div class="flex items-center justify-center h-full w-full">
-	<form class="w-full h-full md:h-fit max-w-3xl" on:submit|preventDefault>
-		<div class="card p-4 gap-y-12 h-full w-full grid">
-			<header class="card-header">
-				<span class="flex justify-center"><Logo height="10" /></span>
-			</header>
-			<section>
-				<Stepper
-					buttonFinishLabel="Register"
-					buttonCompleteType="submit"
-					buttonComplete="variant-ghost-primary"
-					buttonNextLabel={processing ? 'Processing' : 'Next →'}
-					on:complete={handleSubmit}
-					on:next={onNextHandler}
-				>
-					<Step locked={lockEmail}>
-						<svelte:fragment slot="header">E-mail</svelte:fragment>
-						<input
-							class="input variant-form-material"
-							type="email"
-							name="email"
-							placeholder="example@email.com"
-							bind:value={values.email}
-							on:input={validateEmail}
-						/>
+<div class="flex justify-center h-full w-full">
+	<div class="w-full h-fit max-w-xs">
+		<div class="h-14" />
+		<span class="flex justify-center"><Logo height="8" /></span>
+		<div class="h-14" />
+		<div class=" border border-primary-500 h-full card p-4">
+			<Stepper
+				buttonComplete="variant-ghost-primary"
+				buttonNextLabel={processing ? 'Processing' : 'Next →'}
+			>
+				<Step locked={lock.email}>
+					<svelte:fragment slot="header">E-mail</svelte:fragment>
 
-						{#if errors.email}<small class="text-error-500"
-								>{errors.email}</small
-							>{/if}
-						<hr class="!border-t-2 !border-current" />
-						<div class="grid grid-rows-1">
-							<div class="grid sm:grid-cols-1 md:grid-cols-2 gap-2">
-								<button class="btn variant-ghost-primary">
-									<span><Google /></span>
-									<span>Google</span>
-								</button>
-								<button class="btn variant-ghost-primary">
-									<span><Facebook /></span>
-									<span>Facebook</span>
-								</button>
-							</div>
-						</div>
-					</Step>
-					<Step>
-						<svelte:fragment slot="header">PIN</svelte:fragment>
-						<span>Enter the verification PIN that we have sent to your E-Mail</span>
-						<input
-							class="input variant-form-material text-center text-xl"
-							type="text"
-							name="pin"
-							maxlength="6"
-							placeholder="123456"
-							bind:value={values.pin}
-						/>
-						{#if errors.pin}<small class="text-error-500">{errors.pin}</small>{/if}
-					</Step>
-					<Step locked={lockPassword}>
-						<svelte:fragment slot="header">Password</svelte:fragment>
-						<input
-							class="input variant-form-material"
-							type="password"
-							name="password"
-							placeholder="Password"
-							bind:value={values.password}
-							on:input={validateConfirmPassword}
-						/>
-						<input
-							class="input variant-form-material"
-							type="password"
-							name="confirmPassword"
-							placeholder="Confirm Password"
-							bind:value={values.confirmPassword}
-							on:input={validateConfirmPassword}
-						/>
-						{#if errors.password}<small class="text-error-500">{errors.password}</small>{/if}
-					</Step>
-					<Step locked={!values.firstname}>
-						<svelte:fragment slot="header">Name</svelte:fragment>
-
-						<div class="grid grid-cols-2 gap-4">
-							<label class="label">
-								<span>First Name</span>
-								<input
-									class="input variant-form-material"
-									type="text"
-									name="name"
-									placeholder="Yves"
-									bind:value={values.firstname}
-								/>
-							</label>
-
-							<label class="label">
-								<span>Last Name</span>
-								<input
-									class="input variant-form-material"
-									type="text"
-									name="name"
-									title="Last Name"
-									placeholder="Queen"
-									bind:value={values.lastname}
-								/>
-							</label>
-						</div>
-						<DateInput bind:value={date} class="input variant-form-material bg-current" />
-
-						<div class="flex space-x-2">
-							<span class="font-semibold">Gender</span>
-							<label class="flex items-center space-x-2">
-								<input class="radio" type="radio" checked name="radio-direct" value="male" />
-								<p>Male</p>
-							</label>
-							<label class="flex items-center space-x-2">
-								<input class="radio" type="radio" name="radio-direct" value="female" />
-								<p>Female</p>
-							</label>
-							<label class="flex items-center space-x-2">
-								<input class="radio" type="radio" name="radio-direct" value="walmart bag" />
-								<p>Walmart Bag</p>
-							</label>
-						</div>
-
-						{#if errors.name}<small class="text-error-500">{errors.name}</small>{/if}
-					</Step>
-					<Step locked={!lockSubmit}>
-						<svelte:fragment slot="header">Register Confirmation</svelte:fragment>
-						<p>Are you sure you want to register?</p>
-						<label class="flex items-center space-x-2">
-							<input class="checkbox" type="checkbox" bind:checked={lockSubmit} />
-							<p>*I Agree with the Terms & Condition</p>
+					<input
+						class="input variant-form-material"
+						type="email"
+						name="email"
+						placeholder="example@email.com"
+						bind:value={values.email}
+						on:input={validateEmail}
+						on:change={validateEmail}
+					/>
+					{#if errors.email}<small class="text-error-500">{errors.email}</small>{/if}
+					<button
+						class="btn w-full variant-soft-primary font-semibold"
+						on:click={sendEmail}
+						disabled={errors.email != undefined || values.email == ''}
+					>
+						{#if processing}
+							<span><ProgressRadial width="w-6" /></span>
+						{/if}
+						<span> Confirm </span>
+					</button>
+					<hr class=" my-4" />
+				</Step>
+				<Step locked={lock.pin}>
+					<svelte:fragment slot="header">PIN</svelte:fragment>
+					<span>Enter the verification PIN that we have sent to your E-Mail</span>
+					<input
+						class="input text-center text-xl"
+						type="text"
+						placeholder="Enter your PIN here"
+						bind:value={values.pin}
+						on:keypress={(e) => {
+							if (e.key.match(/[^0-9]/g)) {
+								e.preventDefault();
+							}
+						}}
+						on:input={validatePin}
+						on:change={validatePin}
+					/>
+					{#if errors.pin}<small class="text-error-500">{errors.pin}</small>{/if}
+					<button
+						class="btn w-full variant-soft-primary font-semibold"
+						on:click={sendPin}
+						disabled={errors.pin != undefined || values.pin == ''}
+					>
+						{#if processing}
+							<span><ProgressRadial width="w-6" /></span>
+						{/if}
+						<span> Confirm </span>
+					</button>
+					<hr class="my-4" />
+				</Step>
+				<Step locked={lock.password}>
+					<svelte:fragment slot="header">Password</svelte:fragment>
+					<input
+						class="input"
+						type="password"
+						placeholder="Password"
+						bind:value={values.password}
+					/>
+					<input
+						class="input"
+						type="password"
+						name="confirmPassword"
+						placeholder="Confirm Password"
+						bind:value={values.confirmPassword}
+					/>
+					{#if errors.password}<small class="text-error-500">{errors.password}</small>{/if}
+					<hr class=" my-4" />
+				</Step>
+				<Step locked={lock.password && lock.confirmPassword && lockSubmit}>
+					<svelte:fragment slot="header">Name</svelte:fragment>
+					<div class="grid grid-cols-2 gap-4">
+						<label class="label">
+							<span>First Name</span>
+							<input
+								class="input"
+								type="text"
+								placeholder="Yves"
+								bind:value={values.firstname}
+								on:change={validateName}
+								on:input={validateName}
+							/>
 						</label>
-						<a href="t&c">Terms & Condition</a>
-					</Step>
-				</Stepper>
-			</section>
+
+						<label class="label">
+							<span>Last Name</span>
+							<input
+								class="input"
+								type="text"
+								title="Last Name"
+								placeholder="Queen"
+								bind:value={values.lastname}
+								on:change={validateName}
+								on:input={validateName}
+							/>
+						</label>
+					</div>
+					<input type="date" class="input w-full" bind:value={values.birth_date} />
+					<div class="flex space-x-2">
+						<span class="font-semibold">Gender</span>
+						<label class="flex items-center space-x-2">
+							<input class="radio" type="radio" value="male" bind:group={values.gender} />
+							<p>Male</p>
+						</label>
+						<label class="flex items-center space-x-2">
+							<input class="radio" type="radio" value="female" bind:group={values.gender} />
+							<p>Female</p>
+						</label>
+					</div>
+
+					<p>Are you sure you want to register?</p>
+					<label class="flex items-center space-x-2">
+						<input class="checkbox" type="checkbox" bind:checked={lockSubmit} />
+						<p>*I Agree with the Terms & Condition</p>
+					</label>
+					<a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Terms & Condition</a>
+					{#if errors.name}<small class="text-error-500">{errors.name}</small>{/if}
+					<button
+						class="btn w-full variant-soft-primary font-semibold"
+						on:click={handlePostRegisterThird}
+						disabled={errors.name != undefined ||
+							lockSubmit == false ||
+							(values.firstname == '' && values.lastname == '') ||
+							values.birth_date == null}
+					>
+						{#if processing}
+							<span><ProgressRadial width="w-6" /></span>
+						{/if}
+						<span> Confirm </span>
+					</button>
+					<hr class=" my-4" />
+				</Step>
+			</Stepper>
 		</div>
-	</form>
+	</div>
 </div>

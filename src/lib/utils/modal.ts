@@ -4,6 +4,7 @@ import DeliverySimulation from '$lib/Modal/DeliverySimulation.svelte';
 import AddressList from '$lib/Modal/AddressList.svelte';
 import AddAddress from '$lib/Modal/AddAddress.svelte';
 import TransactionDetails from '$lib/Modal/TransactionDetails.svelte';
+import ReviewModal from '$lib/Modal/ReviewModal.svelte';
 
 
 export const modalComponentRegistry: Record<string, ModalComponent> = {
@@ -22,6 +23,9 @@ export const modalComponentRegistry: Record<string, ModalComponent> = {
 	TransactionDetails: {
 		ref: TransactionDetails,
 	},
+	Review: {
+		ref: ReviewModal,
+	}
 }
 
 export const AddressModal: ModalSettings = {

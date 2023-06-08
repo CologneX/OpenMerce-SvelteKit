@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { refreshTokenUser } from '$lib/utils/refreshToken';
-	import { modalStore } from '@skeletonlabs/skeleton';
+	import { modalStore, type ModalSettings } from '@skeletonlabs/skeleton';
 	import type { OrderDetail } from '../../app';
 	import { rupiahCurrency } from '$lib/utils/units';
+	import ReviewModal from './ReviewModal.svelte';
 	const handleGetTransactionDetails = async () => {
 		const response = await fetch(`/api/v1/customer/order?id=${$modalStore[0].meta?.orderID}`, {
 			method: 'GET',
@@ -33,6 +34,18 @@
 		} else {
 			throw new Error('Cannot load data, sorry :)');
 		}
+	};
+
+	const handleModalReviewModal = async (orderID: string) => {
+		modalStore.close();
+		const ReviewModal: ModalSettings = {
+			type: 'component',
+			component: 'Review'
+		};
+		ReviewModal.meta = {
+			orderID: orderID
+		};
+		modalStore.trigger(ReviewModal);
 	};
 </script>
 
@@ -137,7 +150,17 @@
 			</div>
 		{:then data}
 			<div class="px-4 md:px-10 space-y-2">
-				<div class="font-semibold">
+				<div
+					class="font-semibold text-sm md:text-base {data.status === 'pending'
+						? 'text-success-500'
+						: data.status === 'settlement'
+						? 'text-primary-500'
+						: data.status === 'expire'
+						? 'text-warning-500'
+						: data.status === 'cancel'
+						? 'text-error-500'
+						: ''}"
+				>
 					{data.status.charAt(0).toUpperCase() + data.status.slice(1)}
 				</div>
 				<hr />
@@ -186,6 +209,9 @@
 								<div class="space-x-2 md:space-x-4 flex justify-end w-full">
 									<button
 										class="btn btn-sm md:btn variant-filled-primary font-bold md:px-20"
+										on:click={() => {
+											handleModalReviewModal(item.id);
+										}}
 										disabled={item.reviewed}>Review</button
 									>
 								</div>

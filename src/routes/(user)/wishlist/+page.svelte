@@ -119,7 +119,7 @@
 	</div>
 </div> -->
 
-<h3 class=" text-xl py-6 font-bold">Your Cart</h3>
+<h3 class=" text-xl py-6 font-bold">Your Wishlist</h3>
 
 {#await handleGetWishlist()}
 	<div class="rounded-md placeholder animate-pulse w-full h-96" />

@@ -1,4 +1,6 @@
 import type { ProductDetail, Products, ProductsMain } from "../../app";
+import { refreshTokenUser } from "./refreshToken";
+import { triggerToast } from "./toast";
 
 export const getProductsMain = async () => {
     const getProduct = await fetch('/api/v1/product', {
@@ -55,4 +57,40 @@ export const getProductSearch = async (param: string) => {
     }
     const productData: Products[] = await response.json();
     return productData;
+};
+
+
+
+export const handleGetReview = async (productID:string) => {
+    const response = await fetch(`/api/v1/customer/order-review`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            order_id: orderID,
+            rating: rating,
+            review: review
+        })
+    });
+    if(response.status === 401){
+        await refreshTokenUser();
+        const responseAgain = await fetch(`/api/v1/customer/order-review`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                order_id: orderID,
+                rating: rating,
+                review: review
+            })
+        });
+        if(responseAgain.ok){
+            triggerToast('Review posted', 'variant-soft');
+            modalStore.close();
+        } else {
+            triggerToast('Error posting review', 'variant-soft-error');
+        }
+    }
 };
