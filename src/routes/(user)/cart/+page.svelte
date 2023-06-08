@@ -2,7 +2,12 @@
 	import { goto } from '$app/navigation';
 	import CartItems from '$lib/Cart/CartItems.svelte';
 	import CartSummary from '$lib/Cart/CartSummary.svelte';
-	import { cartCountStore, screenWidthStore, subTotalStore, totalItemsStore } from '$lib/utils/stores';
+	import {
+		cartCountStore,
+		screenWidthStore,
+		subTotalStore,
+		totalItemsStore
+	} from '$lib/utils/stores';
 	import { rupiahCurrency } from '$lib/utils/units';
 
 	const handlePostCheckAll = async () => {
@@ -15,6 +20,9 @@
 				checkAll: true
 			})
 		});
+		if (response.ok) {
+			// run the function here
+		}
 		if (!response.ok) {
 			throw new Error('An error occurred while fetching the data');
 		}
@@ -29,10 +37,10 @@
 	<div class="px-5">
 		<div class="font-bold text-2xl mb-4">Cart</div>
 		{#if $cartCountStore > 0}
-		<label class="flex items-center space-x-2 sticky top-0 px-3">
-			<input class="checkbox" type="checkbox" on:change={handlePostCheckAll} />
-			<p>Select All</p>
-		</label>
+			<label class="flex items-center space-x-2 sticky top-0 px-3">
+				<input class="checkbox" type="checkbox" on:change={handlePostCheckAll} />
+				<p>Select All</p>
+			</label>
 		{/if}
 	</div>
 	<div class="grid grid-cols-3 gap-8 mx-5 mt-5">

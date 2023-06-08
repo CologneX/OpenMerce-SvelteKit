@@ -6,6 +6,7 @@ import AddAddress from '$lib/Modal/AddAddress.svelte';
 import TransactionDetails from '$lib/Modal/TransactionDetails.svelte';
 import ReviewModal from '$lib/Modal/ReviewModal.svelte';
 import ChangePassword from '$lib/Modal/ChangePassword.svelte';
+import EditAddress from '$lib/Modal/EditAddress.svelte';
 
 
 export const modalComponentRegistry: Record<string, ModalComponent> = {
@@ -29,6 +30,9 @@ export const modalComponentRegistry: Record<string, ModalComponent> = {
 	},
 	ChangePassword: {
 		ref: ChangePassword
+	},
+	EditAddress: {
+		ref: EditAddress,
 	}
 }
 

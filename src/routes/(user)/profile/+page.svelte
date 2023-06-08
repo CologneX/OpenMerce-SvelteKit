@@ -10,6 +10,7 @@
 	import Trash from '$lib/icons/Trash.svelte';
 	import { refreshTokenUser } from '$lib/utils/refreshToken';
 	import { triggerToast } from '$lib/utils/toast';
+	import PencilSquare from '$lib/icons/PencilSquare.svelte';
 	let tabSet: number = 0;
 	let isSettingDefaultLocation: boolean = false;
 	let searchAddress: string;
@@ -59,8 +60,6 @@
 		}
 	};
 
-	// get an API req based on the structure above from /api/v1/customer/profile
-	// and then use the data to fill the form
 	let GetProfile: GetProfile;
 	const handleGetProfile = async () => {
 		const response = await fetch('/api/v1/customer/profile', {
@@ -143,6 +142,17 @@
 		} else {
 			triggerToast('Failed to update profile', 'variant-filled-error');
 		}
+	};
+
+	const handleOpenEditAddressModal = async (addressID: string) => {
+		const EditAddressModal: ModalSettings = {
+			type: 'component',
+			component: 'EditAddress',
+			meta: {
+				addressID: addressID
+			}
+		};
+		modalStore.trigger(EditAddressModal);
 	};
 </script>
 
@@ -368,6 +378,14 @@
 												on:click|preventDefault={() => handleDeleteAddress(address.id)}
 											>
 												<span><Trash /></span>
+											</button>
+											<button
+												class="btn btn-sm variant-soft-warning w-fit mr-4 md:mr-0 font-bold"
+												on:click|preventDefault={() => handleOpenEditAddressModal(address.id)}
+											>
+												<span>
+													<span><PencilSquare /> </span>
+												</span>
 											</button>
 										</div>
 									</div>
