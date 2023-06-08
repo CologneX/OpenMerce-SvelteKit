@@ -1,4 +1,4 @@
-import { writable } from "svelte/store";
+import { readable, writable } from "svelte/store";
 import { localStorageStore } from '@skeletonlabs/skeleton';
 import type { Writable } from 'svelte/store';
 import type { AddressDefault } from "../../app";
@@ -11,3 +11,4 @@ export const cartCountStore = writable(0);
 export const defaultLocationStore: Writable<AddressDefault> = localStorageStore('loc', { id: 25410, name: 'Jakarta Pusat', address_id: null });
 export const totalItemsStore = writable(0);
 export const product_codeStore = writable('');
+export const fallbackImageStore = readable('$lib/broken-picture.png');

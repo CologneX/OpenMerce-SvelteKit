@@ -34,7 +34,7 @@ export const handleLoginSetLocation = async (id: string) => {
     });
     if (responseDetail.ok) {
         const data: AddressDetail = await responseDetail.json();
-        defaultLocationStore.set({ id: data.area_id, name: data.shipping_area, address_id: id });
+        defaultLocationStore.set({ id: data.area_id, name: data.label, address_id: id });
         modalStore.clear();
         triggerToast('Address has been set', 'variant-filled-success');
     } else if (responseDetail.status === 401) {

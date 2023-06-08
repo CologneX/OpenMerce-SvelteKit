@@ -3,6 +3,7 @@ import Address from '$lib/Modal/Address.svelte';
 import DeliverySimulation from '$lib/Modal/DeliverySimulation.svelte';
 import AddressList from '$lib/Modal/AddressList.svelte';
 import AddAddress from '$lib/Modal/AddAddress.svelte';
+import TransactionDetails from '$lib/Modal/TransactionDetails.svelte';
 
 
 export const modalComponentRegistry: Record<string, ModalComponent> = {
@@ -17,7 +18,10 @@ export const modalComponentRegistry: Record<string, ModalComponent> = {
 	},
 	AddAdress: {
 		ref: AddAddress,
-	}
+	},
+	TransactionDetails: {
+		ref: TransactionDetails,
+	},
 }
 
 export const AddressModal: ModalSettings = {
@@ -38,4 +42,9 @@ export const AddressListModal: ModalSettings = {
 export const AddAddressModal: ModalSettings = {
 	type: 'component',
 	component: 'AddAdress',
+};
+
+export const TransactionDetailsModal: ModalSettings = {
+	type: 'component',
+	component: 'TransactionDetails'
 };

@@ -26,7 +26,7 @@
 					modalStore.trigger(AddressModal);
 				}}
 			>
-				<span class="border-2 truncate">
+				<span class="truncate">
 					Delivery to <span class="font-semibold"> {$defaultLocationStore.name} </span></span
 				>
 				<span><ChevronDown /></span>

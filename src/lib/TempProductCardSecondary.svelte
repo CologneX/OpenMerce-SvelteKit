@@ -2,11 +2,11 @@
 	import { goto } from '$app/navigation';
 	import type { Products } from '../app';
 	export let products: Products;
+	import Logo from './icons/Logo.svelte';
 	import Star from './icons/Star.svelte';
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<swiper-slide
+<button
 	class="card rounded-md w-40 md:w-44 lg:w-48 card-hover drop-shadow-md"
 	on:click={() => {
 		goto(`/product/${products.id}`);
@@ -24,10 +24,10 @@
 		<!-- <div class="swiper-lazy-preloader -z-50" /> -->
 	{:else}
 		<img
-			src="placeholder.png"
+			src="/placeholder.png"
 			loading="lazy"
 			alt="{products.name}'s image"
-			class="aspect-square object-cover rounded-md"
+			class="aspect-square object-cover rounded-t-md"
 			width="100%"
 			height="100%"
 		/>
@@ -46,7 +46,7 @@
 
 	<footer class="p-2">
 		<hr class="!border-t-2 border-current" />
-		<div class="flex flex-row pt-2 overflow-x-auto gap-x-1">
+		<div class="flex flex-row pt-2">
 			<div class="badge variant-ghost">
 				<span>
 					<Star />
@@ -58,5 +58,5 @@
 				<p>{products.sold}</p>
 			</div>
 		</div>
-	</footer></swiper-slide
+	</footer></button
 >

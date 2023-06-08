@@ -40,6 +40,8 @@
 			if (response.status === 409) {
 				const data = await response.json();
 				triggerToast(data.message, 'variant-filled-error');
+			} else if (response.status === 400) {
+				triggerToast('Fill all the info!', 'variant-filled-error');
 			}
 		} else if (response.ok) {
 			triggerToast('Address added successfully', 'variant-filled-primary');
@@ -48,12 +50,13 @@
 		if (response.status === 409) {
 			const data = await response.json();
 			triggerToast(data.message, 'variant-filled-error');
+		} else if (response.status === 400) {
+			triggerToast('Fill all the info!', 'variant-filled-error');
 		}
 		isSavingAddress = false;
 	};
 	let timeoutId: ReturnType<typeof setTimeout>;
 	let searchLocation: string = '';
-	let savedAddressId: number;
 	let closeSearch: boolean = false;
 	const handleSearchLocation = (searchLocation: string) => {
 		return new Promise((resolve, reject) => {
@@ -80,9 +83,11 @@
 </script>
 
 {#if $modalStore[0]}
-	<div class="card w-full max-w-3xl h-full max-h-[98%] overflow-y-auto">
+	<div class="card w-full max-w-3xl h-full border border-black max-h-[98%] overflow-y-auto">
 		<div class=" px-10 py-6">
 			<div class="font-bold text-xl sticky top-0">Add Address</div>
+			<div class="h-6" />
+			<hr class="-mx-10" />
 			<div class="h-6" />
 			<label class="label">
 				<span class="text-sm"
@@ -93,6 +98,7 @@
 					placeholder="Name"
 					class="input"
 					bind:value={AddAddressValue.recipient_name}
+					required
 				/>
 			</label>
 			<div class="h-4" />
@@ -101,6 +107,7 @@
 				<input
 					type="text"
 					placeholder="Phone/Mobile number"
+					required
 					class="input"
 					bind:value={AddAddressValue.phone_number}
 				/>
@@ -113,6 +120,7 @@
 				<input
 					type="text"
 					placeholder="Label your address"
+					required
 					class="input"
 					bind:value={AddAddressValue.label}
 				/>
@@ -125,6 +133,7 @@
 				<textarea
 					placeholder="City & Subdistrict"
 					class="input resize-y"
+					required
 					bind:value={searchLocation}
 					on:focus={() => {
 						closeSearch = false;
@@ -166,6 +175,7 @@
 				<input
 					type="text"
 					placeholder="Your full, detailed address"
+					required
 					class="input"
 					bind:value={AddAddressValue.full_address}
 				/>
@@ -175,7 +185,8 @@
 				<span class="text-sm">Postal Code <span class="badge variant-soft">Required</span> </span>
 				<input
 					type="text"
-					placeholder="Your full, detailed address"
+					placeholder="Your postal code"
+					required
 					class="input"
 					bind:value={AddAddressValue.postal_code}
 				/>
@@ -186,14 +197,14 @@
 				<input
 					type="text"
 					placeholder="Note to the courier"
+					required
 					class="input"
 					bind:value={AddAddressValue.note}
 				/>
 			</label>
-		</div>
-		<div class="card p-2 sticky bottom-0">
+
 			<button
-				class="btn w-full variant-soft-primary font-bold"
+				class="btn w-full variant-soft-primary font-bold mt-6"
 				disabled={isSavingAddress}
 				on:click={handlePostAddAddress}
 			>

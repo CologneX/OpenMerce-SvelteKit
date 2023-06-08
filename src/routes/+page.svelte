@@ -6,6 +6,11 @@
 	import type { Products } from '../app';
 	import Prev from '$lib/icons/Prev.svelte';
 	import Next from '$lib/icons/Next.svelte';
+	import Logo from '$lib/icons/Logo.svelte';
+	import Star from '$lib/icons/Star.svelte';
+	import { goto } from '$app/navigation';
+	import TempProductCardSecondary from '$lib/TempProductCardSecondary.svelte';
+	import TempProductCard from '$lib/TempProductCard.svelte';
 	let allProducts: Products[] = [];
 	let isLoading: boolean = true;
 	const MainMenuLoad = async () => {
@@ -83,7 +88,7 @@
 					type="button"
 					class="btn-icon absolute variant-filled top-1/2 transform -translate-y-1/2 z-10 -right-5 opacity-0 transition-opacity duration-500 group-hover:opacity-100 next"
 					on:click={() => {
-						const swiper = document.getElementById(i)['swiper'];
+						const swiper = document.getElementById(`${i}`)['swiper'];
 						swiper.slideNext();
 					}}
 				>
@@ -103,6 +108,7 @@
 					<div class="w-full h-full">
 						<swiper-container
 							pagination={false}
+							navigation={false}
 							slides-per-view={$screenWidthStore < 640
 								? 2
 								: $screenWidthStore < 768
@@ -111,12 +117,11 @@
 								? 5
 								: 6}
 							space-between={10}
+							id={i}
 							free-mode={true}
 						>
 							{#each items.products as products}
-								<swiper-slide class="card card-hover shadow-xl">
-									<ProductCard {products} /></swiper-slide
-								>
+								<ProductCard {products} />
 							{/each}
 						</swiper-container>
 					</div>
@@ -125,70 +130,20 @@
 						<swiper-container
 							slides-per-view={6}
 							space-between={10}
-							navigation={true}
+							navigation={false}
 							slides-per-group={6}
 							pagination={false}
 							grab-cursor={true}
 							id={i}
+							class="py-8"
 						>
 							{#each items.products as products}
-								<swiper-slide class="card card-hover w-40 md:w-44 lg:w-48 h-full max-h-96">
-									<ProductCard {products} /></swiper-slide
-								>
+								<ProductCard {products} />
 							{/each}
 						</swiper-container>
 					</div>
 				{/if}
 			</div>
-			<!-- <div class="w-full">
-				<div class="flex">
-					<div class="font-semibold text-xl flex-1">{items.category_name}</div>
-					<a href="/category/{items.category_id}" class="decoration-transparent">See All</a>
-				</div>
-				<div class="h-4" />
-				<hr class="!border-b-2" />
-				<div class="h-4" />
-
-				{#if $screenWidthStore < 1024}
-					<div class="w-full h-full">
-						<swiper-container
-							pagination={false}
-							slides-per-view={$screenWidthStore < 640
-								? 2
-								: $screenWidthStore < 768
-								? 4
-								: $screenWidthStore < 1024
-								? 5
-								: 6}
-							space-between={10}
-							free-mode={true}
-						>
-							{#each items.products as products}
-								<swiper-slide class="card card-hover shadow-xl">
-									<ProductCard {products} /></swiper-slide
-								>
-							{/each}
-						</swiper-container>
-					</div>
-				{:else}
-					<div class="w-full h-full">
-						<swiper-container
-							slides-per-view={6}
-							space-between={10}
-							navigation={true}
-							slides-per-group={6}
-							pagination={false}
-							grab-cursor={true}
-						>
-							{#each items.products as products}
-								<swiper-slide class="card card-hover w-40 md:w-44 lg:w-48 h-full max-h-96">
-									<ProductCard {products} /></swiper-slide
-								>
-							{/each}
-						</swiper-container>
-					</div>
-				{/if}
-			</div> -->
 		{/each}
 	{/await}
 
@@ -228,9 +183,10 @@
 		</swiper-container>
 	{:else}
 		<div class="font-semibold text-xl">All Products</div>
-		<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-2">
+		<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-y-2">
 			{#each allProducts as products}
-				<ProductCard {products} />
+				<!-- <TempProductCardSecondary {products} /> -->
+				<TempProductCard {products} />
 			{/each}
 		</div>
 	{/if}

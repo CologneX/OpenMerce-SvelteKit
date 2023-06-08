@@ -46,7 +46,9 @@
 		{#if $isLoggedInStore}
 			{#await handleLoadAddress()}
 				<div class=" card space-y-2 h-fit">
-					<p class="font-semibold text-lg border-l-4 pl-4 placeholder animate-pulse" />
+					<p
+						class="font-semibold text-lg border-l-4 border-primary-500 pl-4 placeholder animate-pulse"
+					/>
 					<div class="p-5 space-y-1">
 						<p class="font-semibold text-xl placeholder animate-pulse" />
 						<p class="text-sm placeholder animate-pulse" />
@@ -58,7 +60,9 @@
 					{#each data as address}
 						<div class="card shadow-md py-2 flex flex-row items-center">
 							<div class="basis-3/4">
-								<p class="font-semibold text-lg border-l-4 pl-4">{address.label}</p>
+								<p class="font-semibold text-lg border-l-4 border-primary-500 pl-4">
+									{address.label}
+								</p>
 								<div class="pl-5">
 									<p class="font-semibold text-xl">{address.recipient_name}</p>
 									<p class="text-sm">{address.phone_number}</p>

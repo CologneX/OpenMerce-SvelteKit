@@ -1,7 +1,5 @@
 <script lang="ts">
 	import Logo from '$lib/icons/Logo.svelte';
-	import Google from '$lib/icons/Google.svelte';
-	import Facebook from '$lib/icons/Facebook.svelte';
 	import { triggerToast } from '$lib/utils/toast';
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
 	import { goto } from '$app/navigation';
@@ -35,7 +33,6 @@
 			localStorage.setItem('last_name', data.last_name);
 			isLoggedInStore.set(true);
 			triggerToast(`Welcome back, ${data.first_name} ${data.last_name}!`, 'variant-filled-success');
-			// goto('/') or go back to previous page if exist
 
 			if (window.history.length > 1) {
 				window.history.back();
@@ -100,7 +97,7 @@
 				</label>
 			</section>
 			<footer class="grid content-end gap-y-4">
-				<button class="btn variant-ghost-primary w-full" type="submit" disabled={loggingIn}
+				<button class="btn variant-soft-primary w-full font-bold" type="submit" disabled={loggingIn}
 					><span
 						>{#if loggingIn}<ProgressRadial class="w-6" />{/if}</span
 					>

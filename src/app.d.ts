@@ -19,6 +19,7 @@ declare interface Products {
 	price: number;
 	rating: number;
 	image: string;
+	sold: number;
 };
 
 declare interface ProductsMain {
@@ -169,4 +170,40 @@ declare interface AddAddress {
 	phone_number: string;
 	shipping_area: number;
 	postal_code: string;
+}
+
+declare interface OrderDetail {
+	id: number;
+	status: string;
+	status_description: string;
+	created_at: string;
+	item_list: ItemListOrderDetail[];
+	courier: string;
+	tracking_code: string;
+	address_detail: OrderAddressDetail;
+	item_cost: number;
+	shipping_cost: number;
+	total_cost: number;
+	payment_type: string;
+
+}
+
+declare interface ItemListOrderDetail {
+
+	order_id: number;
+	id: string;
+	name: string;
+	price: number;
+	image: string;
+	quantity: number;
+	reviewed: boolean;
+
+
+}
+
+declare interface OrderAddressDetail {
+	recipient_name: string;
+	phone_number: string;
+	full_address: string;
+	shipping_area: string;
 }

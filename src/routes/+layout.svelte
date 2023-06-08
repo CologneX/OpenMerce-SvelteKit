@@ -33,6 +33,7 @@
 	import MapPin from '$lib/icons/MapPin.svelte';
 	import ShoppingCartCount from '$lib/Navbar/ShoppingCart.svelte';
 	import { register } from 'swiper/element/bundle';
+	import { autoModeWatcher } from '@skeletonlabs/skeleton';
 	register();
 	isLoggedIn();
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
@@ -146,6 +147,7 @@
 
 <svelte:head>
 	<link rel="icon" href={favicon} />
+	{@html `<script>${autoModeWatcher.toString()} autoModeWatcher();</script>`}
 </svelte:head>
 <svelte:window bind:innerWidth={$screenWidthStore} />
 <!-- {#if $navigating}
@@ -153,7 +155,7 @@
 {/if} -->
 
 <AppShell slotHeader="z-20" slotPageContent="flex justify-center">
-	<Modal class="w-full h-full" shadow="shadow-xl" components={modalComponentRegistry} />
+	<Modal class="w-full h-full" shadow="shadow-xl" components={modalComponentRegistry} zIndex="z-40" />
 
 	<Toast
 		position="t"
@@ -215,7 +217,7 @@
 								<button
 									class="btn btn-sm p-0"
 									on:click={() => {
-										goto('/wishlist');
+										goto('/transaction-list');
 										drawerStore.close();
 									}}><span> <Heart /> </span> <span>Transaction List</span></button
 								>
@@ -293,18 +295,18 @@
 			slotTrail="place-content-end"
 			gap="gap-4"
 			padding="p-2"
-			regionRowHeadline="text-xs md:text-sm truncate"
+			regionRowHeadline="truncate"
 			shadow="shadow-xl"
 		>
 			<svelte:fragment slot="headline">
-				<div class="text-end truncate">
+				<div class="md:text-end truncate">
 					<button
 						type="button"
-						class="btn btn-sm py-0 truncate"
+						class="btn btn-sm p-0"
 						on:click={() => modalStore.trigger(AddressModal)}
 					>
 						<span><MapPin /></span>
-						<span class="truncate">
+						<span class="text-xs md:text-sm">
 							Location <span class="font-bold truncate">{$defaultLocationStore.name}</span>
 						</span>
 					</button>
@@ -371,13 +373,11 @@
 						</span>
 					</button>
 
-					<div data-popup="cartHover">
-						<div class="card p-4 w-full max-w-md h-fit max-h-96">
-							{#if $screenWidthStore > 1024 && $isLoggedInStore}
-								<CartDropdown />
-							{/if}
+					{#if $screenWidthStore > 1024 && $isLoggedInStore}
+						<div data-popup="cartHover" class="card p-4 w-full max-w-md h-fit max-h-96">
+							<CartDropdown />
 						</div>
-					</div>
+					{/if}
 
 					{#if !$isLoggedInStore && $screenWidthStore > 1024}
 						<button
@@ -425,10 +425,11 @@
 
 				<div class="card variant-primary p-4 w-72 z-30" data-popup="settingPopup">
 					<div class="card-body space-y-3">
-						<h4>Settings</h4>
-						<LightSwitch />
 						{#if $isLoggedInStore}
-							<div class="card p-4 grid place-items-center w-full">
+							<button
+								class="card p-4 grid place-items-center w-full drop-shadow-md dark:border dark:border-primary-500"
+								on:click={() => goto('/profile')}
+							>
 								<span>
 									<Avatar
 										initials="{first_name}{last_name}"
@@ -436,10 +437,52 @@
 										width="w-12"
 									/>
 								</span>
-								<span>{first_name} {last_name}</span>
-							</div>
+								<span class="font-semibold">{first_name} {last_name}</span>
+							</button>
 						{/if}
-						<div class="w-full shadow-xl py-2 flex">
+						<div class="flex flex-row gap-x-2">
+							<button
+								class="card p-2 drop-shadow-md border dark:border-primary-500 flex-1"
+								on:click={() => {
+									goto('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+								}}
+							>
+								<div class="font-bold text-primary-500">OMPLUS</div>
+								<p class="text-sm">Cheaper delivery, just for you!</p>
+								<p class="text-xs">
+									Subscription starts from <span class="font-semibold"> Rp 29.999/month</span>
+								</p>
+							</button>
+							<span class="divider-vertical" />
+							<div class="flex-1 h-full space-y-2">
+								<button type="button" class="btn btn-sm py-0" on:click={() => goto('/profile')}
+									>Profile</button
+								>
+								<button
+									type="button"
+									class="btn btn-sm py-0"
+									on:click={() => goto('/transaction-list')}>Transaction List</button
+								>
+								<button type="button" class="btn btn-sm py-0" on:click={() => goto('/wishlist')}
+									>Wishlist</button
+								>
+								<button type="button" class="btn btn-sm py-0" on:click={() => goto('/cart')}
+									>Cart</button
+								>
+								<!-- <button
+									type="button"
+									class="btn btn-sm pl-0"
+									on:click={() => goto('/transaction-list')}>Transaction List</button
+								>
+								<button type="button" class="btn btn-sm pl-0" on:click={() => goto('/wishlist')}
+									>Wishlist</button
+								> -->
+								<!-- <button type="button" class="btn btn-sm pl-0" on:click={() => goto('/wishlist')}
+									>Cart</button
+								> -->
+							</div>
+						</div>
+						<div class="w-full drop-shadow-md py-2 flex">
 							{#each ['Indonesia', 'English'] as c}
 								<span
 									class="chip w-full {selectedLanguage === c ? 'variant-filled' : 'variant-soft'}"
@@ -450,13 +493,16 @@
 								</span>
 							{/each}
 						</div>
-						{#if $isLoggedInStore}
-							<button
-								class="btn btn-sm variant-filled w-full"
-								disabled={isLoggingOut}
-								on:click={handleLogout}>{isLoggingOut ? 'Logging Out...' : 'Log Out'}</button
-							>
-						{/if}
+						<div class="flex items-center">
+							<LightSwitch />
+							{#if $isLoggedInStore}
+								<button
+									class="btn btn-sm variant-filled w-full"
+									disabled={isLoggingOut}
+									on:click={handleLogout}>{isLoggingOut ? 'Logging Out...' : 'Log Out'}</button
+								>
+							{/if}
+						</div>
 					</div>
 				</div>
 			</svelte:fragment>
