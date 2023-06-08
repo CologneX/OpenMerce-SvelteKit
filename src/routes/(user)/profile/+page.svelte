@@ -7,6 +7,9 @@
 	import type { Address } from '../../../app';
 	import PlusSmall from '$lib/icons/PlusSmall.svelte';
 	import { AddAddressModal } from '$lib/utils/modal';
+	import Trash from '$lib/icons/Trash.svelte';
+	import { refreshTokenUser } from '$lib/utils/refreshToken';
+	import { triggerToast } from '$lib/utils/toast';
 	let tabSet: number = 0;
 	let isSettingDefaultLocation: boolean = false;
 	let searchAddress: string;
@@ -19,11 +22,42 @@
 
 	$: {
 		if (searchAddress) {
-			filteredData = addressList.filter((address) => address.label.includes(searchAddress));
+			filteredData = addressList.filter((address) =>
+				address.label.toLowerCase().includes(searchAddress.toLowerCase())
+			);
 		} else {
 			filteredData = addressList;
 		}
 	}
+
+	const handleDeleteAddress = async (addressID: string) => {
+		const response = await fetch(`/api/v1/customer/address?id=${addressID}`, {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		if (response.status === 401) {
+			await refreshTokenUser();
+			const response = await fetch(`/api/v1/customer/address?id=${addressID}`, {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+			if (response.ok) {
+				await handleGetAddressList();
+				triggerToast('Successfully deleted address', 'variant-filled-success');
+			} else {
+				triggerToast('Failed to delete address', 'variant-filled-error');
+			}
+		} else if (response.ok) {
+			await handleGetAddressList();
+			triggerToast('Successfully deleted address', 'variant-filled-success');
+		} else {
+			triggerToast('Failed to delete address', 'variant-filled-error');
+		}
+	};
 </script>
 
 <svelte:head>
@@ -50,7 +84,6 @@
 		<TabGroup>
 			<Tab bind:group={tabSet} name="tab1" value={0}>Personal Profile</Tab>
 			<Tab bind:group={tabSet} name="tab2" value={1}>Address</Tab>
-			<Tab bind:group={tabSet} name="tab3" value={2}>Payment</Tab>
 
 			<svelte:fragment slot="panel">
 				{#if tabSet === 0}
@@ -204,18 +237,20 @@
 								{#each filteredData as address}
 									<div class="card drop-shadow-md py-2 flex flex-row items-center">
 										<div class="basis-3/4">
-											<p class="font-semibold text-lg border-l-4 pl-4 border-primary-500">
+											<p
+												class="font-semibold text-base md:text-xl border-l-4 pl-4 border-primary-500"
+											>
 												{address.label}
 											</p>
 											<div class="pl-5">
-												<p class="font-semibold text-xl">{address.recipient_name}</p>
-												<p class="text-sm">{address.phone_number}</p>
-												<p class="text-sm">{address.full_address}</p>
+												<p class="font-semibold text-base md:text-xl">{address.recipient_name}</p>
+												<p class="text-xs md:text-sm">{address.phone_number}</p>
+												<p class="text-xs md:text-sm">{address.full_address}</p>
 											</div>
 										</div>
 										<button
 											type="button"
-											class="btn btn-sm variant-soft-primary basis-1/4 h-fit w-full mr-5 font-bold"
+											class="btn btn-sm variant-soft-primary w-fit mr-5 font-bold"
 											on:click={async () => {
 												isSettingDefaultLocation = true;
 												await handleLoginSetLocation(address.id);
@@ -227,20 +262,23 @@
 											{/if}
 											<span>Select</span>
 										</button>
+										<button
+											class="btn btn-sm variant-soft-warning w-fit mr-4 md:mr-0 font-bold"
+											on:click|preventDefault={() => handleDeleteAddress(address.id)}
+										>
+											<span><Trash /></span>
+										</button>
 									</div>
 								{/each}
 							</span>
-						{:catch error}
-							<div class="card">
-								<div class="flex flex-col items-center justify-center">
-									<p class="text-center">You don't have any address yet</p>
+							{#if filteredData.length == 0}
+								<div class="card h-full w-full">
+									<h2 class="text-center">You don't have any address yet</h2>
 									<!-- <button class="btn btn-primary">Add Address</button> -->
 								</div>
-							</div>
+							{/if}
 						{/await}
 					</div>
-				{:else if tabSet === 2}
-					<div class="card p-4 m-4 drop-shadow-md">NOT YET IMPLEMENTED</div>
 				{/if}
 			</svelte:fragment>
 		</TabGroup>
