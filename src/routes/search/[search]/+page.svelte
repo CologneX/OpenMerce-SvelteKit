@@ -1,10 +1,6 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import TempProductCard from '$lib/TempProductCard.svelte';
-	import TempProductCardSecondary from '$lib/TempProductCardSecondary.svelte';
-	import Logo from '$lib/icons/Logo.svelte';
-	import Star from '$lib/icons/Star.svelte';
 	import { getProductSearch } from '$lib/utils/products';
 	import { Accordion, AccordionItem } from '@skeletonlabs/skeleton';
 
@@ -22,14 +18,22 @@
 	const handleSearchProduct = async (searchParam: string) => {
 		dataProduct = await getProductSearch(searchParam);
 	};
-	const handleGetProductSearch = async (key: string | Array<number>, filterBy: string) => {
+	const handleGetProductSearch = async (
+		key: string | Array<number>,
+		filterBy: string,
+		searchParam: string
+	) => {
 		if (filterBy == 'category') {
-			const response = await fetch(`/api/v1/product?category=${key}`, {
-				method: 'GET',
-				headers: {
-					'Content-Type': 'application/json'
+			const response = await fetch(
+				`
+			/api/v1/product?category=${key}&search=${searchParam}`,
+				{
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json'
+					}
 				}
-			});
+			);
 			if (response.ok) {
 				const data = await response.json();
 				console.log(data);
@@ -103,7 +107,7 @@
 									type="button"
 									class="btn btn-sm w-full text-end variant-soft-primary"
 									on:click={() => {
-										handleGetProductSearch(categoryItem.id, 'category');
+										handleGetProductSearch(categoryItem.id, 'category', $page.params.search);
 									}}
 									><span>{categoryItem.name}</span>
 								</button>
