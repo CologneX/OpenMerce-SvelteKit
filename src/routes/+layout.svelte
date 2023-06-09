@@ -190,7 +190,10 @@
 				<section class="gap-2 grid w-full h-full overflow-y-auto hide-scrollbar">
 					<div class="h-fit space-y-2">
 						{#if $isLoggedInStore}
-							<div class="card p-4 grid place-items-center w-full">
+							<button
+								class="card p-4 grid place-items-center w-full"
+								on:click={() => goto('/profile')}
+							>
 								<span>
 									<Avatar
 										initials="{first_name}{last_name}"
@@ -199,7 +202,7 @@
 									/>
 								</span>
 								<span>{first_name} {last_name}</span>
-							</div>
+							</button>
 						{:else}
 							<div class="flex gap-x-2 py-2">
 								<button
