@@ -2,6 +2,7 @@
 	import { goto } from '$app/navigation';
 	import CartItems from '$lib/Cart/CartItems.svelte';
 	import CartSummary from '$lib/Cart/CartSummary.svelte';
+	import { getCart } from '$lib/utils/cart';
 	import {
 		cartCountStore,
 		screenWidthStore,
@@ -9,7 +10,7 @@
 		totalItemsStore
 	} from '$lib/utils/stores';
 	import { rupiahCurrency } from '$lib/utils/units';
-
+	let cartContent: any[] = [];
 	const handlePostCheckAll = async () => {
 		const response = await fetch(`/api/v1/customer/cart-checked-all`, {
 			method: 'POST',
@@ -21,7 +22,7 @@
 			})
 		});
 		if (response.ok) {
-			// run the function here
+			cartContent = await getCart();
 		}
 		if (!response.ok) {
 			throw new Error('An error occurred while fetching the data');
@@ -46,7 +47,7 @@
 	<div class="grid grid-cols-3 gap-8 mx-5 mt-5">
 		<div class="{$screenWidthStore > 1024 ? 'col-span-2' : 'col-span-3'} overflow-auto space-y-4">
 			<hr class="!border-t-4 -p-5" />
-			<CartItems />
+			<CartItems {cartContent} />
 		</div>
 		{#if $screenWidthStore > 1024}
 			<CartSummary />

@@ -36,7 +36,7 @@
 		}
 	};
 
-	const handleModalReviewModal = async (orderID: string) => {
+	const handleModalReviewModal = async (orderID: number) => {
 		modalStore.close();
 		const ReviewModal: ModalSettings = {
 			type: 'component',
@@ -210,7 +210,7 @@
 									<button
 										class="btn btn-sm md:btn variant-filled-primary font-bold md:px-20"
 										on:click={() => {
-											handleModalReviewModal(item.id);
+											handleModalReviewModal(data.id);
 										}}
 										disabled={item.reviewed}>Review</button
 									>

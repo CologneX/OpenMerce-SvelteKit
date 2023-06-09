@@ -11,7 +11,7 @@
 	import { refreshTokenUser } from '$lib/utils/refreshToken';
 	import { triggerToast } from '$lib/utils/toast';
 
-	let cartContent: CartProducts[];
+	export let cartContent: CartProducts[];
 	let timeoutId: ReturnType<typeof setTimeout>;
 
 	const loadProducts = async () => {
