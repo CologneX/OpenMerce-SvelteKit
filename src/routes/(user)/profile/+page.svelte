@@ -358,10 +358,10 @@
 												<p class="text-xs md:text-sm">{address.full_address}</p>
 											</div>
 										</div>
-										<div>
+										<div class="flex items-center space-x-2">
 											<button
 												type="button"
-												class="btn btn-sm variant-soft-primary w-fit mr-5 font-bold"
+												class="btn btn-sm variant-soft-primary w-fit font-bold"
 												on:click={async () => {
 													isSettingDefaultLocation = true;
 													await handleLoginSetLocation(address.id);

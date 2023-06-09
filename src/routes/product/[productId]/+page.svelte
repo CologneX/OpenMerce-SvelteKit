@@ -337,7 +337,9 @@
 			<div class="h-12" />
 			<div id="reviews">
 				<div class="flex flex-col md:flex-row gap-4">
-					<div class="card drop-shadow-md border border-primary-500 rounded-md p-4 basis-1/4">
+					<div
+						class="card drop-shadow-md border border-primary-500 rounded-md p-4 basis-1/4 sticky top-12 h-fit"
+					>
 						<p class="font-semibold text-lg">BUYER REVIEWS</p>
 						<div class="text-6xl text-center">
 							{productDetails.cumulative_review}<span class="text-2xl">/5</span>

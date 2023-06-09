@@ -26,9 +26,28 @@
 		<div class="placeholder animate-pulse w-2/4" />
 	</div>
 {:then data}
-	{#each data as item}
+	{#if data}
+		{#each data as item}
+			<div class="p-4 rounded-md border border-primary-500 space-y-2 flex flex-row">
+				<div class="basis-1/5 sticky top-4">
+					<img
+						src="/placeholder.png"
+						alt="avatar"
+						class="rounded-full aspect-square w-full h-full"
+					/>
+				</div>
+				<div class="w-full space-y-2">
+					<p class="font-semibold text-ellipsis animate-pulse placeholder w-1/4" />
+
+					<p class="text-sm">
+						{item.review}
+					</p>
+				</div>
+			</div>
+		{/each}
+	{:else}
 		<div class="p-4 rounded-md border border-primary-500 space-y-2">
-			<p class="font-semibold text-ellipsis">{item.name}</p>
+			<p class="text-center font-semibold text-lg">No review yet, be the first one :)</p>
 		</div>
-	{/each}
+	{/if}
 {/await}

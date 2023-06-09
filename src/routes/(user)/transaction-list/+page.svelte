@@ -128,7 +128,7 @@
 			{#each { length: orderData.length } as _, index}
 				{@const reverseIndex = orderData.length - 1 - index}
 				{@const value = orderData[reverseIndex]}
-				<div class="card rounded p-2">
+				<div class="card rounded p-2 drop-shadow-md">
 					<div class="flex flex-row h-full space-x-2">
 						{#if value.image}
 							<img
@@ -143,7 +143,7 @@
 								class="aspect-square flex-initial w-24 h-24 rounded-md"
 							/>
 						{/if}
-						<div class=" flex flex-col w-full basis-4/5">
+						<div class=" flex flex-col w-full basis-4/5 truncate">
 							<div class="space-y-2 flex">
 								<div class="w-full">
 									<div class="text-xs md:text-base">
@@ -163,7 +163,9 @@
 									text-xs md:text-base">{value.status.charAt(0).toUpperCase() + value.status.slice(1)}</span
 										>
 									</div>
-									<div class="text-sm md:text-base font-semibold">{value.product_name}</div>
+									<div class="text-sm md:text-base font-semibold truncate">
+										{value.product_name}
+									</div>
 									<div class="text-xs md:text-base">{value.item_count} item</div>
 								</div>
 								<!-- <div class="text-end pb-2">
@@ -180,7 +182,7 @@
 								<div class="space-x-2 md:space-x-4 flex justify-end w-full">
 									{#if value.status === 'pending'}
 										<button
-											class="btn btn-sm md:btn font-bold text-xs text-error-500 px-8 lg:px-16"
+											class="btn btn-sm md:btn font-bold text-xs text-error-500 px-8"
 											on:click={() => {
 												handleCancelOrder(value.id);
 											}}
@@ -188,9 +190,9 @@
 											Cancel
 										</button>
 									{/if}
-									{#if value.status}
+									{#if value.status !== 'pending'}
 										<button
-											class="btn btn-sm md:btn-md variant-soft-primary font-bold text-sm px-8 lg:px-16"
+											class="btn btn-sm md:btn-md variant-soft-primary font-bold text-sm px-8"
 											on:click={() => {
 												triggerTransactionDetailsModal(value.id);
 											}}
@@ -200,12 +202,12 @@
 									{/if}
 									{#if value.status === 'pending'}
 										<button
-											class="btn btn-sm md:btn-md variant-soft-success font-bold text-sm px-8 lg:px-16"
+											class="btn btn-sm md:btn-md variant-soft-success font-bold text-sm px-8"
 											on:click={() => {
-												goto(value.payment_url);
+												triggerTransactionDetailsModal(value.id);
 											}}
 										>
-											<span>Pay Now</span>
+											<span>Pay Now </span>
 										</button>
 									{/if}
 								</div>

@@ -4,6 +4,7 @@
 	import type { OrderDetail } from '../../app';
 	import { rupiahCurrency } from '$lib/utils/units';
 	import ReviewModal from './ReviewModal.svelte';
+	import { goto } from '$app/navigation';
 	const handleGetTransactionDetails = async () => {
 		const response = await fetch(`/api/v1/customer/order?id=${$modalStore[0].meta?.orderID}`, {
 			method: 'GET',
@@ -168,6 +169,14 @@
 					<div class="flex-1 text-xs md:text-base">Order date:</div>
 					<div class="text-sm md:text-base">{data.created_at}</div>
 				</div>
+				{#if data.status === 'pending'}
+					<button
+						class="btn btn-sm md:btn variant-filled-primary font-bold md:px-20 w-full"
+						on:click={() => {
+							goto(`${data.payment_url}`);
+						}}>Pay Now</button
+					>
+				{/if}
 			</div>
 			<hr class="!border-2" />
 			<div class="px-4 md:px-10">
@@ -207,13 +216,15 @@
 								</div>
 
 								<div class="space-x-2 md:space-x-4 flex justify-end w-full">
-									<button
-										class="btn btn-sm md:btn variant-filled-primary font-bold md:px-20"
-										on:click={() => {
-											handleModalReviewModal(data.id);
-										}}
-										disabled={item.reviewed}>Review</button
-									>
+									{#if data.status !== 'pending'}
+										<button
+											class="btn btn-sm md:btn variant-filled-primary font-bold md:px-20"
+											on:click={() => {
+												handleModalReviewModal(data.id);
+											}}
+											disabled={item.reviewed}>Review</button
+										>
+									{/if}
 								</div>
 							</div>
 						</div>
