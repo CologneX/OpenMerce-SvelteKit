@@ -25,6 +25,21 @@
 		return productDetails;
 	};
 	let quantity: number = 1;
+
+	const handleGetSoldCount = async () => {
+		const response = await fetch(`/api/v1/product-sold?id=${$page.params.productId}`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		if (response.ok) {
+			const data = await response.json();
+			return data.count;
+		} else if (response.status === 404) {
+			return 0;
+		}
+	};
 </script>
 
 <svelte:head>
@@ -208,21 +223,27 @@
 							<small class="flex gap-x-2">
 								{#if $screenWidthStore > 1024}
 									<div class="flex items-center">
-										Sold &nbsp; <span class=" text-surface-900-50-token"> 0</span>
+										Sold &nbsp; <span class=" text-surface-900-50-token">
+											{#await handleGetSoldCount() then data}
+												{data}
+											{/await}
+										</span>
 									</div>
 									<span>•</span>
 									<div class="flex items-center">
 										<Star />
 										{productDetail.cumulative_review} &nbsp;
-										<span class="text-surface-900-50-token">(0 rating)</span>
 									</div>
 								{:else}
-									<span class="badge variant-ghost-surface">Sold 0</span>
+									<span class="badge variant-ghost-surface"
+										>Sold {#await handleGetSoldCount() then data}
+											{data}
+										{/await}</span
+									>
 									<span class="badge variant-ghost-surface"
 										><Star />
 										{productDetail.cumulative_review}
-										<span class="text-surface-900-50-token">(0)</span></span
-									>
+									</span>
 								{/if}
 							</small>
 						</div>

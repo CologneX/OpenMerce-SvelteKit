@@ -37,9 +37,8 @@
 					/>
 				</div>
 				<div class="w-full space-y-2">
-					<p class="font-semibold text-ellipsis animate-pulse placeholder w-1/4" />
-
-					<p class="text-sm">
+					<p class="font-semibold text-ellipsis">{item.customer}</p>
+					<p class="text-sm text-ellipsis">
 						{item.review}
 					</p>
 				</div>
