@@ -220,7 +220,7 @@
 										<button
 											class="btn btn-sm md:btn variant-filled-primary font-bold md:px-20"
 											on:click={() => {
-												handleModalReviewModal(data.id);
+												handleModalReviewModal(item.order_id);
 											}}
 											disabled={item.reviewed}>Review</button
 										>

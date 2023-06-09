@@ -1,4 +1,7 @@
 <script lang="ts">
+	import Star from '$lib/icons/Star.svelte';
+	import { each } from 'svelte/internal';
+
 	export let productId: string;
 
 	const handleGetReviewProduct = async () => {
@@ -37,6 +40,12 @@
 					/>
 				</div>
 				<div class="w-full space-y-2">
+					<div class="inline-flex">
+						<!-- foreach <Star/> on item.rating -->
+						{#each Array.from({ length: item.rating }, (_, i) => i) as _, i}
+							<Star />
+						{/each}
+					</div>
 					<p class="font-semibold text-ellipsis">{item.customer}</p>
 					<p class="text-sm text-ellipsis">
 						{item.review}

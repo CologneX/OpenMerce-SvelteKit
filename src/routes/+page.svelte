@@ -183,7 +183,7 @@
 		</swiper-container>
 	{:else}
 		<div class="font-semibold text-xl">All Products</div>
-		<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-6 gap-y-2">
+		<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2">
 			{#each allProducts as products}
 				<!-- <TempProductCardSecondary {products} /> -->
 				<TempProductCard {products} />
